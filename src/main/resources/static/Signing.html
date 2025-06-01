@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Login Form</title>
+    <link rel="stylesheet" href="Signing.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+</head>
+<body>
+
+<div class="container" id="container">
+    <div class="form-container sign-up-container" >
+        <form action="" id="signupForm" method="post">
+            <h1>Create Account</h1> <br />
+            <div class="social-container">
+                <a href="#" class="social"><i class="fab fa-facebook"></i> </a>
+                <a href="#" class="social"><i class="fab fa-google-plus-g"></i> </a>
+                <a href="#" class="social"><i class="fab fa-linkedin-in"></i> </a>
+            </div>
+
+            <input type="text" id="firstName" name="firstname" placeholder="Enter your First Name" required>
+            <input type="text" id="lastName" name="lastname" placeholder="Enter your Last Name" required>
+            <input type="email" id="email" name="email" placeholder="Enter your Email" required>
+            <input type="password" id="newpassword" name="password" placeholder="Enter Password" required>
+            <input type="password" id="confirmPassword" name="confirmpassword" placeholder="Enter password " required>
+            <input type="text" name="contact_number" id="contactNumber" placeholder="Contact Number" required>
+            <input type="text" id="nic" name="nic" placeholder="Enter NIC" required>
+
+            <button type="submit" name="register" value="register">Sign Up</button>
+        </form>
+    </div>
+
+
+    <!-- Signin Container-->
+    <div class="form-container sign-in-container">
+        <form action="" id="signinForm" method="post">
+            <h1>Sign In</h1> <br>
+            <div class="social-container">
+                <a href="#" class="social"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <span>or Use your Registered Account</span>
+            <input type="email" id="signinEmail" name="email" placeholder="Eneter your Email" required>
+            <input type="password" name="signinPassword" id = "password" placeholder="Enter your Password" required>
+            <button type="submit">Sign In</button>
+            <a href="">Reset Password</a>
+            <a href="">Login with Face</a>
+        </form>
+    </div>
+
+    <!--Overlay Container-->
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>Welcome Back!</h1> <br>
+                <p>To keep Connected with our services Plese Login with credentials</p> <br>
+                <button class="ghost" id="signIn">Sign In</button>
+            </div>
+
+            <div class="overlay-panel overlay-right">
+                <h1>Hello!</h1> <br>
+                <p>Enter your personal details to Register</p> <br>
+                <button class="ghost" id="signUp">Sign Up</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="voice-control" id="voiceControl" title="Click to speak">
+    <i class="fas fa-microphone"></i>
+</div>
+
+<footer>
+    <p>Brought to you by
+        <a href="Https://Aclura-Health.com" target="_blank">Alcura AI Platform</a>
+        - Your AI Health Care Platform
+    </p>
+</footer>
+<script src="Signing.js"></script>
+</body>
+</html>
