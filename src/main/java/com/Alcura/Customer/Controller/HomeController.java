@@ -28,4 +28,11 @@ public class HomeController
         }
         return  "/Customer/Dashboard";
     }
+
+
+    @GetMapping("/Customer/editProfile")
+    public String profile()
+    {
+        return "/Customer/edit_profile";
+    }
 }

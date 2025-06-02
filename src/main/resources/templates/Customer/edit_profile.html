@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-ua-compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | Mega City</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{style.css}">
+    <style>
+        /* Profile Image Specific Styles */
+        .profile-image-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            cursor: pointer;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #4CAF50;
+            transition: all 0.3s ease;
+        }
+
+        .profile-image:hover {
+            opacity: 0.9;
+        }
+
+        .image-upload-label {
+            display: block;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .image-upload-icon {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #fff;
+            border-radius: 50%;
+            padding: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.3);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-upload-icon i {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .image-path {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        #imageUpload {
+            display: none;
+        }
+
+        /* Dark mode specific styles */
+        body.dark .profile-image {
+            border-color: #3a3b3c;
+        }
+
+        body.dark .image-upload-icon {
+            background: #333;
+        }
+
+        body.dark .image-upload-icon i {
+            color: #ccc;
+        }
+
+        body.dark .image-path {
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+<nav class="sidebar close">
+    <header>
+        <div class="image-text">
+            <span class="image">
+                <img th:src="@{/log.png}" alt="">
+            </span>
+            <div class="text header-text">
+                <span class="name">Alucra</span>
+                <span class="profession">Web developer</span>
+            </div>
+        </div>
+        <i class='bx bx-chevron-right toggle'></i>
+    </header>
+
+    <div class="menu-bar">
+        <div class="menu">
+            <li class="search-box">
+                <i class='bx bx-search icon'></i>
+                <input type="search" placeholder="Search">
+            </li>
+            <ul class="menu-links">
+                <li class="nav-link">
+                    <a th:href="@{/Customer/Dashboard}">
+                        <i class='bx bx-home-alt icon'></i>
+                        <span class="text nav-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a th:href="@{/Customer/EditProfile}">
+                        <i class='bx bx-user icon'></i>
+                        <span class="text nav-text">Edit Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="bottom-content">
+            <li>
+                <a href="#">
+                    <i class='bx bx-log-out icon'></i>
+                    <span class="text nav-text">Logout</span>
+                </a>
+            </li>
+
+            <a th:href="@{/}">link</a>
+
+            <li class="mode">
+                <div class="moon-sun">
+                    <i class='bx bx-moon icon moon'></i>
+                    <i class='bx bx-sun icon sun'></i>
+                </div>
+
+                <span class="mode-text text">Dark Mode</span>
+                <div class="toggle-switch">
+                    <span class="switch"></span>
+                </div>
+            </li>
+        </div>
+    </div>
+</nav>
+
+<section class="home">
+    <div class="text">Dashboard</div>
+
+    <div class="profile-container">
+        <h1>Edit Profile</h1>
+        <div class="profile-image-container">
+            <label for="imageUpload" class="image-upload-label">
+                <img id="profileImage" class="profile-image" src="" alt="Profile Image">
+                <div class="image-upload-icon">
+                    <i class='bx bxs-camera'></i>
+                </div>
+            </label>
+            <input type="file" id="imageUpload" accept="image/*">
+            <div id="imagePath" class="image-path"></div>
+        </div>
+        <form id="editProfileForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="firstname">First Name</label>
+                <input type="text" id="firstname" name="firstName" required>
+            </div>
+            <div class="form-group">
+                <label for="lastname">Last Name</label>
+                <input type="text" id="lastname" name="lastName" required>
+            </div>
+            <div class="form-group">
+                <label for="contactNumber">Contact Number</label>
+                <input type="tel" id="contactNumber" name="contactNumber">
+            </div>
+            <div class="form-group">
+                <label for="nic">NIC</label>
+                <input type="text" id="nic" name="nic">
+            </div>
+            <div class="form-group">
+                <label for="email">Email (Cannot be changed)</label>
+                <input type="email" id="email" name="email" readonly>
+            </div>
+            <button type="submit" id="submitButton">
+                <span id="buttonText">Save Changes</span>
+            </button>
+            <div id="message" class=""></div>
+        </form>
+    </div>
+</section>
+<script th:src="@{/Customer/script.js}"></script>
+<script th:inline="javascript">
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (localStorage.getItem("darkMode") === "enabled") {
+            body.classList.add("dark");
+            if (modeText) modeText.innerText = "Light Mode";
+        } else {
+            body.classList.remove("dark");
+            if (modeText) modeText.innerText = "Dark Mode";
+        }
+
+        let hasImageUpdate = false;
+        const defaultImagePath = /*[[${'/Customer/image/profile/image.jpeg'}]]*/ '/Customer/image/profile/image.jpeg';
+
+        fetch('/Customer/GetProfile', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        })
+     .then(response => {
+    if (!response.ok) {
+        return response.json().then(errorData => {
+            // If there's a redirectUrl in the error response, use it
+            if (errorData.redirectUrl) {
+                window.location.href = errorData.redirectUrl;
+                return;
+            }
+            throw new Error(errorData.error || "Error: " + response.status + " " + response.statusText);
+        });
+    }
+    return response.json();
+        })
+        .then(data => {
+            document.getElementById('firstname').value = data.firstName || '';
+            document.getElementById('lastname').value = data.lastName || '';
+            document.getElementById('contactNumber').value = data.contactNumber || '';
+            document.getElementById('nic').value = data.nic || '';
+            document.getElementById('email').value = data.email || '';
+
+            const profileImage = document.getElementById('profileImage');
+            const imagePathElement = document.getElementById('imagePath');
+
+            profileImage.onerror = function() {
+                this.src = defaultImagePath;
+                imagePathElement.textContent = 'Using default image';
+            };
+
+            if (data.image) {
+                profileImage.src = data.image || defaultImagePath;
+                imagePathElement.textContent = '';
+            } else {
+                profileImage.src = defaultImagePath;
+                imagePathElement.textContent = 'Using default image';
+            }
+        })
+        .catch(error => {
+            console.error("Error loading profile:", error);
+            document.getElementById('message').textContent = 'Error loading profile: ' + error.message;
+            document.getElementById('message').className = 'error';
+        });
+
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                hasImageUpdate = true;
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('profileImage').src = event.target.result;
+                    document.getElementById('imagePath').textContent = 'New image selected: ' + file.name;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const submitButton = document.getElementById('submitButton');
+            const buttonText = document.getElementById('buttonText');
+            const originalButtonText = buttonText.textContent;
+
+            submitButton.disabled = true;
+            buttonText.innerHTML = '<span class="loading"></span> Updating...';
+
+            const formData = new FormData();
+            formData.append('firstName', document.getElementById('firstname').value);
+            formData.append('lastName', document.getElementById('lastname').value);
+            formData.append('contactNumber', document.getElementById('contactNumber').value);
+            formData.append('nic', document.getElementById('nic').value);
+
+            const imageInput = document.getElementById('imageUpload');
+            if (imageInput.files[0]) {
+                formData.append('image', imageInput.files[0]);
+            }
+
+            fetch('/Customer/UpdateProfile', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) throw new Error(data.error);
+
+                alert(data.success);
+                document.getElementById('message').textContent = data.success;
+                document.getElementById('message').className = 'success';
+
+                if (hasImageUpdate) {
+                    imageInput.value = '';
+                    const newImageUrl = `/Customer/uploads/${data.imageFilename}?t=${new Date().getTime()}`;
+                    document.getElementById('profileImage').src = newImageUrl;
+                    document.getElementById('imagePath').textContent = 'Profile image updated';
+                }
+
+                if (data.redirectUrl) {
+
+                        window.location.href = data.redirectUrl;
+
+                }
+            })
+            .catch(error => {
+                console.error("Update error:", error);
+                document.getElementById('message').textContent = error.message;
+                document.getElementById('message').className = 'error';
+            })
+            .finally(() => {
+                submitButton.disabled = false;
+                buttonText.textContent = originalButtonText;
+            });
+        });
+    });
+</script>
+</body>
+</html>
