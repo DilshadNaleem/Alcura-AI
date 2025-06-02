@@ -1,5 +1,6 @@
 package com.Alcura.Customer.Controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -16,5 +17,15 @@ public class HomeController
     public String showverificationPage()
     {
         return "/Customer/verification";
+    }
+
+    @GetMapping("/Customer/Dashboard")
+    public String dashboard (HttpSession session)
+    {
+        if (session.getAttribute("email") == null)
+        {
+            return "redirect:/Customer/Signing.html";
+        }
+        return  "/Customer/Dashboard";
     }
 }
