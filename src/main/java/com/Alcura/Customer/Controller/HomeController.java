@@ -47,4 +47,10 @@ public class HomeController
     {
         return "/Customer/SOSDashboard";
     }
+
+    @GetMapping("/Customer/FaceLogin")
+    public String facelogin()
+    {
+        return "/Customer/face-login";
+    }
 }
