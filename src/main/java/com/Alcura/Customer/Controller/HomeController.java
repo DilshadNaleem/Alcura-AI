@@ -35,4 +35,16 @@ public class HomeController
     {
         return "/Customer/edit_profile";
     }
+
+    @GetMapping("/Customer/SOS")
+    public String sos()
+    {
+        return "/Customer/sos";
+    }
+
+    @GetMapping("/Customer/SOSDashboard")
+    public String SOSDashboard()
+    {
+        return "/Customer/SOSDashboard";
+    }
 }

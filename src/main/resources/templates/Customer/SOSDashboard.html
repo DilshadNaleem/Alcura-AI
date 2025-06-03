@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hospital Dashboard - Patient Tracking</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #d9534f; margin-top: 0; }
+        #status {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #d9534f;
+        }
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .info-panel {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .info-card {
+            flex: 1;
+            min-width: 250px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .distance-display {
+            font-size: 24px;
+            color: #d9534f;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .last-update {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        .error {
+            background: #ffeeee;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #ff4444;
+        }
+        .retry-link {
+            color: #d9534f;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Patient Tracking Dashboard</h1>
+
+    <div id="status">
+        <h2 id="tracking-status">Loading patient tracking information...</h2>
+        <div id="hospital-details"></div>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="info-panel">
+        <div class="info-card">
+            <h3>Patient Information</h3>
+            <div id="patient-location">Acquiring location data...</div>
+            <div class="last-update" id="last-update">Last updated: --</div>
+        </div>
+
+        <div class="info-card">
+            <h3>Hospital Information</h3>
+            <div id="hospital-info">Loading hospital details...</div>
+        </div>
+
+        <div class="info-card">
+            <h3>Distance Information</h3>
+            <div class="distance-display" id="distance">-- km</div>
+            <div id="eta">Calculating ETA...</div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.0/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+<script>
+    // API Key for OpenRouteService
+    const API_KEY = "5b3ce3597851110001cf624849053b1ef3964be08e0d67c1ec1c1cbb";
+
+    // Initialize map
+    const map = L.map('map').setView([12.9716, 77.5946], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Hospital and Patient icons
+    const hospitalIcon = L.icon({
+        iconUrl: 'https://cdn-icons-png.flaticon.com/512/2076/2076346.png',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32]
+    });
+
+    const patientIcon = L.icon({
+        iconUrl: 'https://cdn-icons-png.flaticon.com/512/2913/2913100.png',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32]
+    });
+
+    let patientMarker = null;
+    let hospitalMarker = null;
+    let routeLine = null;
+    let hospitalData = null;
+    let currentPatientLat = null;
+    let currentPatientLng = null;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const trackingId = urlParams.get('trackingId');
+
+    if (trackingId) {
+        document.getElementById('tracking-status').innerHTML =
+            `Tracking Patient: <strong>${trackingId}</strong>`;
+        fetchInitialData();
+        connectWebSocket();
+        getUserLocation();  // Track user's own location
+    } else {
+        document.getElementById('tracking-status').innerHTML =
+            `<span class="error">Error: No tracking ID provided</span>`;
+    }
+
+    // Fetch initial hospital data from local storage
+    async function fetchInitialData() {
+        try {
+            const sosData = JSON.parse(localStorage.getItem('sosData'));
+            if (!sosData || sosData.trackingId !== trackingId)
+                throw new Error("Invalid or missing SOS data.");
+            hospitalData = {
+                name: sosData.hospital,
+                contactEmail: sosData.contact,
+                latitude: parseFloat(sosData.hospitalLat),
+                longitude: parseFloat(sosData.hospitalLng)
+            };
+            updateHospitalDisplay();
+        } catch (error) {
+            document.getElementById('hospital-details').innerHTML = `
+                <div class="error">
+                    <h3>⚠️ Error Loading Hospital Information</h3>
+                    <p>${error.message}</p>
+                    <p><a href="/sos.html" class="retry-link">Click here to start a new emergency request</a></p>
+                </div>`;
+        }
+    }
+
+    // Update hospital display
+    function updateHospitalDisplay() {
+        document.getElementById('hospital-details').innerHTML = `
+            <h3>Assigned Hospital</h3>
+            <p><strong>Name:</strong> ${hospitalData.name}</p>
+            <p><strong>Contact:</strong> ${hospitalData.contactEmail}</p>`;
+        document.getElementById('hospital-info').innerHTML = `
+            <p><strong>Name:</strong> ${hospitalData.name}</p>
+            <p><strong>Location:</strong> ${hospitalData.latitude.toFixed(6)}, ${hospitalData.longitude.toFixed(6)}</p>
+            <p><strong>Contact:</strong> ${hospitalData.contactEmail}</p>`;
+        hospitalMarker = L.marker(
+            [hospitalData.latitude, hospitalData.longitude],
+            {icon: hospitalIcon}
+        ).addTo(map)
+         .bindPopup(`<b>${hospitalData.name}</b><br>${hospitalData.contactEmail}`);
+    }
+
+    // WebSocket connection to receive patient updates
+    function connectWebSocket() {
+        const socket = new SockJS('http://localhost:8081/ws');
+        const stompClient = Stomp.over(socket);
+        stompClient.connect({}, () => {
+            stompClient.subscribe(`/topic/tracking/${trackingId}`, (message) => {
+                const location = JSON.parse(message.body);
+                updatePatientPosition(location.lat, location.lng);
+            });
+        }, (error) => {
+            document.getElementById('patient-location').innerHTML =
+                `<p class="error">Connection lost. Attempting to reconnect...</p>`;
+            setTimeout(connectWebSocket, 5000);
+        });
+    }
+
+    // Update patient position and route
+    function updatePatientPosition(lat, lng) {
+        const now = new Date();
+        document.getElementById('last-update').textContent = `Last updated: ${now.toLocaleTimeString()}`;
+        document.getElementById('patient-location').innerHTML = `
+            <p><strong>Current Location:</strong></p>
+            <p>Latitude: ${lat.toFixed(6)}</p>
+            <p>Longitude: ${lng.toFixed(6)}</p>`;
+
+        currentPatientLat = lat;
+        currentPatientLng = lng;
+
+        if (!patientMarker) {
+            patientMarker = L.marker([lat, lng], {icon: patientIcon})
+                .addTo(map).bindPopup("Patient Location");
+        } else {
+            patientMarker.setLatLng([lat, lng]);
+        }
+
+        if (hospitalMarker) {
+            updateRoute(lat, lng);
+            updateDistanceInfo(lat, lng);
+        }
+    }
+
+    // Fetch and draw route from OpenRouteService
+    function updateRoute(lat, lng) {
+        if (routeLine) map.removeLayer(routeLine);
+
+         const url = `/api/route?startLat=${lat}&startLng=${lng}&endLat=${hospitalData.latitude}&endLng=${hospitalData.longitude}`;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const routeCoordinates = data.features[0].geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                routeLine = L.polyline(routeCoordinates, {color: 'blue', weight: 3}).addTo(map);
+                map.fitBounds(routeLine.getBounds());
+            })
+            .catch(error => {
+                console.error("Error fetching route data:", error);
+            });
+    }
+
+    // Update distance and ETA info
+    function updateDistanceInfo(lat, lng) {
+        const distance = calculateDistance(lat, lng, hospitalData.latitude, hospitalData.longitude);
+        document.getElementById('distance').textContent = `${distance.toFixed(2)} km`;
+        const etaMinutes = Math.round((distance / 60) * 60);
+        document.getElementById('eta').textContent = `Estimated arrival: ~${etaMinutes} minutes`;
+    }
+
+    // Calculate the distance between two geographic points
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Earth's radius in km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
+    // Get the user's location
+    function getUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(
+                position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    updatePatientPosition(lat, lng);  // You can disable WebSocket to only use this
+                },
+                error => {
+                    console.warn("Geolocation error:", error.message);
+                    document.getElementById('patient-location').innerHTML = `<p class="error">Unable to access your location. Please enable GPS.</p>`;
+                },
+                { enableHighAccuracy: true, maximumAge: 5000 }
+            );
+        } else {
+            document.getElementById('patient-location').innerHTML = `<p class="error">Geolocation not supported by this browser.</p>`;
+        }
+    }
+</script>
+</body>
+</html>
