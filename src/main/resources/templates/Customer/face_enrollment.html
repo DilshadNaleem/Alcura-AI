@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face Enrollment</title>
+</head>
+<body>
+<div class="container">
+    <h1>Enroll Face</h1>
+    <p> Look directly at the camre and Click 'Capture' </p>
+
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <div class="loading">Processing your face</div>
+
+    <div class="actions">
+        <button id="capture">Capture</button>
+        <button id="retry" >Retry</button>
+        <button onclick="">Skip</button>
+    </div>
+    <a href="/Customer/UpdateFace">Update Face</a>
+</div>
+
+<script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureBtn = document.getElementById('capture');
+    const retryBtn = document.getElementById('retry');
+    const loading = document.getElementById('loading');
+
+    async function initCamera()
+    {
+        try
+        {
+            const stream = await navigator.mediaDevices.getUserMedia(
+                {
+                    video: {facingMode: 'user'}, audio: false
+                }
+            );
+            video.srcObject  = stream;
+        }
+        catch (err)
+        {
+            alert("Camera Accss Error: " + err.message);
+        }
+    }
+
+    async function captureAndSend()
+    {
+        try
+        {
+            loading.style.display = 'block';
+            captureBtn.style.display = 'none';
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const blob = await new Promise (resolve =>
+        {
+            canvas.toBlob(resolve, 'image/jpeg', 0.95);
+        }
+            );
+
+            const formData  = new FormData();
+            formData.append('faceImage', blob, 'face_capture.jpg');
+
+            const response = await fetch ('/Customer/EnrollFace',
+                {
+                    method: 'POST',
+                    body: formData
+                }
+            );
+
+            const result = await response.json();
+            alert(result.message);
+
+            if(result.status == 'success')
+            {
+                window.location.href = '/Customer/Dashboard';
+            }
+            else if (result.message.includes('Session Expired'))
+            {
+                window.location.href = '/Customer/Signing.html';
+            }
+            else
+            {
+                retryBtn.style.display = 'block';
+            }
+        }
+        catch (err)
+        {
+            alert('Error: ' + err.message);
+            retryBtn.style.display = 'block';
+        } finally
+        {
+            loading.style.display = 'none';
+        }
+    }
+
+    captureBtn.addEventListener('click', captureAndSend);
+    retryBtn.addEventListener('click', () => {
+        captureBtn.style.display = 'block';
+        retryBtn.style.display = 'none';
+        canvas.style.display = 'none';
+    });
+
+    initCamera();
+</script>
+</body>
+</html>

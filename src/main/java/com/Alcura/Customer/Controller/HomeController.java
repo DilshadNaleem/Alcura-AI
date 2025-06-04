@@ -53,4 +53,16 @@ public class HomeController
     {
         return "/Customer/face-login";
     }
+
+    @GetMapping("/Customer/FaceEnrollment")
+    public String faceenrollment()
+    {
+        return "/Customer/face_enrollment";
+    }
+
+    @GetMapping("/Customer/UpdateFace")
+    public String UpdateFace()
+    {
+        return "/Customer/Update_Face";
+    }
 }
