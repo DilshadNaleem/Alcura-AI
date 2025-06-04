@@ -15,18 +15,18 @@ recognition.lang = "en-US";
 
 // Form fields configuration
 const signupFields = [
-    { id: "firstName", prompt: "First name. Please say your first name." },
-    { id: "lastName", prompt: "Last name. Please say your last name." },
-    { id: "email", prompt: "Email address. Please say your email." },
-    { id: "newpassword", prompt: "Password. Please create and say your password.", isPassword: true },
-    { id: "confirmPassword", prompt: "Confirm password. Please say your password again.", isPassword: true },
-    { id: "contactNumber", prompt: "Contact number. Please say your 10-digit phone number." },
-    { id: "nic", prompt: "NIC number. Please say your national identification number." }
+    { id: "firstName", prompt: "First name. Please say your first name letter by letter." },
+    { id: "lastName", prompt: "Last name. Please say your last name letter by letter." },
+    { id: "email", prompt: "Email address. Please say your email letter by letter." },
+    { id: "newpassword", prompt: "Password. Please create and say your password letter by letter.", isPassword: true },
+    { id: "confirmPassword", prompt: "Confirm password. Please say your password again letter by letter.", isPassword: true },
+    { id: "contactNumber", prompt: "Contact number. Please say your phone number digit by digit." },
+    { id: "nic", prompt: "NIC number. Please say your national identification number letter by letter." }
 ];
 
 const signinFields = [
-    { id: "signinEmail", prompt: "Email. Please say your registered email." },
-    { id: "password", prompt: "Password. Please say your password.", isPassword: true }
+    { id: "signinEmail", prompt: "Email. Please say your registered email letter by letter." },
+    { id: "password", prompt: "Password. Please say your password letter by letter.", isPassword: true }
 ];
 
 // State variables
@@ -35,6 +35,11 @@ let isFormReadingMode = false;
 let isListening = false;
 let currentFormType = 'signin';
 let saidNotFound = false;
+let currentInputBuffer = "";
+let isTypingMode = false;
+let currentEditingField = null;
+let hasUserSpoken = false;
+let initialWelcomeMessage = null;
 
 // Event Listeners
 signUpButton.addEventListener('click', () => {
@@ -75,7 +80,7 @@ function toggleVoiceControl() {
 }
 
 function readFormFields(formType) {
-    saidNotFound = false; // Reset the not found flag
+    saidNotFound = false;
     isFormReadingMode = true;
     currentFieldIndex = 0;
     currentFormType = formType;
@@ -85,15 +90,13 @@ function readFormFields(formType) {
         if (currentFieldIndex < fields.length) {
             const field = fields[currentFieldIndex];
             const fieldName = field.id.replace(/([A-Z])/g, ' $1').toLowerCase();
-            speak(`Please provide your ${fieldName}. ${field.prompt}`);
 
-            // Set timeout if no response
-            setTimeout(() => {
-                if (isFormReadingMode && currentFieldIndex < fields.length && currentFieldIndex === fields.findIndex(f => f.id === field.id)) {
-                    speak("I didn't hear your response. Please say your " + fieldName);
-                    readNextField();
-                }
-            }, 10000);
+            // Enter typing mode for this field
+            currentEditingField = field;
+            isTypingMode = true;
+            currentInputBuffer = document.getElementById(field.id).value || "";
+
+            speak(`Please provide your ${fieldName} letter by letter. Current value is ${field.isPassword ? "••••••" : currentInputBuffer || "empty"}. Say each character clearly (like "d i l s h a d"), or say 'backspace', 'space', 'dot', 'at', or 'done' when finished.`);
         } else {
             speak("Form completed. Say 'submit' to submit or 'review' to check your information.");
             isFormReadingMode = false;
@@ -107,6 +110,12 @@ function processVoiceCommand(transcript) {
     console.log("Voice command:", transcript);
     const originalTranscript = transcript;
     transcript = transcript.toLowerCase().trim();
+
+    // Check if we're in typing mode for a specific field
+    if (isTypingMode && currentEditingField) {
+        processTypingInput(originalTranscript, currentEditingField);
+        return;
+    }
 
     // Navigation commands
     if (transcript.includes("sign in") || transcript.includes("login")) {
@@ -125,42 +134,47 @@ function processVoiceCommand(transcript) {
         return;
     }
 
-    // Form filling
-    if (isFormReadingMode) {
+    // Edit specific field command
+    if (transcript.startsWith("edit ")) {
+        const fieldToEdit = transcript.substring(5).trim();
         const fields = currentFormType === 'signup' ? signupFields : signinFields;
 
-        // Check if user is trying to edit a specific field
         for (let i = 0; i < fields.length; i++) {
             const fieldName = fields[i].id.replace(/([A-Z])/g, ' $1').toLowerCase();
-            if (transcript.includes(fieldName)) {
+            if (fieldToEdit.includes(fieldName)) {
                 currentFieldIndex = i;
-                const value = document.getElementById(fields[i].id).value;
-                if (value) {
-                    speak(`Editing ${fieldName}. Current value is ${fields[i].isPassword ? "••••••" : value}. Please say the new value.`);
-                } else {
-                    speak(`Editing ${fieldName}. Please say the value.`);
+                currentEditingField = fields[i];
+                isTypingMode = true;
+                currentInputBuffer = ""; // Clear buffer to start fresh
+
+                // Clear the field
+                document.getElementById(fields[i].id).value = "";
+                if (fields[i].isPassword) {
+                    document.getElementById(fields[i].id).setAttribute('data-real-value', "");
                 }
+
+                speak(`Editing ${fieldName}. Please say the new value letter by letter. Say 'done' when finished.`);
                 return;
             }
         }
+        speak("Field not found. Please try again.");
+        return;
+    }
 
-        // Process the input for the current field
+    // Form filling
+    if (isFormReadingMode) {
+        const fields = currentFormType === 'signup' ? signupFields : signinFields;
         const currentField = fields[currentFieldIndex];
-        processFieldInput(originalTranscript, currentField);
+        currentEditingField = currentField;
+        isTypingMode = true;
+        currentInputBuffer = document.getElementById(currentField.id).value || "";
+        speak(`Please say the letters for ${currentField.id.replace(/([A-Z])/g, ' $1').toLowerCase()} one by one. Current value is ${currentField.isPassword ? "••••••" : currentInputBuffer || "empty"}. Say 'done' when finished.`);
         return;
     }
 
     // Review command
     if (transcript.includes("review") || transcript.includes("check")) {
         reviewFormInformation();
-        return;
-    }
-
-    // Edit command - FIXED VERSION
-    if (transcript.includes("edit")) {
-        const fields = currentFormType === 'signup' ? signupFields : signinFields;
-        let fieldList = fields.map(f => f.id.replace(/([A-Z])/g, ' $1').toLowerCase());
-        speak("Which field would you like to edit? Available fields are: " + fieldList.join(", "));
         return;
     }
 
@@ -172,110 +186,169 @@ function processVoiceCommand(transcript) {
 
     // Help command
     if (transcript.includes("help") || transcript.includes("what can i say")) {
-        speak("You can say: 'Sign in', 'Sign up', 'Submit', 'Review', 'Edit', or specific field names.");
+        speak("You can say: 'Sign in', 'Sign up', 'Submit', 'Review', 'Edit [fieldname]', or specific field names. When typing, say letters one by one (like 'd i l s h a d'), or use commands like 'backspace', 'space', 'dot', 'at', or 'done'.");
         return;
     }
 
     // Default response
     if (!saidNotFound) {
-        speak("Not found");
+        speak("Command not recognized. Please try again.");
         saidNotFound = true;
     }
 }
 
-function processFieldInput(transcript, field) {
-    // Remove all spaces first
-    let cleanedTranscript = transcript.replace(/\s+/g, '');
+function processTypingInput(transcript, field) {
+    transcript = transcript.toLowerCase().trim();
+    console.log("Processing typing input:", transcript);
 
-    // Email handling
-    if (field.id.includes("email")) {
-        processEmailInput(cleanedTranscript, field.id);
+    // Special commands
+    if (transcript === "backspace") {
+        currentInputBuffer = currentInputBuffer.slice(0, -1);
+        updateFieldDisplay(field);
+        speak("Backspace");
         return;
     }
 
-    // Password handling
+    if (transcript === "space") {
+        currentInputBuffer += " ";
+        updateFieldDisplay(field);
+        speak("Space");
+        return;
+    }
+
+    if (transcript === "dot" || transcript === "period") {
+        currentInputBuffer += ".";
+        updateFieldDisplay(field);
+        speak("Dot");
+        return;
+    }
+
+    if (transcript === "at" || transcript === "at symbol") {
+        currentInputBuffer += "@";
+        updateFieldDisplay(field);
+        speak("At symbol");
+        return;
+    }
+
+    if (transcript === "underscore") {
+        currentInputBuffer += "_";
+        updateFieldDisplay(field);
+        speak("Underscore");
+        return;
+    }
+
+    if (transcript === "dash" || transcript === "hyphen") {
+        currentInputBuffer += "-";
+        updateFieldDisplay(field);
+        speak("Dash");
+        return;
+    }
+
+    if (transcript === "done") {
+        finishTyping(field);
+        return;
+    }
+
+    // Process individual letters when spoken with spaces (like "d i l s h a d")
+    if (transcript.includes(" ")) {
+        const letters = transcript.split(" ")
+                               .filter(l => l.length === 1 && /[a-z0-9]/.test(l))
+                               .join("");
+        if (letters.length > 0) {
+            currentInputBuffer += letters;
+            updateFieldDisplay(field);
+            speak("Added " + letters.split("").join(" "));
+            return;
+        }
+    }
+
+    // Process single letters or numbers
+    if ((transcript.length === 1 && /[a-z0-9]/.test(transcript))) {
+        currentInputBuffer += transcript;
+        updateFieldDisplay(field);
+        speak(transcript);
+        return;
+    }
+
+    // Process number words (zero through nine)
+    const numberWords = {
+        "zero": "0", "one": "1", "two": "2", "three": "3", "four": "4",
+        "five": "5", "six": "6", "seven": "7", "eight": "8", "nine": "9"
+    };
+
+    if (numberWords[transcript]) {
+        currentInputBuffer += numberWords[transcript];
+        updateFieldDisplay(field);
+        speak(numberWords[transcript]);
+        return;
+    }
+
+    // If we get here, it's an unrecognized command
+    speak("Please say a single letter, number, or a special command like 'space', 'dot', or 'at'. For names, say letters with spaces between them like 'd i l s h a d'.");
+}
+
+function updateFieldDisplay(field) {
+    const fieldElement = document.getElementById(field.id);
+
+    // For password fields, show asterisks but store the actual value
     if (field.isPassword) {
-        processPasswordInput(cleanedTranscript, field.id);
-        return;
-    }
-
-    // Other fields
-    processRegularInput(cleanedTranscript, field);
-}
-
-function processEmailInput(transcript, fieldId) {
-    // Process email format
-    let emailText = transcript.replace(/\s*at\s*/g, "@")
-                             .replace(/dot/g, ".")
-                             .replace(/underscore/g, "_")
-                             .replace(/dash/g, "-");
-
-    const emailMatch = emailText.match(/([a-z0-9._-]+@[a-z0-9._-]+\.[a-z0-9._-]+)/i);
-    if (emailMatch) {
-        const email = emailMatch[0];
-        document.getElementById(fieldId).value = email;
-        speak(`Email set to ${email.split("@").join(" at ")}`);
-        moveToNextField();
+        fieldElement.value = "*".repeat(currentInputBuffer.length);
+        fieldElement.setAttribute('data-real-value', currentInputBuffer);
     } else {
-        if (!saidNotFound) {
-            speak("Not found");
-            saidNotFound = true;
-        }
+        fieldElement.value = currentInputBuffer;
     }
 }
 
-function processPasswordInput(transcript, fieldId) {
-    // Remove common password-related words
-    const password = transcript.replace(/password|pass|is|my|the/gi, "");
+function finishTyping(field) {
+    const fieldElement = document.getElementById(field.id);
 
-    if (password.length > 0) {
-        document.getElementById(fieldId).value = password;
-
-        if (fieldId.includes("confirm")) {
-            speak("Password confirmed");
+    // For email fields, ensure proper lowercase formatting
+    if (field.id.includes("email")) {
+        // Split email into parts and lowercase the domain
+        const parts = currentInputBuffer.split('@');
+        if (parts.length === 2) {
+            currentInputBuffer = parts[0] + '@' + parts[1].toLowerCase();
         } else {
-            speak("Password set");
-        }
-
-        moveToNextField();
-    } else {
-        if (!saidNotFound) {
-            speak("Not found");
-            saidNotFound = true;
+            currentInputBuffer = currentInputBuffer.toLowerCase();
         }
     }
-}
 
-function processRegularInput(transcript, field) {
-    // Remove field name references if present
-    const fieldName = field.id.replace(/([A-Z])/g, ' $1').toLowerCase();
-    let cleanedTranscript = transcript.replace(new RegExp(fieldName, 'gi'), '')
-                                    .replace(/is|my|the/gi, '');
-
-    // Only update if we have actual content
-    if (cleanedTranscript) {
-        document.getElementById(field.id).value = cleanedTranscript;
-        const displayName = field.id.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-        speak(`${displayName} set to ${cleanedTranscript}`);
-        moveToNextField();
+    // For password fields, get the real value from data attribute
+    if (field.isPassword) {
+        fieldElement.setAttribute('data-real-value', currentInputBuffer);
+        fieldElement.value = "*".repeat(currentInputBuffer.length);
     } else {
-        if (!saidNotFound) {
-            speak("Not found");
-            saidNotFound = true;
-        }
+        fieldElement.value = currentInputBuffer;
+    }
+
+    const fieldName = field.id.replace(/([A-Z])/g, ' $1').toLowerCase();
+    speak(`${fieldName} set to ${field.isPassword ? "••••••" : currentInputBuffer || "empty"}`);
+
+    // Reset typing state
+    isTypingMode = false;
+    currentInputBuffer = "";
+    currentEditingField = null;
+
+    // Move to next field if in form reading mode
+    if (isFormReadingMode) {
+        moveToNextField();
     }
 }
 
 function moveToNextField() {
-    saidNotFound = false; // Reset for next field
+    saidNotFound = false;
     const fields = currentFormType === 'signup' ? signupFields : signinFields;
     currentFieldIndex++;
 
     if (currentFieldIndex < fields.length) {
         setTimeout(() => {
             const nextField = fields[currentFieldIndex];
+            currentEditingField = nextField;
+            isTypingMode = true;
+            currentInputBuffer = document.getElementById(nextField.id).value || "";
+
             const fieldName = nextField.id.replace(/([A-Z])/g, ' $1').toLowerCase();
-            speak(`Now please provide your ${fieldName}. ${nextField.prompt}`);
+            speak(`Now please provide your ${fieldName} letter by letter. Current value is ${nextField.isPassword ? "••••••" : currentInputBuffer || "empty"}. Say each character clearly (like "d i l s h a d"), or say 'done' when finished.`);
         }, 500);
     } else {
         isFormReadingMode = false;
@@ -288,23 +361,39 @@ function reviewFormInformation() {
     let reviewText = "Here's your information: ";
 
     fields.forEach(field => {
-        const value = document.getElementById(field.id).value;
+        let value = document.getElementById(field.id).value;
+        if (field.isPassword) {
+            value = document.getElementById(field.id).getAttribute('data-real-value') || value;
+        }
         const fieldName = field.id.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-        reviewText += `${fieldName}: ${field.isPassword ? "••••••" : value}. `;
+        reviewText += `${fieldName}: ${field.isPassword ? "••••••" : value || "empty"}. `;
     });
 
-    speak(reviewText + "Say 'submit' to proceed or 'edit' to make changes.");
+    speak(reviewText + "Say 'submit' to proceed or 'edit [fieldname]' to make changes.");
 }
 
 function submitCurrentForm() {
     if (currentFormType === 'signup') {
+        // Ensure all password fields have their real values before submission
+        document.getElementById("newpassword").value =
+            document.getElementById("newpassword").getAttribute('data-real-value') ||
+            document.getElementById("newpassword").value;
+        document.getElementById("confirmPassword").value =
+            document.getElementById("confirmPassword").getAttribute('data-real-value') ||
+            document.getElementById("confirmPassword").value;
+
         if (validateSignupForm()) {
-            document.getElementById("signupForm").submit();
             speak("Submitting registration form.");
+            document.getElementById("signupForm").submit();
         }
     } else {
-        document.getElementById("signinForm").submit();
+        // Ensure password field has its real value before submission
+        document.getElementById("password").value =
+            document.getElementById("password").getAttribute('data-real-value') ||
+            document.getElementById("password").value;
+
         speak("Submitting login form.");
+        document.getElementById("signinForm").submit();
     }
 }
 
@@ -313,8 +402,10 @@ function validateSignupForm() {
     const lastName = document.getElementById("lastName").value.trim();
     const email = document.getElementById("email").value.trim();
     const contactNumber = document.getElementById("contactNumber").value.trim();
-    const password = document.getElementById("newpassword").value.trim();
-    const confirmPassword = document.getElementById("confirmPassword").value.trim();
+    const password = document.getElementById("newpassword").getAttribute('data-real-value') ||
+                     document.getElementById("newpassword").value.trim();
+    const confirmPassword = document.getElementById("confirmPassword").getAttribute('data-real-value') ||
+                           document.getElementById("confirmPassword").value.trim();
 
     if (!/^[A-Za-z]{2,}$/.test(firstName)) {
         speak("First name must be at least 2 characters and contain only letters.");
@@ -351,22 +442,35 @@ function validateSignupForm() {
 
 function speak(text) {
     if ('speechSynthesis' in window) {
-        // Cancel any ongoing speech
         window.speechSynthesis.cancel();
-
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.rate = 0.9;
-        utterance.onend = function() {
-            console.log("Finished speaking");
-        };
         window.speechSynthesis.speak(utterance);
     } else {
         console.log("Text-to-speech not supported");
     }
 }
 
+function playInitialInstructions() {
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(
+            "Welcome to our accessible form system. Say 'sign up' to register or 'sign in' to login. When filling fields, say letters one by one (like 's a m p l e') or use special commands."
+        );
+        utterance.rate = 0.9;
+
+        // Store the utterance so we can cancel it later
+        initialWelcomeMessage = utterance;
+
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
 // Recognition event handlers
 recognition.onresult = (event) => {
+    hasUserSpoken = true;
+    if (initialWelcomeMessage) {
+        window.speechSynthesis.cancel();
+    }
     const transcript = event.results[0][0].transcript;
     processVoiceCommand(transcript);
 };
@@ -386,7 +490,9 @@ recognition.onend = () => {
     }
 };
 
+recognition.onstart = () => {
+    hasUserSpoken = false;
+};
+
 // Initial instructions
-setTimeout(() => {
-    speak("Welcome to our accessible form system. Say 'sign up' to register or 'sign in' to login.");
-}, 1000);
+setTimeout(playInitialInstructions, 1000);

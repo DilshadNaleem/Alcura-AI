@@ -65,4 +65,10 @@ public class HomeController
     {
         return "/Customer/Update_Face";
     }
+
+    @GetMapping("/Customer/Model")
+    public String model()
+    {
+        return "/Customer/LlamaModel";
+    }
 }

@@ -1,0 +1,391 @@
+<!-- src/main/resources/static/upload.jsp -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <meta http-equiv="X-ua-compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Side Menu</title>
+    <link rel="stylesheet" href="/Customer/style.css">
+    <!---Boxicon css-->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+
+        section.home {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+            /* Chat Container Styles */
+            #chatContainer {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                margin: auto;
+                max-width: 800px;
+                width:100%;
+                margin-top: 0;
+                width:100%;
+            }
+
+            #promptInput {
+                padding: 12px;
+                font-size: 16px;
+                width: 100%;
+                box-sizing: border-box;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                background: var(--primary-color-light);
+            }
+
+            #submitBtn {
+                padding: 12px 20px;
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                cursor: pointer;
+                font-size: 16px;
+                border-radius: 6px;
+                transition: var(--tran-03);
+            }
+
+            #submitBtn:hover {
+                background: #5d50e6;
+            }
+
+            #submitBtn:disabled {
+                background: #cccccc;
+                cursor: not-allowed;
+            }
+
+            #responseArea {
+                min-height: 200px;
+                max-height: 400px;
+                overflow-y: auto;
+                border: 1px solid #ddd;
+                padding: 15px;
+                white-space: pre-wrap;
+                background: var(--primary-color-light);
+                border-radius: 4px;
+                color: var(--text-color);
+                line-height: 1.5;
+                word-wrap: break-word;
+            }
+
+
+            /* Custom scrollbar for response area */
+            #responseArea::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            #responseArea::-webkit-scrollbar-track {
+                background: var(--primary-color-light);
+                border-radius: 4px;
+            }
+
+            #responseArea::-webkit-scrollbar-thumb {
+                background: var(--primary-color);
+                border-radius: 4px;
+            }
+
+            #responseArea::-webkit-scrollbar-thumb:hover {
+                background: #5d50e6;
+            }
+
+            /* Dark mode scrollbar adjustments */
+            body.dark #responseArea::-webkit-scrollbar-track {
+                background: #3A3B3C;
+            }
+
+            body.dark #responseArea::-webkit-scrollbar-thumb {
+                background: #6c63ff;
+            }
+
+            body.dark #responseArea::-webkit-scrollbar-thumb:hover {
+                background: #5d50e6;
+            }
+
+            #responseControls {
+                display: flex;
+                gap: 10px;
+
+            }
+
+            #speakBtn, #stopSpeakBtn {
+                padding: 8px 12px;
+                background: var(--primary-color-light);
+                border: 1px solid var(--primary-color);
+                border-radius: 4px;
+                cursor: pointer;
+                color: var(--text-color);
+                transition: var(--tran-03);
+            }
+
+            #speakBtn:hover, #stopSpeakBtn:hover {
+                background: var(--primary-color);
+                color: white;
+            }
+
+            #speakBtn:disabled, #stopSpeakBtn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                background: var(--primary-color-light);
+                color: var(--text-color);
+            }
+
+            /* Dark Mode Adjustments */
+            body.dark #chatContainer {
+                background: var(--sidebar-color);
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+            }
+
+            body.dark #promptInput {
+                background: #3A3B3C;
+                color: white;
+                border-color: #555;
+            }
+
+            body.dark #responseArea {
+                background: #3A3B3C;
+                border-color: #555;
+                color: white;
+            }
+
+                 body.dark #submitBtn {
+                background: #6c63ff;
+                color: white;
+            }
+
+            body.dark #submitBtn:hover {
+                background: #5d50e6;
+            }
+
+            body.dark #speakBtn,
+            body.dark #stopSpeakBtn {
+                background: #2f2f2f;
+                border-color: #6c63ff;
+                color: white;
+            }
+
+            body.dark #speakBtn:hover,
+            body.dark #stopSpeakBtn:hover {
+                background: #6c63ff;
+                color: white;
+            }
+
+            body.dark #speakBtn:disabled,
+            body.dark #stopSpeakBtn:disabled {
+                background: #444;
+                color: #aaa;
+                border-color: #555;
+            }
+
+                .home {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .home .text {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            width: 100%;
+            text-align: left;
+            color: var(--text-color);
+        }
+    </style>
+
+</head>
+<body>
+<nav class="sidebar close">
+    <header>
+        <div class="image-text">
+                    <span class="image">
+                        <img src="log.png" alt="">
+                    </span>
+
+            <div class="text header-text">
+                <span class="name">Alucra</span>
+                <span class="profession">Web developer</span>
+            </div>
+        </div>
+
+        <i class='bx bx-chevron-right toggle'></i>
+    </header>
+
+    <div class="menu-bar">
+        <div class="menu">
+            <li class="search-box">
+                <i class='bx bx-search icon' ></i>
+                <input type="search" placeholder="Search" id="searchBox">
+            </li>
+            <ul class="menu-links">
+                <li class="nav-link">
+                    <a href="/Customer/editProfile">
+                        <i class='bx bx-home-alt icon' ></i>
+                        <span class="text nav-text">Edit profile</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="/Customer/sample">
+                        <i class='bx bx-home-alt icon' ></i>
+                        <span class="text nav-text">sample</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="/Customer/Model/Send">
+                        <i class='bx bx-home-alt icon' ></i>
+                        <span class="text nav-text">Model</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="#">
+                        <i class='bx bx-home-alt icon' ></i>
+                        <span class="text nav-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="#">
+                        <i class='bx bx-home-alt icon' ></i>
+                        <span class="text nav-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="#">
+                        <i class='bx bx-home-alt icon' ></i>
+                        <span class="text nav-text">Dashboard</span>
+                    </a>
+                </li>
+
+
+            </ul>
+        </div>
+        <div class="bottom-content">
+            <li class="">
+                <a href="#">
+                    <i class='bx bx-log-out icon' ></i>
+                    <span class="text nav-text">Logout</span>
+                </a>
+            </li>
+
+            <li class="mode">
+                <div class="moon-sun">
+                    <i class='bx bx-moon icon moon' ></i>
+                    <i class='bx bx-sun icon sun' ></i>
+                </div>
+
+                <span class="mode-text text">Dark Mode</span>
+                <div class="toggle-switch">
+                    <span class="switch"></span>
+                </div>
+            </li>
+        </div>
+    </div>
+</nav>
+
+<section class="home">
+    <div class="text">Dashboard</div>
+    <div id="chatContainer">
+        <h1>OLLaMA Chat</h1>
+        <input type="text" id="promptInput" placeholder="Type your message..." autocomplete="off">
+        <button id="submitBtn">Send</button>
+        <div id="responseControls">
+            <button id="speakBtn" disabled>🔊 Speak</button>
+            <button id="stopSpeakBtn" disabled>⏹ Stop</button>
+        </div>
+        <div id="responseArea"></div>
+    </div>
+</section>
+<script src="/Customer/script.js"></script>>
+<script>
+    const promptInput = document.getElementById('promptInput');
+    const responseArea = document.getElementById('responseArea');
+    const submitBtn = document.getElementById('submitBtn');
+    const speakBtn = document.getElementById('speakBtn');
+    const stopSpeakBtn = document.getElementById('stopSpeakBtn');
+
+    let eventSource = null;
+    let isStreaming = false;
+    let tokenBuffer = "";
+    let speechSynthesis = window.speechSynthesis;
+    let currentUtterance = null;
+
+    function speakText() {
+        if (speechSynthesis.speaking) {
+            speechSynthesis.cancel();
+        }
+
+        const text = responseArea.textContent;
+        if (!text) return;
+
+        currentUtterance = new SpeechSynthesisUtterance(text);
+        currentUtterance.onend = () => {
+            speakBtn.disabled = false;
+            stopSpeakBtn.disabled = true;
+        };
+
+        speechSynthesis.speak(currentUtterance);
+        speakBtn.disabled = true;
+        stopSpeakBtn.disabled = false;
+    }
+
+
+
+    function stopSpeaking() {
+        if (speechSynthesis.speaking) {
+            speechSynthesis.cancel();
+        }
+        speakBtn.disabled = false;
+        stopSpeakBtn.disabled = true;
+    }
+
+    speakBtn.addEventListener('click', speakText);
+    stopSpeakBtn.addEventListener('click', stopSpeaking);
+
+    function startStream() {
+        const prompt = promptInput.value.trim();
+        if (!prompt || isStreaming) return;
+
+        responseArea.textContent = '';
+        tokenBuffer = '';
+        isStreaming = true;
+        submitBtn.disabled = true;
+        speakBtn.disabled = true;
+        stopSpeakBtn.disabled = true;
+
+        eventSource = new EventSource(`/api/chat/stream?prompt=${encodeURIComponent(prompt)}`);
+
+        eventSource.onmessage = (event) => {
+            const currentToken = event.data;
+
+            if (tokenBuffer) {
+                tokenBuffer += " " + currentToken;
+            } else {
+                tokenBuffer = currentToken;
+            }
+
+            responseArea.textContent = tokenBuffer;
+        };
+
+        eventSource.onerror = () => {
+            isStreaming = false;
+            submitBtn.disabled = false;
+            speakBtn.disabled = false;
+            eventSource.close();
+        };
+    }
+
+    submitBtn.addEventListener('click', startStream);
+    promptInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') startStream();
+    });
+</script>
+</body>
+</html>

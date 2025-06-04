@@ -2,9 +2,140 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Face</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        video, canvas {
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid #ddd;
+            margin: 10px 0;
+        }
+        .loading {
+            display: none;
+            color: #007bff;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        .actions {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #retry {
+            display: none;
+            background-color: #6c757d;
+        }
+    </style>
 </head>
 <body>
+<div class="container">
+    <h1>Update your Face</h1>
+    <p>Look directly at the camera and click "Update"</p>
 
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas"></canvas>
+    <div class="loading" id="loading">Processing your face...</div>
+
+    <div class="actions">
+        <button id="update">Update</button>
+        <button id="retry">Retry</button>
+        <button onclick="window.location.href='/Customer/Dashboard'">Cancel</button>
+    </div>
+</div>
+
+<script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const updateBtn = document.getElementById('update');
+    const retryBtn = document.getElementById('retry');
+    const loading = document.getElementById('loading');
+
+    async function initCamera() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'user' },
+                audio: false
+            });
+            video.srcObject = stream;
+        } catch (error) {
+            console.error("Camera Error:", error);
+            alert("Camera Access Error: " + error.message);
+        }
+    }
+
+    async function captureAndUpdate() {
+        try {
+            loading.style.display = 'block';
+            updateBtn.style.display = 'none';
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const blob = await new Promise(resolve => {
+                canvas.toBlob(resolve, 'image/jpeg', 0.95);
+            });
+
+            console.log("Image blob size:", blob.size);
+
+            const formData = new FormData();
+            formData.append('faceImage', blob, 'face_update.jpg');
+
+            const response = await fetch('/Customer/UpdateFace', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+            console.log("Server Response:", result);
+
+            if (result.message) {
+                alert(result.message);
+            }
+
+            if (result.redirect) {
+                window.location.href = result.redirect;
+            }
+        } catch (err) {
+            console.error('Error:', err);
+            alert('Error: ' + err.message);
+            retryBtn.style.display = 'block';
+        } finally {
+            loading.style.display = 'none';
+        }
+    }
+
+    updateBtn.addEventListener('click', captureAndUpdate);
+    retryBtn.addEventListener('click', () => {
+        video.style.display = 'block';
+        canvas.style.display = 'none';
+        updateBtn.style.display = 'block';
+        retryBtn.style.display = 'none';
+    });
+
+    initCamera();
+</script>
 </body>
 </html>
