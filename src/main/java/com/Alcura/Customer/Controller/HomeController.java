@@ -71,4 +71,10 @@ public class HomeController
     {
         return "/Customer/LlamaModel";
     }
+
+    @GetMapping("/Customer/MedicineClassifier")
+    public String PillModel()
+    {
+        return "/Customer/MedicineClassifier";
+    }
 }
