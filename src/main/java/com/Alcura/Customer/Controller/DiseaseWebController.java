@@ -29,7 +29,7 @@ public class DiseaseWebController
         this.diseaseClassifierAPIController = diseaseClassifierAPIController;
     }
 
-    @PostMapping("DiseaseClassifier")
+    @PostMapping("/DiseaseClassifier")
     public String classify(@RequestParam("file")MultipartFile file, RedirectAttributes redirectAttributes)
     {
         try
