@@ -1,15 +1,16 @@
 package com.Alcura.Customer.DTO;
 
-public class ClassificationResult
+public class DiseaseClassificationResult
 {
     private String predictedClass;
     private double confidence;
-    private DrugInfo drugInfo;
+    private DiseaseInfo diseaseInfo;
 
-    public ClassificationResult(String predictedClass, double confidence, DrugInfo drugInfo) {
+    public DiseaseClassificationResult(String predictedClass, double confidence, DiseaseInfo diseaseInfo)
+    {
         this.predictedClass = predictedClass;
         this.confidence = confidence;
-        this.drugInfo = drugInfo;
+        this.diseaseInfo = diseaseInfo;
     }
 
     public String getPredictedClass() {
@@ -28,11 +29,11 @@ public class ClassificationResult
         this.confidence = confidence;
     }
 
-    public DrugInfo getDrugInfo() {
-        return drugInfo;
+    public DiseaseInfo getDiseaseInfo() {
+        return diseaseInfo;
     }
 
-    public void setDrugInfo(DrugInfo drugInfo) {
-        this.drugInfo = drugInfo;
+    public void setDiseaseInfo(DiseaseInfo diseaseInfo) {
+        this.diseaseInfo = diseaseInfo;
     }
 }

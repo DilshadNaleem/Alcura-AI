@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Disease Classifier</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Upload Disease Image</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/Customer/DiseaseClassifier}" method="post" enctype="multipart/form-data">
+                            <div class="mb-3 text-center">
+                                <img th:if="${imagePreview != null}" th:src="${imagePreview}"
+                                class="preview-image img-thumbnail" alt="Preview">
+
+                                <img th:unless="${imagePreview != null}" src="placeholder.jpg" alt="Preview"
+                                class="preview-image img-thumbnail">
+                            </div>
+
+                            <div class="mb-3">
+                                <input type="file" name="file" class="form-control" accept="image/*" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Classify Disease</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+           <div class="col-md-6">
+               <div class="card">
+                   <script th:if="${result != null}">
+                       alert('Classification Results');
+                   </script>
+
+                   <div class="card-body">
+                       <div th:if="${result != null}">
+                           <p class="result-text" th:text="'Predicted Disease: ' + ${result.predictedClass}"></p>
+                           <p class="text-muted" th:text="'Confidence: ' + ${#numbers.formatDecimal(result.confidence, 1,2)} + '%'"></p>
+
+                           <ul class="nav nav-tabs" id="infoTabs" role="tablist">
+                               <li class="nav-item" role="presentation">
+                                   <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#details">Details</button>
+                               </li>
+
+                               <li class="nav-item" role="presentation">
+                                   <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dosage">Dosage</button>
+                               </li>
+
+                           </ul>
+
+                           <div class="tab-content p-3 border border-top-0 rounded-bottom">
+                               <div class="tab-pane fade show active" id="details">
+                                   <p th:text="'Disease ' + ${result.diseaseInfo.disease}"></p>
+                                   <p th:text="'Description ' + ${result.diseaseInfo.description}"></p>
+                                   <p th:text="'Symptoms ' + ${result.diseaseInfo.symptoms}"></p>
+                                   <p th:text="'Cause ' + ${result.diseaseInfo.cause}"></p>
+                                   <p th:text="'Side Effects ' + ${result.diseaseInfo.sideeffects}"></p>
+                                   <p th:text="'Treatment ' + ${result.diseaseInfo.treatment}"></p>
+                                   <p th:text="'Medications ' + ${result.diseaseInfo.medications}"></p>
+                                   <p th:text="'Prevention ' + ${result.diseaseInfo.prevention}"></p>
+                                   <p th:text="'Severity ' + ${result.diseaseInfo.severity}"></p>
+                                   <p th:text="'Risk Factors ' + ${result.diseaseInfo.riskFactors}"></p>
+                                   <p th:text="'Contagious ' + ${result.diseaseInfo.contagious}"></p>
+                                   <p th:text="'Common Age Group ' + ${result.diseaseInfo.commonAgeGroup}"></p>
+                                   <p th:text="'Duration ' + ${result.diseaseInfo.duration}"></p>
+                                   <p th:text="'First Aid Advice ' + ${result.diseaseInfo.firstAidAdvice}"></p>
+                                   <p th:text="'Source of Information ' + ${result.diseaseInfo.sourceOfInformation}"></p>
+
+                               </div>
+
+                           </div>
+                       </div>
+
+                       <div th:unless = "${result != null}">
+                           <p class="lead">NO Disease Classified Yet</p>
+                       </div>
+                   </div>
+               </div>
+           </div>
+        </div>
+
+        <div class="status-bar mt-3 p-2 bf-light rounded">
+            <span th:text="${status != null} ? ${status} : 'Ready'"></span>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

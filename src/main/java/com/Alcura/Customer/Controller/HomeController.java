@@ -77,4 +77,10 @@ public class HomeController
     {
         return "/Customer/MedicineClassifier";
     }
+
+    @GetMapping("/Customer/DiseaseClassifier")
+    public String Diseae()
+    {
+        return "/Customer/DiseaseClassifier";
+    }
 }
