@@ -11,4 +11,10 @@ public class AdminHomeController {
     {
         return "/Admin/Admin_Signing";
     }
+
+    @GetMapping("/Admin/Dashboard")
+    public String AdminDashboard()
+    {
+        return "/Admin/AdminDashboard";
+    }
 }
