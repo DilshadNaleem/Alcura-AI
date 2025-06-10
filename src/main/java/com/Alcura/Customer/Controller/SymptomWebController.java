@@ -41,11 +41,11 @@ public class SymptomWebController {
                 model.addAttribute("originalMessage", message);
 
                 // Forward to Thymeleaf template
-                return "/Customer/DiseaseSymptom"; // corresponds to templates/diseaseResults.html
+                return "/Customer/DiseaseSymptom";
 
             } else {
                 model.addAttribute("error", "No matching disease found or error occurred.");
-                return "errorPage"; // fallback error page
+                return "errorPage";
             }
         } catch (Exception e) {
             e.printStackTrace();

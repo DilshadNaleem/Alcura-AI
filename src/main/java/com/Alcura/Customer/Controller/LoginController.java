@@ -48,14 +48,14 @@ public class LoginController
                 out.println("var msg = new SpeechSynthesisUtterance('" + escapeJavaScript(message) + "');");
                 out.println("window.speechSynthesis.speak(msg);");
                 out.println("alert('" + escapeJavaScript(message) + "');");
-                out.println("window.location.href = '/Customer/Signing.html';");
+                out.println("window.location.href = '/Customer/Signing';");
             } else {
                 // Failed login
                 String message = "Invalid email or password. Please try again.";
                 out.println("var msg = new SpeechSynthesisUtterance('" + message + "');");
                 out.println("window.speechSynthesis.speak(msg);");
                 out.println("alert('" + message + "');");
-                out.println("window.location.href = '/Customer/Signing.html';");
+                out.println("window.location.href = '/Customer/Signing';");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,7 +63,7 @@ public class LoginController
             out.println("var msg = new SpeechSynthesisUtterance('" + errorMessage + "');");
             out.println("window.speechSynthesis.speak(msg);");
             out.println("alert('" + errorMessage + "');");
-            out.println("window.location.href = '/Customer/Signing.html';");
+            out.println("window.location.href = '/Customer/Signing';");
         } finally {
             out.println("</script>");
             out.close();

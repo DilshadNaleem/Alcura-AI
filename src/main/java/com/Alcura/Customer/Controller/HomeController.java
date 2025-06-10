@@ -10,7 +10,7 @@ public class HomeController
     @GetMapping("/")
     public String home()
     {
-        return "redirect:/Customer/Signing.html";
+        return "/Customer/Signing";
     }
 
     @GetMapping("/Customer/verification")
@@ -89,4 +89,17 @@ public class HomeController
     {
         return "/Customer/DiseaseSymptom";
     }
+
+    @GetMapping("/Customer/MakeAppoinment")
+    public String Appoinment()
+    {
+        return "/Customer/Appointment_Booking";
+    }
+
+    @GetMapping("/Customer/Signing")
+    public String Signing()
+        {
+            return "/Customer/Signing";
+        }
+
 }
