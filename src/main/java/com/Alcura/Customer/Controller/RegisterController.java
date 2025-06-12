@@ -39,18 +39,18 @@ public class RegisterController
 
         if(result.getStatusCode() == HttpStatus.CREATED)
         {
-            out.println("alert('Registration Success Please Verify')");
+            out.println("alert('Registration Success Please Verify');");
             out.println("window.location.href = '/Customer/verification';");
         }
         else if (result.getStatusCode() == HttpStatus.BAD_REQUEST)
         {
             out.println("alert('Email Already Exists!');");
-            out.println("window.location.href = '/Customer/Signing.html';");
+            out.println("window.location.href = '/Customer/Signing';");
         }
         else
         {
             out.println("alert('" + result.getBody() + "');");
-            out.println("window.location.href = '/Customer/Signing.html';");
+            out.println("window.location.href = '/Customer/Signing';");
         }
 
         out.println("</script>");
