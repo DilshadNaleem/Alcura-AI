@@ -18,4 +18,9 @@ public class AdminHomeController {
         return "/Admin/AdminDashboard";
     }
 
+    @GetMapping("/Admin/verification")
+    public String verification()
+    {
+        return "/Admin/Admin_verification";
+    }
 }

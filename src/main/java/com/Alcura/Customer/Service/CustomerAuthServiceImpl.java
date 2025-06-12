@@ -98,6 +98,7 @@ public class CustomerAuthServiceImpl implements CustomerAuthService
             String otp = otpService.generateOtp();
             otpService.storeOtp(session,customer.getEmail(),otp);
 
+
             try
             {
                 emailService.sendVerificationEmail(customer.getEmail(),otp);

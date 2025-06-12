@@ -64,7 +64,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         try {
 
 
-            Admin existingAdmin = adminRepository.findByEmail(request.getEmail().toLowerCase().trim());
+            Admin existingAdmin = adminRepository.findByEmailAndStatus(request.getEmail().toLowerCase().trim(),1);
             if (existingAdmin != null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
             }

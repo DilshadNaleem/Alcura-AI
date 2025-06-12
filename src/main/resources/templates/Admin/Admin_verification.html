@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <title>Email Verification</title>
+    <style>
+        body {
+            background-color: #f4f7fa;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .navbar-laravel {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .navbar-laravel .navbar-brand {
+            color: white;
+        }
+
+        .otp-container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 350px;
+            margin: 20px auto;
+        }
+
+        .otp-input {
+            width: 45px;
+            height: 50px;
+            font-size: 24px;
+            text-align: center;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .card {
+            margin-top: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .login-form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Message styles */
+        .success-message {
+            color: green;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        /* Add animation for messages */
+        .message-animation {
+            animation: fadeIn 0.5s, fadeOut 0.5s 4.5s;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light navbar-laravel">
+    <div class="container">
+        <a class="navbar-brand" href="#">Email Verification</a>
+    </div>
+</nav>
+
+<main class="login-form">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">Email Verification</div>
+                    <div class="card-body">
+                        <h4 class="text-center mb-4">We've sent a 6-digit OTP to your email address</h4>
+                        <p class="text-center mb-4">Please enter it below to verify your account.</p>
+
+                        <form id="otpForm" th:action="@{/Admin/verifyOtp}" method="post">
+                            <div class="form-group row">
+                                <div class="col-md-12 otp-container">
+                                    <input type="text" id="otp-1" maxlength="1" class="otp-input" required autofocus>
+                                    <input type="text" id="otp-2" maxlength="1" class="otp-input" required>
+                                    <input type="text" id="otp-3" maxlength="1" class="otp-input" required>
+                                    <input type="text" id="otp-4" maxlength="1" class="otp-input" required>
+                                    <input type="text" id="otp-5" maxlength="1" class="otp-input" required>
+                                    <input type="text" id="otp-6" maxlength="1" class="otp-input" required>
+                                </div>
+                            </div>
+
+                            <!-- Hidden field to store combined OTP -->
+                            <input type="hidden" id="otp" name="otp">
+
+                            <div class="col-md-6 offset-md-3">
+                                <button type="submit" class="btn btn-primary btn-block">Verify Account</button>
+                            </div>
+
+                            <div th:if="${error}" class="error-message message-animation" th:text="${error}"></div>
+                            <div th:if="${success}" class="success-message message-animation" th:text="${success}"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+<script>
+    // OTP input handling
+    const otpInputs = document.querySelectorAll('.otp-input');
+    const hiddenOtpField = document.getElementById('otp');
+
+    otpInputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            if (input.value.length === 1 && index < otpInputs.length - 1) {
+                otpInputs[index + 1].focus();
+            }
+            updateHiddenOtpField();
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                otpInputs[index - 1].focus();
+            }
+        });
+    });
+
+    function updateHiddenOtpField() {
+        const otpCode = Array.from(otpInputs).map(input => input.value).join('');
+        hiddenOtpField.value = otpCode;
+    }
+
+    // Auto-remove messages after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            const messages = document.querySelectorAll('.message-animation');
+            messages.forEach(msg => {
+                if (msg) msg.remove();
+            });
+        }, 5000);
+    });
+</script>
+</body>
+</html>
