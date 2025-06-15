@@ -1,8 +1,9 @@
-package com.Alcura.Admin.Service.Interfaces;
+package com.Alcura.Admin.Service;
 
 import com.Alcura.Admin.DTO.AdminLoginRequest;
 import com.Alcura.Admin.Model.Admin;
 import com.Alcura.Admin.Repository.AdminRepository;
+import com.Alcura.Admin.Service.Interfaces.AdminLoginAuth;
 import com.Alcura.Customer.Service.hashPassword;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpHeaders;

@@ -12,12 +12,6 @@ public class AdminHomeController {
         return "/Admin/Admin_Signing";
     }
 
-    @GetMapping("/Admin/Dashboard")
-    public String AdminDashboard()
-    {
-        return "/Admin/AdminDashboard";
-    }
-
     @GetMapping("/Admin/verification")
     public String verification()
     {
@@ -34,5 +28,17 @@ public class AdminHomeController {
     public String resetPassword()
     {
         return "/Admin/AdminResetPassword";
+    }
+
+    @GetMapping("/Admin/SOS")
+    public String sosview()
+    {
+        return "/Admin/SOSView";
+    }
+
+    @GetMapping("/Admin/Emergency")
+    public String emergency()
+    {
+        return "/Admin/Emergencies";
     }
 }

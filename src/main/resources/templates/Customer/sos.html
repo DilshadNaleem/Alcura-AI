@@ -108,10 +108,10 @@
 </nav>
 
 <section class="home">
-<h1>Health SOS Emergency</h1>
-<button id="sosButton">SEND EMERGENCY SOS</button>
-<div id="status">Status: Ready to send emergency alert</div>
-<div id="hospitalInfo"></div>
+    <h1>Health SOS Emergency</h1>
+    <button id="sosButton">SEND EMERGENCY SOS</button>
+    <div id="status">Status: Ready to send emergency alert</div>
+    <div id="hospitalInfo"></div>
 </section>
 <script>
     const sosButton = document.getElementById('sosButton');
@@ -120,38 +120,46 @@
     let trackingId = null;
 
     function getLocation() {
-        return new Promise((resolve, reject) => {
-            statusDiv.textContent = "Status: Accessing your location...";
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    position => {
-                        statusDiv.textContent = "Status: Location acquired!";
-                        resolve(position.coords);
-                    },
-                    error => {
-                        let errorMessage = "Error getting location: ";
-                        switch(error.code) {
-                            case error.PERMISSION_DENIED:
-                                errorMessage += "Location permission denied";
-                                break;
-                            case error.POSITION_UNAVAILABLE:
-                                errorMessage += "Location unavailable";
-                                break;
-                            case error.TIMEOUT:
-                                errorMessage += "Location request timed out";
-                                break;
-                            default:
-                                errorMessage += "Unknown error";
-                        }
-                        reject(errorMessage);
-                    },
-                    { timeout: 10000 }
-                );
-            } else {
-                reject("Geolocation not supported by your browser");
-            }
-        });
-    }
+    return new Promise((resolve, reject) => {
+        statusDiv.textContent = "Status: Accessing your location...";
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    statusDiv.textContent = "Status: Location acquired!";
+                    resolve(position.coords);
+                },
+                error => {
+                    let errorMessage = "Error getting location: ";
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage += "Location permission denied. Please enable location access in your browser settings.";
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage += "Location unavailable. Check your network/GPS connection.";
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage += "Location request timed out. Ensure you're in an area with good GPS/network coverage.";
+                            break;
+                        default:
+                            errorMessage += "Unknown error";
+                    }
+                    statusDiv.innerHTML = errorMessage +
+                        '<br><button onclick="window.location.reload()">Try Again</button>';
+                    reject(errorMessage);
+                },
+                {
+                    timeout: 15000, // Increase timeout to 15 seconds
+                    maximumAge: 0, // Don't use cached position
+                    enableHighAccuracy: true // Request better accuracy
+                }
+            );
+        } else {
+            const msg = "Geolocation not supported by your browser";
+            statusDiv.textContent = msg;
+            reject(msg);
+        }
+    });
+}
 
     sosButton.addEventListener('click', async () => {
         try {

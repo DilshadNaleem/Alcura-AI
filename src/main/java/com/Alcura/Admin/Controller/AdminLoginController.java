@@ -1,7 +1,7 @@
 package com.Alcura.Admin.Controller;
 
 import com.Alcura.Admin.DTO.AdminLoginRequest;
-import com.Alcura.Admin.Service.Interfaces.AdminLoginAuthImpl;
+import com.Alcura.Admin.Service.AdminLoginAuthImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;

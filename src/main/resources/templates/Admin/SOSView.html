@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Emergency SOS Requests</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        .location-info {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .location-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .map-container {
+            margin-bottom: 20px;
+        }
+        .badge {
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <h1 class="mb-4">Emergency SOS Requests</h1>
+
+    <div class="mb-3">
+        <a th:href="@{/Admin/SOSView}" class="btn btn-outline-primary">All Requests</a>
+        <a th:href="@{/Admin/SOSView/active}" class="btn btn-outline-success">Active</a>
+        <a th:href="@{/Admin/SOSView/completed}" class="btn btn-outline-secondary">Completed</a>
+        <a th:href="@{/Admin/SOSView/cancelled}" class="btn btn-outline-danger">Cancelled</a>
+    </div>
+
+    <div th:if="${statusFilter != null}" class="alert alert-info mb-3">
+        Currently showing: <span th:text="${statusFilter}"></span> requests
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Tracking ID</th>
+            <th>Locations</th>
+            <th>Hospital</th>
+            <th>Request Time</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${requests != null and !requests.empty}" th:each="request : ${requests}">
+            <td th:text="${request.trackingId}"></td>
+            <td>
+                <div class="location-info">
+                    <div class="location-title">Patient Location:</div>
+                    (<span th:text="${request.latitude}"></span>,
+                    <span th:text="${request.longitude}"></span>)
+                </div>
+                <div th:if="${request.hospitalLatitude != null}" class="location-info">
+                    <div class="location-title">Hospital Location:</div>
+                    (<span th:text="${request.hospitalLatitude}"></span>,
+                    <span th:text="${request.hospitalLongitude}"></span>)
+                </div>
+            </td>
+            <td>
+                <span th:if="${request.hospitalName != null}" th:text="${request.hospitalName}"></span>
+                <span th:if="${request.hospitalName == null}">-</span>
+            </td>
+            <td th:text="${#temporals.format(request.requestTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td>
+                <span th:switch="${request.status}">
+                    <span th:case="'ACTIVE'" class="badge bg-success">ACTIVE</span>
+                    <span th:case="'COMPLETED'" class="badge bg-secondary">COMPLETED</span>
+                    <span th:case="'CANCELLED'" class="badge bg-danger">CANCELLED</span>
+                </span>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-info show-map-btn"
+                        th:attr="data-patient-lat=${request.latitude},
+                                 data-patient-lng=${request.longitude},
+                                 data-hospital-lat=${request.hospitalLatitude},
+                                 data-hospital-lng=${request.hospitalLongitude}">
+                    Show Route
+                </button>
+            </td>
+        </tr>
+        <tr th:if="${requests == null or requests.empty}">
+            <td colspan="6" class="text-center">No requests found</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="map-container card">
+        <div class="card-header">
+            <h5 class="mb-0">Route Map</h5>
+        </div>
+        <div class="card-body">
+            <div id="map"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function() {
+        const orsApiKey = /*[[${orsApiKey}]]*/ '';
+        let map = L.map('map').setView([0, 0], 2);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        document.querySelectorAll('.show-map-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const patientLat = parseFloat(this.getAttribute('data-patient-lat'));
+                const patientLng = parseFloat(this.getAttribute('data-patient-lng'));
+                const hospitalLat = parseFloat(this.getAttribute('data-hospital-lat'));
+                const hospitalLng = parseFloat(this.getAttribute('data-hospital-lng'));
+
+                if (isNaN(patientLat)) {
+                    alert('Patient location data is missing');
+                    return;
+                }
+
+                // Clear previous markers and layers
+                map.eachLayer(layer => {
+                    if (layer instanceof L.Marker || layer instanceof L.Polyline) {
+                        map.removeLayer(layer);
+                    }
+                });
+
+                // Add patient marker
+                const patientMarker = L.marker([patientLat, patientLng]).addTo(map)
+                    .bindPopup('Patient Location');
+
+                if (!isNaN(hospitalLat)) {
+                    // Add hospital marker
+                    const hospitalMarker = L.marker([hospitalLat, hospitalLng]).addTo(map)
+                        .bindPopup('Hospital Location');
+
+                    // Fit bounds to show both locations
+                    map.fitBounds([
+                        [patientLat, patientLng],
+                        [hospitalLat, hospitalLng]
+                    ], { padding: [50, 50] });
+
+                    // Get route from OpenRouteService
+                    fetchRoute(orsApiKey, patientLng, patientLat, hospitalLng, hospitalLat);
+                } else {
+                    // Just center on patient if no hospital
+                    map.setView([patientLat, patientLng], 13);
+                    patientMarker.openPopup();
+                }
+            });
+        });
+
+        function fetchRoute(apiKey, startLng, startLat, endLng, endLat) {
+            const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${startLng},${startLat}&end=${endLng},${endLat}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.features && data.features.length > 0) {
+                        const coordinates = data.features[0].geometry.coordinates;
+                        // Convert GeoJSON format (lng,lat) to Leaflet format (lat,lng)
+                        const latLngs = coordinates.map(coord => [coord[1], coord[0]]);
+
+                        // Draw the route on the map
+                        L.polyline(latLngs, {color: 'blue'}).addTo(map);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching route:', error);
+                    alert('Could not fetch route data. Please check console for details.');
+                });
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>
