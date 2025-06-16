@@ -1,6 +1,8 @@
 package com.Alcura.Admin.Controller;
 
+import com.Alcura.Admin.DTO.DiseaseInfo;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
@@ -41,4 +43,12 @@ public class AdminHomeController {
     {
         return "/Admin/Emergencies";
     }
+
+    @GetMapping("/Admin/AddDisease")
+    public String addDisease(Model model)
+    {
+        model.addAttribute("diseaseInfo", new DiseaseInfo());
+        return "/Admin/Add_Disease";
+    }
+
 }
