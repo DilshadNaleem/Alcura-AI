@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Disease Training</title>
+</head>
+<body>
+<h1>Disease Classification Model Training</h1>
+
+<div th:if="${success}">
+    <p th:text="${message}" style="color: green;"></p>
+
+    <!-- Display the training chart if available -->
+    <div th:if="${chartData}">
+        <h3>Training Results</h3>
+        <img th:src="${chartData}" alt="Training Chart"/>
+    </div>
+</div>
+
+<div th:unless="${success}">
+    <p th:text="${message}" style="color: red;"></p>
+</div>
+
+<form th:action="@{/start-training}" method="post">
+    <button type="submit">Start Training</button>
+</form>
+</body>
+</html>
