@@ -51,4 +51,10 @@ public class AdminHomeController {
         return "/Admin/Add_Disease";
     }
 
+    @GetMapping("/Admin/PredictDisease")
+    public String predictDisease()
+    {
+        return "/Admin/PredictDisease";
+    }
+
 }

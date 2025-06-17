@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.Alcura.Admin.Configuration.RestTemplateUtils.createRestTemplateWithNanSupport;
+
 @Controller
 @RequestMapping("/Admin")
 public class GetAllDiseaseDescriptionController {
@@ -29,23 +31,7 @@ public class GetAllDiseaseDescriptionController {
         this.restTemplate = createRestTemplateWithNanSupport();
     }
 
-    private RestTemplate createRestTemplateWithNanSupport() {
-        RestTemplate restTemplate = new RestTemplate();
 
-        // Create a custom ObjectMapper that allows NaN values
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enable(JsonReadFeature.ALLOW_NON_NUMERIC_NUMBERS.mappedFeature());
-
-        // Configure the message converter
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setObjectMapper(objectMapper);
-
-        // Replace the default converters with our custom one
-        restTemplate.getMessageConverters().removeIf(c -> c instanceof MappingJackson2HttpMessageConverter);
-        restTemplate.getMessageConverters().add(converter);
-
-        return restTemplate;
-    }
 
     @GetMapping("/diseases")
     public String getDiseaseDescription(Model model) {

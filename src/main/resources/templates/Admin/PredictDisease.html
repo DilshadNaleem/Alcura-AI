@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .result-section {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+        .disease-info {
+            margin-top: 20px;
+        }
+        .info-card {
+            margin-bottom: 15px;
+        }
+        .info-card h5 {
+            color: #0d6efd;
+        }
+        .not-available {
+            color: #6c757d;
+            font-style: italic;
+        }
+        .preview-container {
+    text-align: center;
+}
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Disease Prediction</h1>
+
+    <!-- Error Message -->
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <span th:text="${error}"></span>
+    </div>
+
+    <!-- Upload Form -->
+    <div class="card">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" action="/ImagePredict" id="predictionForm">
+                <div class="mb-3">
+                    <label for="image" class="form-label">Upload Image</label>
+                    <input class="form-control" type="file" id="image" name="image" accept="image/*" required>
+                </div>
+
+                <div class="preview-container mb-3">
+                    <img id="imagePreview" alt="Image Preview" class="img-thumbnail" style="display: none; max-width: 100%; max-height: 300px;">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Predict Disease</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Prediction Results -->
+    <div th:if="${predictedClass}" class="result-section">
+        <h3>Prediction Results</h3>
+
+        <div class="alert" th:classappend="${isRecognized} ? 'alert-success' : 'alert-warning'">
+            <strong>Predicted Disease:</strong> <span th:text="${predictedClass}"></span><br>
+            <strong>Confidence:</strong> <span th:text="${#numbers.formatDecimal(confidence, 1, 2)} + '%'"></span><br>
+            <span th:if="${!isRecognized}" class="text-warning">This disease is not in our recognized database.</span>
+        </div>
+
+        <!-- Disease Information -->
+        <div th:if="${description}" class="disease-info">
+            <h4>Disease Information</h4>
+
+            <div class="info-card">
+                <h5>Description</h5>
+                <p th:text="${description} ?: 'Not available'" th:class="${description} ? '' : 'not-available'"></p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <h5>Scientific Name</h5>
+                        <p th:text="${scientific_name} ?: 'Not available'" th:class="${scientific_name} ? '' : 'not-available'"></p>
+                    </div>
+
+                    <div class="info-card">
+                        <h5>Causes</h5>
+                        <p th:text="${cause} ?: 'Not available'" th:class="${cause} ? '' : 'not-available'"></p>
+                    </div>
+
+                    <div class="info-card">
+                        <h5>Symptoms</h5>
+                        <p th:text="${symptoms} ?: 'Not available'" th:class="${symptoms} ? '' : 'not-available'"></p>
+                    </div>
+
+                    <div class="info-card">
+                        <h5>Risk Factors</h5>
+                        <p th:text="${risk_factors} ?: 'Not available'" th:class="${risk_factors} ? '' : 'not-available'"></p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <h5>Severity</h5>
+                        <p th:text="${severity} ?: 'Not available'" th:class="${severity} ? '' : 'not-available'"></p>
+                    </div>
+
+                    <div class="info-card">
+                        <h5>Is Contagious?</h5>
+                        <p th:text="${is_contagious} ? 'Yes' : 'No'"></p>
+                    </div>
+
+                    <div class="info-card">
+                        <h5>Duration</h5>
+                        <p th:text="${duration} ?: 'Not available'" th:class="${duration} ? '' : 'not-available'"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h5>First Aid Advice</h5>
+                <p th:text="${firstAidAdvice} ?: 'Not available'" th:class="${firstAidAdvice} ? '' : 'not-available'"></p>
+            </div>
+
+            <div class="info-card">
+                <h5>Treatment</h5>
+                <p th:text="${treatment} ?: 'Not available'" th:class="${treatment} ? '' : 'not-available'"></p>
+            </div>
+
+            <div class="info-card">
+                <h5>Medications</h5>
+                <p th:text="${medications} ?: 'Not available'" th:class="${medications} ? '' : 'not-available'"></p>
+            </div>
+
+            <div class="info-card">
+                <h5>Side Effects</h5>
+                <p th:text="${side_effects} ?: 'Not available'" th:class="${side_effects} ? '' : 'not-available'"></p>
+            </div>
+
+            <div class="info-card">
+                <h5>Prevention</h5>
+                <p th:text="${prevention} ?: 'Not available'" th:class="${prevention} ? '' : 'not-available'"></p>
+            </div>
+
+            <div class="info-card">
+                <h5>Source of Information</h5>
+                <p th:text="${SourceOfInformation} ?: 'Not available'" th:class="${SourceOfInformation} ? '' : 'not-available'"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Image preview functionality
+    document.getElementById('image').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('imagePreview');
+
+        if (file && file.type.match('image.*')) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+
+    // Optional: Form submission handling
+    document.getElementById('predictionForm').addEventListener('submit', function() {
+        // You could add loading spinner here
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+    });
+</script>
+
+</body>
+</html>

@@ -127,6 +127,12 @@
                     onclick="confirmDelete(this.getAttribute('data-disease-name'))">
                 Delete Disease
             </button>
+
+        </form>
+
+        <form th:action = "@{/Admin/Edit}" >
+            <input type="hidden" name="diseaseName" th:value="${disease.disease}">
+            <button> Edit</button>
         </form>
     </div>
 </div>
