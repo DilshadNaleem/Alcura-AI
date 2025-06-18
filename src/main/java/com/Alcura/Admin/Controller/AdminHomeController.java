@@ -57,4 +57,9 @@ public class AdminHomeController {
         return "/Admin/DiseasePredictionModel/PredictDisease";
     }
 
+    @GetMapping("/Admin/DiseaseModelDashboard")
+    public String diseaseModel()
+    {
+        return "/Admin/DiseasePredictionModel/DiseaseModelDashboard";
+    }
 }
