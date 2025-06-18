@@ -1,12 +1,9 @@
-package com.Alcura.Admin.Controller;
+package com.Alcura.Admin.Controller.DiseasePredictionModel;
 
 import com.Alcura.Admin.DTO.DiseaseInfo;
-import com.fasterxml.jackson.core.json.JsonReadFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,7 +56,7 @@ public class GetAllDiseaseDescriptionController {
             model.addAttribute("error", "Failed to load disease data. Please try again later.");
         }
 
-        return "/Admin/ViewAllDiseases";
+        return "/Admin/DiseasePredictionModel/ViewAllDiseases";
     }
 
     @GetMapping("/diseases/search")
@@ -85,6 +82,6 @@ public class GetAllDiseaseDescriptionController {
             logger.error("Failed to fetch diseae {}", e.getMessage());
             model.addAttribute("error", e.getMessage());
         }
-        return "/Admin/ViewAllDiseases";
+        return "/Admin/DiseasePredictionModel/ViewAllDiseases";
     }
 }

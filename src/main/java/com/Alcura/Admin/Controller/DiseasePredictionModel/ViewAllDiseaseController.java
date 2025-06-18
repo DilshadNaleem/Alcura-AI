@@ -1,4 +1,4 @@
-package com.Alcura.Admin.Controller;
+package com.Alcura.Admin.Controller.DiseasePredictionModel;
 
 import com.Alcura.Admin.DTO.DiseaseListResponse;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class ViewAllDiseaseController {
             logger.error("Error fetching diseases", e);
             model.addAttribute("error", "Failed to fetch diseases: " + e.getMessage());
         }
-        return "Admin/Disease_List";
+        return "Admin/DiseasePredictionModel/Disease_List";
     }
 
 }

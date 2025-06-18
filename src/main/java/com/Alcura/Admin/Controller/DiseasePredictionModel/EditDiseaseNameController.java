@@ -1,4 +1,4 @@
-package com.Alcura.Admin.Controller;
+package com.Alcura.Admin.Controller.DiseasePredictionModel;
 
 import com.Alcura.Admin.DTO.DiseaseInfo;
 import org.slf4j.Logger;
@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/Admin")
 public class EditDiseaseNameController {
     private static final Logger logger = LoggerFactory.getLogger(EditDiseaseNameController.class);
     private final String API_URL = "http://localhost:5000/api/disease/";
-
     private final RestTemplate restTemplate;
 
     public EditDiseaseNameController(RestTemplate restTemplate) {
@@ -25,20 +27,19 @@ public class EditDiseaseNameController {
     @GetMapping("/Edit")
     public String showEditForm(@RequestParam String diseaseName, Model model) {
         try {
-            // Fetch the disease data
             ResponseEntity<DiseaseInfo> response = restTemplate.getForEntity(
                     API_URL + diseaseName,
                     DiseaseInfo.class);
 
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
                 model.addAttribute("disease", response.getBody());
-                model.addAttribute("oldName", diseaseName); // Store original name for reference
-                return "/Admin/edit-disease";
+                model.addAttribute("oldName", diseaseName);
+                return "/Admin/DiseasePredictionModel/edit-disease";
             }
         } catch (Exception e) {
             logger.error("Error fetching disease data for editing", e);
         }
-        return "redirect:/Admin/diseases?error=Disease+not+found";
+        return "redirect:/Admin/diseases?error=Disease+"+ diseaseName +"+not+found";
     }
 
     @PostMapping("/Edit")
@@ -48,14 +49,30 @@ public class EditDiseaseNameController {
             RedirectAttributes redirectAttributes) {
 
         try {
-            // Set headers
+            // Prepare the complete request body expected by Flask
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("new_name", updatedDisease.getDisease());
+            requestBody.put("Description", updatedDisease.getDescription());
+            requestBody.put("scientific_name", updatedDisease.getScientificName());
+            requestBody.put("symptoms", updatedDisease.getSymptoms());
+            requestBody.put("cause", updatedDisease.getCause());
+            requestBody.put("treatment", updatedDisease.getTreatment());
+            requestBody.put("medications", updatedDisease.getMedications());
+            requestBody.put("prevention", updatedDisease.getPrevention());
+            requestBody.put("is_contagious", updatedDisease.getContagious());
+            requestBody.put("severity", updatedDisease.getSeverity());
+            requestBody.put("common_age_group", updatedDisease.getCommonAgeGroup());
+            requestBody.put("duration", updatedDisease.getDuration());
+            requestBody.put("first_aid_advice", updatedDisease.getFirstAidAdvice());
+            requestBody.put("risk_factors", updatedDisease.getRiskFactors());
+            requestBody.put("side_effects", updatedDisease.getSideEffects());
+            requestBody.put("Source_of_information", updatedDisease.getSourceOfInformation());
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            // Create request entity
-            HttpEntity<DiseaseInfo> requestEntity = new HttpEntity<>(updatedDisease, headers);
+            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            // Make PUT request to update
             ResponseEntity<String> response = restTemplate.exchange(
                     API_URL + oldName,
                     HttpMethod.POST,
@@ -65,7 +82,7 @@ public class EditDiseaseNameController {
             if (response.getStatusCode().is2xxSuccessful()) {
                 redirectAttributes.addFlashAttribute("success", "Disease updated successfully!");
             } else {
-                redirectAttributes.addFlashAttribute("error", "Failed to update disease");
+                redirectAttributes.addFlashAttribute("error", "Failed to update disease: " + response.getBody());
             }
         } catch (Exception e) {
             logger.error("Error updating disease", e);

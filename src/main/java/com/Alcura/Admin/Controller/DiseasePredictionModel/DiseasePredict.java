@@ -1,4 +1,4 @@
-package com.Alcura.Admin.Controller;
+package com.Alcura.Admin.Controller.DiseasePredictionModel;
 
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -46,7 +46,7 @@ public class DiseasePredict {
             // Validate file
             if (multipartFile.isEmpty()) {
                 model.addAttribute("error", "Please select an image file");
-                return "/Admin/PredictDisease";
+                return "/Admin/DiseasePredictionModel/PredictDisease";
             }
 
             // Create temp file
@@ -102,11 +102,11 @@ public class DiseasePredict {
                 model.addAttribute("treatment", diseaseInfo.get("treatment"));
             }
 
-            return "/Admin/PredictDisease";
+            return "/Admin/DiseasePredictionModel/PredictDisease";
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("error", "Error processing image: " + e.getMessage());
-            return "/Admin/PredictDisease";
+            return "/Admin/DiseasePredictionModel/PredictDisease";
         }
     }
 }

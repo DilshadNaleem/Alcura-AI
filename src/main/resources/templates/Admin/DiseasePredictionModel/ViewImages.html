@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Images to Delete</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .image-container {
+            position: relative;
+            margin-bottom: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+        .image-container.selected img {
+            border-color: #007bff;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+        .success-message {
+            color: green;
+            margin-bottom: 15px;
+        }
+        .error-message {
+            color: red;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <h1 th:text="${not dataname?.empty} ? 'Images for ' + ${dataname[0]} : 'Disease Images'">Disease Images</h1>
+
+    <div th:if="${error}" class="alert alert-danger error-message" th:text="${error}"></div>
+    <div th:if="${success}" class="alert alert-success success-message" th:text="${success}"></div>
+
+    <form action="/Admin/deleteSelectedImages" method="post" id="deleteForm">
+        <div th:if="${data}" class="row">
+            <div class="col-md-4 image-container"
+                 th:each="imageObj, iterStat : ${data}"
+                 th:data-name="${imageObj.name}"
+                 th:data-dataset="${imageObj.dataset}"
+                 th:id="'img-container-' + ${iterStat.index}"
+                 onclick="toggleImageSelect(this)">
+                <img th:src="${imageObj.data}" alt="Disease Image" class="img-fluid">
+                <p><strong th:text="${imageObj.name}">Image Name</strong></p>
+                <p th:text="'Dataset: ' + ${imageObj.dataset}"></p>
+            </div>
+        </div>
+
+        <div th:unless="${data}" class="alert alert-info">No images found for this disease and dataset type.</div>
+
+        <!-- Hidden container to add dynamic hidden inputs -->
+        <div id="selectedInputs"></div>
+
+        <!-- Hidden input for dataset type -->
+        <input type="hidden" name="datasetType" th:value="${dataname[0]}" />
+        <input type="hidden" name="action" value="delete" />
+
+        <button type="submit" class="btn btn-danger mt-3">Delete Selected Images</button>
+        <a href="/Admin" class="btn btn-secondary mt-3 ms-2">Back to Admin</a>
+    </form>
+</div>
+
+<script>
+    function toggleImageSelect(container) {
+        const isSelected = container.classList.toggle("selected");
+        const name = container.dataset.name;
+        const dataset = container.dataset.dataset;
+        const id = name + '|' + dataset; // Only using name and dataset now
+
+        const form = document.getElementById("selectedInputs");
+
+        if (isSelected) {
+            // Add hidden input
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "selectedImages";
+            input.value = id;
+            input.dataset.imageId = id;
+            form.appendChild(input);
+        } else {
+            // Remove the corresponding hidden input
+            const inputs = form.querySelectorAll('input[data-image-id="' + id + '"]');
+            inputs.forEach(input => form.removeChild(input));
+        }
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

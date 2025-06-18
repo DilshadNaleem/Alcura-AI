@@ -48,13 +48,13 @@ public class AdminHomeController {
     public String addDisease(Model model)
     {
         model.addAttribute("diseaseInfo", new DiseaseInfo());
-        return "/Admin/Add_Disease";
+        return "/Admin/DiseasePredictionModel/Add_Disease";
     }
 
     @GetMapping("/Admin/PredictDisease")
     public String predictDisease()
     {
-        return "/Admin/PredictDisease";
+        return "/Admin/DiseasePredictionModel/PredictDisease";
     }
 
 }

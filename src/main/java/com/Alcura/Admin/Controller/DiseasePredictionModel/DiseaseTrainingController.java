@@ -1,4 +1,4 @@
-package com.Alcura.Admin.Controller;
+package com.Alcura.Admin.Controller.DiseasePredictionModel;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +22,7 @@ public class DiseaseTrainingController {
 
     @GetMapping("/train")
     public String showTrainingPage() {
-        return "/Admin/DiseaseTraining";
+        return "/Admin/DiseasePredictionModel/DiseaseTraining";
     }
 
     @PostMapping("/start-training")
@@ -80,6 +80,6 @@ public class DiseaseTrainingController {
             e.printStackTrace();
         }
 
-        return "/Admin/DiseaseTraining";
+        return "/Admin/DiseasePredictionModel/DiseaseTraining";
     }
 }

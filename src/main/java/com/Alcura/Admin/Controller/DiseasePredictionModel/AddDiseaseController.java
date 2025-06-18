@@ -1,4 +1,4 @@
-package com.Alcura.Admin.Controller;
+package com.Alcura.Admin.Controller.DiseasePredictionModel;
 
 import com.Alcura.Admin.DTO.DiseaseInfo;
 import org.slf4j.Logger;

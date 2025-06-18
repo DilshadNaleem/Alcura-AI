@@ -1,4 +1,4 @@
-package com.Alcura.Admin.Controller;
+package com.Alcura.Admin.Controller.DiseasePredictionModel;
 
 import com.Alcura.Admin.Configuration.RestTemplateUtils;
 import org.springframework.http.HttpMethod;
@@ -60,14 +60,14 @@ public class ViewAllDiseaseValidations {
 
             // Always add results to model, even if empty
             model.addAttribute("results", results);
-            return "Admin/ViewAllValidations";
+            return "Admin/DiseasePredictionModel/ViewAllValidations";
 
         } catch (Exception e) {
             e.printStackTrace();
             // Add empty list to model even in error case
             model.addAttribute("results", Collections.emptyList());
             model.addAttribute("error", "Error loading validation results: " + e.getMessage());
-            return "Admin/ViewAllValidations";
+            return "Admin/DiseasePredictionModel/ViewAllValidations";
         }
     }
 }
