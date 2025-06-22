@@ -1,6 +1,7 @@
 package com.Alcura.Admin.Controller.DiseasePredictionModel;
 
 import com.Alcura.Admin.DTO.DiseaseInfo;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -46,6 +47,7 @@ public class GetAllDiseaseDescriptionController {
                 List<DiseaseInfo> diseases = Arrays.asList(diseasesArray);
                 model.addAttribute("diseases", diseases);
                 logger.info("Successfully parsed {} diseases", diseases.size());
+
             } else {
                 logger.warn("Received empty or null response from API");
                 model.addAttribute("error", "No disease data available");
@@ -60,9 +62,11 @@ public class GetAllDiseaseDescriptionController {
     }
 
     @GetMapping("/diseases/search")
-    public String searchDisease (@RequestParam String diseaseName, Model model)
+    public String searchDisease (@RequestParam String diseaseName, Model model, HttpSession session)
     {
         final String apiUrl = "http://localhost:5000/api/disease/" + diseaseName;
+        session.setAttribute("diseaseName", diseaseName);
+
 
         try
         {

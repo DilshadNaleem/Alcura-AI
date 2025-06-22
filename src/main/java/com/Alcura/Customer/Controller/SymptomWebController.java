@@ -1,5 +1,6 @@
 package com.Alcura.Customer.Controller;
 
+import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ public class SymptomWebController {
             if (response.getStatusCode() == HttpStatus.OK) {
                 // Parse JSON response
                 ObjectMapper mapper = new ObjectMapper();
+                mapper.enable(JsonReadFeature.ALLOW_NON_NUMERIC_NUMBERS.mappedFeature());
                 Map<String, Object> responseMap = mapper.readValue(response.getBody(), Map.class);
 
                 // Extract the list of matches (each is a disease info block)

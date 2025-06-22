@@ -97,9 +97,13 @@ public class HomeController
     }
 
     @GetMapping("/Customer/Signing")
-    public String Signing()
-        {
-            return "/Customer/Signing";
-        }
+    public String Signing() {
+        return "/Customer/Signing";
+    }
 
+    @GetMapping("/Customer/AppoinmentBooking")
+    public String appointmentBookings()
+    {
+        return "/Customer/AppointmentBooking";
+    }
 }

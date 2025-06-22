@@ -41,8 +41,7 @@ public class DiseaseInfo {
     private String riskFactors;
 
     @JsonProperty("scientific_name")
-    @JsonSetter(nulls = Nulls.SKIP)
-    private String scientificName = "N/A"; // Handles NaN as null
+    private String scientificName ; // Handles NaN as null
 
     @JsonProperty("severity")
     private String severity;

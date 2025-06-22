@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Medicine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+        .image-preview {
+            max-width: 100px;
+            max-height: 100px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 0.5rem;
+        }
+        .section-title {
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .is-invalid {
+            border-color: #dc3545;
+        }
+        .invalid-feedback {
+            color: #dc3545;
+            display: none;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 0.875em;
+        }
+        textarea.form-control {
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Add New Medicine Information</h3>
+                </div>
+                <div class="card-body">
+                    <form id="medicineForm" th:action="@{/Admin/AddMedicine}" th:object="${medicineInfo}" method="post" enctype="multipart/form-data">
+
+                        <!-- Basic Information Section -->
+                        <div class="form-section">
+                            <h4 class="section-title">Basic Information</h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="className" class="form-label required-field">Medicine Name</label>
+                                    <input type="text" class="form-control" id="className" th:field="*{className}" required>
+                                    <div class="invalid-feedback">Please provide the medicine name</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="scientificName" class="form-label required-field">Scientific Name</label>
+                                    <input type="text" class="form-control" id="scientificName" th:field="*{scientificName}" required>
+                                    <div class="invalid-feedback">Please provide the scientific name</div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="dosage" class="form-label required-field">Dosage</label>
+                                    <input type="text" class="form-control" id="dosage" th:field="*{dosage}" required>
+                                    <div class="invalid-feedback">Please provide the dosage</div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="dosageForm" class="form-label required-field">Dosage Form</label>
+                                    <input type="text" class="form-control" id="dosageForm" th:field="*{dosageForm}" required>
+                                    <div class="invalid-feedback">Please provide the dosage form</div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="maxDose" class="form-label required-field">Max Dose</label>
+                                    <input type="text" class="form-control" id="maxDose" th:field="*{maxDose}" required>
+                                    <div class="invalid-feedback">Please provide the maximum dose</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="price" class="form-label required-field">Price</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" step="0.01" class="form-control" id="price" th:field="*{price}" required>
+                                    </div>
+                                    <div class="invalid-feedback">Please provide the price</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="administration" class="form-label required-field">Administration</label>
+                                    <input type="text" class="form-control" id="administration" th:field="*{administration}" required>
+                                    <div class="invalid-feedback">Please provide administration method</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Medical Information Section -->
+                        <div class="form-section">
+                            <h4 class="section-title">Medical Information</h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="use" class="form-label required-field">Use/Purpose</label>
+                                    <textarea class="form-control" id="use" th:field="*{use}" required></textarea>
+                                    <div class="invalid-feedback">Please describe the medicine's use</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="indications" class="form-label required-field">Indications</label>
+                                    <textarea class="form-control" id="indications" th:field="*{indications}" required></textarea>
+                                    <div class="invalid-feedback">Please provide indications</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="sideEffects" class="form-label required-field">Side Effects</label>
+                                    <textarea class="form-control" id="sideEffects" th:field="*{sideEffects}" required></textarea>
+                                    <div class="invalid-feedback">Please list side effects</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="seriousEffects" class="form-label required-field">Serious Effects</label>
+                                    <textarea class="form-control" id="seriousEffects" th:field="*{seriousEffects}" required></textarea>
+                                    <div class="invalid-feedback">Please list serious effects</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="precautions" class="form-label required-field">Precautions</label>
+                                    <textarea class="form-control" id="precautions" th:field="*{precautions}" required></textarea>
+                                    <div class="invalid-feedback">Please list precautions</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="contraindications" class="form-label required-field">Contraindications</label>
+                                    <textarea class="form-control" id="contraindications" th:field="*{contraindications}" required></textarea>
+                                    <div class="invalid-feedback">Please list contraindications</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information Section -->
+                        <div class="form-section">
+                            <h4 class="section-title">Additional Information</h4>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label for="sourceOfInformation" class="form-label required-field">Source of Information</label>
+                                    <input type="text" class="form-control" id="sourceOfInformation" th:field="*{sourceOfInformation}" required>
+                                    <div class="invalid-feedback">Please provide the source of information</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Image Upload Section -->
+                        <div class="form-section">
+                            <h4 class="section-title">Medicine Images</h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="trainImages" class="form-label">Training Images</label>
+                                    <input type="file" class="form-control" id="trainImages" name="trainImages" multiple accept="image/*">
+                                    <small class="text-muted">Upload multiple images for training (JPEG, PNG)</small>
+                                    <div class="preview-container" id="trainPreview"></div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="valImages" class="form-label">Validation Images</label>
+                                    <input type="file" class="form-control" id="valImages" name="valImages" multiple accept="image/*">
+                                    <small class="text-muted">Upload multiple images for validation (JPEG, PNG)</small>
+                                    <div class="preview-container" id="valPreview"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <button type="reset" class="btn btn-secondary me-md-2">Reset Form</button>
+                            <button type="submit" class="btn btn-primary">Submit Medicine Information</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('medicineForm');
+
+        // Image preview functionality
+        document.getElementById('trainImages').addEventListener('change', function(e) {
+            displayPreview(this.files, 'trainPreview');
+        });
+
+        document.getElementById('valImages').addEventListener('change', function(e) {
+            displayPreview(this.files, 'valPreview');
+        });
+
+        function displayPreview(files, previewId) {
+            const previewContainer = document.getElementById(previewId);
+            previewContainer.innerHTML = '';
+
+            if (files) {
+                Array.from(files).forEach(file => {
+                    if (!file.type.match('image.*')) {
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('image-preview');
+                        img.title = file.name;
+                        previewContainer.appendChild(img);
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        // Form validation and submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+
+            // Validate all required fields
+            const requiredFields = form.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    const feedback = field.nextElementSibling;
+                    if (feedback && feedback.classList.contains('invalid-feedback')) {
+                        feedback.style.display = 'block';
+                    }
+                    isValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                    const feedback = field.nextElementSibling;
+                    if (feedback && feedback.classList.contains('invalid-feedback')) {
+                        feedback.style.display = 'none';
+                    }
+                }
+            });
+
+            if (!isValid) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Missing Information',
+                    text: 'Please fill in all required fields',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Show loading indicator
+            Swal.fire({
+                title: 'Saving Medicine Information',
+                html: 'Please wait while we save your data...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Prepare form data
+            const formData = new FormData(form);
+
+            // Submit form via AJAX
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Server error occurred');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                Swal.fire({
+                    icon: data.status === 'success' ? 'success' : 'error',
+                    title: data.status === 'success' ? 'Success!' : 'Error!',
+                    text: data.message,
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    if (data.status === 'success') {
+                        form.reset();
+                        document.getElementById('trainPreview').innerHTML = '';
+                        document.getElementById('valPreview').innerHTML = '';
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Submission Failed',
+                    text: error.message || 'An error occurred while saving the medicine information',
+                    confirmButtonText: 'OK'
+                });
+            });
+        });
+
+        // Real-time validation for fields
+        form.querySelectorAll('[required]').forEach(field => {
+            field.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.classList.remove('is-invalid');
+                    const feedback = this.nextElementSibling;
+                    if (feedback && feedback.classList.contains('invalid-feedback')) {
+                        feedback.style.display = 'none';
+                    }
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

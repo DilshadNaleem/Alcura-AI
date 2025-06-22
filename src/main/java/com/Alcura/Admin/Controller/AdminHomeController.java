@@ -62,4 +62,5 @@ public class AdminHomeController {
     {
         return "/Admin/DiseasePredictionModel/DiseaseModelDashboard";
     }
+
 }

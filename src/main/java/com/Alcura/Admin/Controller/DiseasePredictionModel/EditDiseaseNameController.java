@@ -26,10 +26,16 @@ public class EditDiseaseNameController {
 
     @GetMapping("/Edit")
     public String showEditForm(@RequestParam String diseaseName, Model model) {
+        String requestUrl = API_URL + diseaseName;
+        logger.info("Sending GET request to Flask API - URL: {}", requestUrl);
+
         try {
             ResponseEntity<DiseaseInfo> response = restTemplate.getForEntity(
-                    API_URL + diseaseName,
+                    requestUrl,
                     DiseaseInfo.class);
+
+            logger.info("Received response from Flask API - Status: {}, Body: {}",
+                    response.getStatusCode(), response.getBody());
 
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
                 model.addAttribute("disease", response.getBody());
@@ -37,9 +43,14 @@ public class EditDiseaseNameController {
                 return "/Admin/DiseasePredictionModel/edit-disease";
             }
         } catch (Exception e) {
-            logger.error("Error fetching disease data for editing", e);
+            logger.error("Error fetching disease data for editing - URL: {}, Error: {}",
+                    requestUrl, e.getMessage(), e);
         }
-        return "redirect:/Admin/diseases?error=Disease+"+ diseaseName +"+not+found";
+
+        String encodedName = diseaseName.replace(" ", "+");
+        String redirectUrl = "redirect:/Admin/diseases?error=Disease+"+ encodedName +"+not+found";
+        logger.info("Redirecting to: {}", redirectUrl);
+        return redirectUrl;
     }
 
     @PostMapping("/Edit")
@@ -47,6 +58,9 @@ public class EditDiseaseNameController {
             @ModelAttribute("disease") DiseaseInfo updatedDisease,
             @RequestParam String oldName,
             RedirectAttributes redirectAttributes) {
+
+        String requestUrl = API_URL + oldName;
+        logger.info("Sending POST request to Flask API - URL: {}", requestUrl);
 
         try {
             // Prepare the complete request body expected by Flask
@@ -68,16 +82,21 @@ public class EditDiseaseNameController {
             requestBody.put("side_effects", updatedDisease.getSideEffects());
             requestBody.put("Source_of_information", updatedDisease.getSourceOfInformation());
 
+            logger.info("Request body being sent: {}", requestBody);
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
             ResponseEntity<String> response = restTemplate.exchange(
-                    API_URL + oldName,
+                    requestUrl,
                     HttpMethod.POST,
                     requestEntity,
                     String.class);
+
+            logger.info("Received response from Flask API - Status: {}, Body: {}",
+                    response.getStatusCode(), response.getBody());
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 redirectAttributes.addFlashAttribute("success", "Disease updated successfully!");
@@ -85,7 +104,8 @@ public class EditDiseaseNameController {
                 redirectAttributes.addFlashAttribute("error", "Failed to update disease: " + response.getBody());
             }
         } catch (Exception e) {
-            logger.error("Error updating disease", e);
+            logger.error("Error updating disease - URL: {}, Error: {}",
+                    requestUrl, e.getMessage(), e);
             redirectAttributes.addFlashAttribute("error", "Error updating disease: " + e.getMessage());
         }
 
