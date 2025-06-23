@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Manage Diseases</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        .disease-card {
+           border: 1px solid #ddd;
+           border-radius: 5px;
+           padding: 15px;
+           margin-bottom: 20px;
+           background-color: #f9f9f9;
+       }
+       .disease-name {
+           color: #2c3e50;
+           margin-top: 0;
+       }
+       .search-container {
+           margin-bottom: 20px;
+           padding: 15px;
+           background-color: #e9ecef;
+           border-radius: 5px;
+       }
+       .search-form {
+           display: flex;
+           gap: 10px;
+       }
+       .search-input {
+           flex-grow: 1;
+           padding: 8px;
+           border: 1px solid #ced4da;
+           border-radius: 4px;
+       }
+       .search-button {
+           padding: 8px 15px;
+           background-color: #007bff;
+           color: white;
+           border: none;
+           border-radius: 4px;
+           cursor: pointer;
+       }
+       .search-button:hover {
+           background-color: #0056b3;
+       }
+       .view-all-link {
+           display: inline-block;
+           margin-top: 10px;
+           color: #007bff;
+           text-decoration: none;
+       }
+       .delete-btn {
+           padding: 8px 15px;
+           background-color: #dc3545;
+           color: white;
+           border: none;
+           border-radius: 4px;
+           cursor: pointer;
+           margin-top: 10px;
+       }
+       .delete-btn:hover {
+           background-color: #c82333;
+       }
+       .edit-btn {
+           padding: 8px 15px;
+           background-color: #ffc107;
+           color: #212529;
+           border: none;
+           border-radius: 4px;
+           cursor: pointer;
+           margin-top: 10px;
+       }
+       .edit-btn:hover {
+           background-color: #e0a800;
+       }
+       .view-images-btn {
+           padding: 8px 15px;
+           background-color: #28a745;
+           color: white;
+           border: none;
+           border-radius: 4px;
+           cursor: pointer;
+           margin-top: 10px;
+       }
+       .view-images-btn:hover {
+           background-color: #218838;
+       }
+       /* SweetAlert customization */
+       .swal2-popup {
+           font-size: 1.6rem !important;
+           border-radius: 10px !important;
+       }
+       .alert-success {
+           color: #155724;
+           background-color: #d4edda;
+           border-color: #c3e6cb;
+           padding: 10px;
+           margin-bottom: 15px;
+           border-radius: 4px;
+       }
+       .alert-error {
+           color: #721c24;
+           background-color: #f8d7da;
+           border-color: #f5c6cb;
+           padding: 10px;
+           margin-bottom: 15px;
+           border-radius: 4px;
+       }
+       .button-group {
+           display: flex;
+           gap: 10px;
+           margin-top: 15px;
+       }
+    </style>
+</head>
+<body>
+    <h1>Medicine Information</h1>
+
+    <div th:if ="${success}" class="alert-success" th:text = "${success}"></div>
+    <div class="alert-error" th:if="${error}" th:text="${error}"></div>
+
+    <div class="search-container">
+        <form th:action="@{/Admin/medicine/search}" method="get" class="search-form">
+            <input type="text" name="medicineName" class="search-input" placeholder="Search Medicine" required>
+            <button type="submit" class="search-button">Search</button>
+        </form>
+        <a th:href = "@{/Admin/medicineDescription}" class="view-all-link"> View All Medicine</a>
+    </div>
+
+<div th:unless="${error}">
+    <div th:each = "m : ${medicine}" class="medicine-card">
+        <h2 class="medicine-name" th:text="${m.ClassName}"></h2>
+        <p><strong> Mediicne Name :</strong> <span th:text = ${m.ClassName}></span></p>
+        <p><strong> Dosage :</strong> <span th:text = ${m.Dosage}></span></p>
+        <p><strong> Dosage Form : </strong> <span th:text = ${m.DosageForm}></span></p>
+        <p><strong> Max Dose :</strong> <span th:text = ${m.MaxDose}></span></p>
+        <p><strong> Use : </strong> <span th:text = ${m.Use}></span></p>
+        <p><strong> Price :</strong> <span th:text = ${m.Price}></span></p>
+        <p><strong> Side Effects :</strong> <span th:text = ${m.SideEffects}></span></p>
+        <p><strong> Scientific Name : </strong> <span th:text = ${m.ScientificName}></span></p>
+        <p><strong> Administration : </strong> <span th:text = ${m.Administration}></span></p>
+        <p><strong> Indications :</strong> <span th:text = ${m.Indications}></span></p>
+        <p><strong> Precautions : </strong> <span th:text = ${m.Precautions}></span></p>
+        <p><strong> Contraindications : </strong> <span th:text = ${m.Contraindications}></span></p>
+        <p><strong> Source Of Informations : </strong> <span th:text = ${m.SourceOfInformation}></span></p>
+
+
+        <div class="button-group">
+            <form th:action="@{/Admin/DeleteMedicine}" method="post" th:id ="'deleteForm-' + ${m.ClassName}">
+                <input type="hidden" name="_method" value="DELETE" />
+                <input type="hidden" name="medicineName" th:value="${m.ClassName}" />
+                <button type="button" class="delete-btn"
+                    th:attr = "data-medicine-name = ${m.ClassName}"
+                    onclick="confirmDelete(this.getAttribute('data-medicine-name'))">
+                    Delete Medicine
+                </button>
+            </form>
+
+            <form th:action="@{/Admin/EditMedicine}">
+                <input type="hidden" name="medicineName" th:value="${m.ClassName}">
+                <button type="submit" class="edit-btn">Edit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmDelete(medicineName) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to delete "${medicineName}"`, // Using template literals
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Delete',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/Admin/DeleteMedicine?medicineName=${encodeURIComponent(medicineName)}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network error');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.status === 'success') {
+                            Swal.fire('Deleted!', data.message, 'success')
+                                .then(() => window.location.reload()); // Fixed typo: 'relod' → 'reload'
+                        } else {
+                            Swal.fire('Error!', data.message || 'Delete failed', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire('Error!', error.message || 'Delete failed', 'error');
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

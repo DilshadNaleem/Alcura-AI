@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Medicine</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <style>
+        .edit-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        textarea {
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="edit-container">
+        <h1 class="mb-4">Edit Medicine: <span th:text="${medicine.className}"></span></h1>
+
+        <form th:action="@{/Admin/EditMedicine}" method="post" th:object="${medicine}">
+            <input type="hidden" name="oldName" th:value="${oldName}">
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="className" class="form-label">Medicine Name</label>
+                    <input type="text" class="form-control" id="className" th:field="*{className}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="scientificName" class="form-label">Scientific Name</label>
+                    <input type="text" class="form-control" id="scientificName" th:field="*{scientificName}">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="administration" class="form-label">Administration</label>
+                    <input type="text" class="form-control" id="administration" th:field="*{administration}">
+                </div>
+                <div class="col-md-6">
+                    <label for="dosage" class="form-label">Dosage</label>
+                    <input type="text" class="form-control" id="dosage" th:field="*{dosage}">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="dosageForm" class="form-label">Dosage Form</label>
+                    <input type="text" class="form-control" id="dosageForm" th:field="*{dosageForm}">
+                </div>
+                <div class="col-md-6">
+                    <label for="maxDose" class="form-label">Max Dose</label>
+                    <input type="text" class="form-control" id="maxDose" th:field="*{maxDose}">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="text" class="form-control" id="price" th:field="*{price}">
+                </div>
+                <div class="col-md-6">
+                    <label for="use" class="form-label">Use</label>
+                    <input type="text" class="form-control" id="use" th:field="*{use}">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="indications" class="form-label">Indications</label>
+                <textarea class="form-control" id="indications" th:field="*{indications}"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="contraindications" class="form-label">Contraindications</label>
+                <textarea class="form-control" id="contraindications" th:field="*{contraindications}"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="precautions" class="form-label">Precautions</label>
+                <textarea class="form-control" id="precautions" th:field="*{precautions}"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="sideEffects" class="form-label">Side Effects</label>
+                <textarea class="form-control" id="sideEffects" th:field="*{sideEffects}"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="seriousEffects" class="form-label">Serious Effects</label>
+                <textarea class="form-control" id="seriousEffects" th:field="*{seriousEffects}"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="sourceOfInformation" class="form-label">Source of Information</label>
+                <input type="text" class="form-control" id="sourceOfInformation" th:field="*{sourceOfInformation}">
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a th:href="@{/Admin/MedicinePredictionModel/ViewAllMedicines}" class="btn btn-secondary me-md-2">Cancel</a>
+                <button type="submit" class="btn btn-primary">Update Medicine</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Success/Error Toast Notification -->
+<div th:if="${success != null or error != null}" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="toast" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header" th:classappend="${success != null} ? 'bg-success text-white' : 'bg-danger text-white'">
+            <strong class="me-auto" th:text="${success != null} ? 'Success' : 'Error'"></strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" th:text="${success != null} ? ${success} : ${error}"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Auto-hide toast after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        const toast = document.getElementById('toast');
+        if (toast) {
+            setTimeout(() => {
+                const bootstrapToast = bootstrap.Toast.getInstance(toast);
+                if (bootstrapToast) {
+                    bootstrapToast.hide();
+                }
+            }, 5000);
+        }
+    });
+</script>
+</body>
+</html>

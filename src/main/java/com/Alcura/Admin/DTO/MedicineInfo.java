@@ -19,7 +19,7 @@ public class MedicineInfo {
     private String Use;
 
     @JsonProperty("price")
-    private double Price;
+    private String Price;
 
     @JsonProperty("side_effects")
     private String SideEffects;
@@ -75,11 +75,11 @@ public class MedicineInfo {
         Use = use;
     }
 
-    public double getPrice() {
+    public String getPrice() {
         return Price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(String price) {
         Price = price;
     }
 
@@ -120,7 +120,7 @@ public class MedicineInfo {
     }
 
     public void setAdministration(String administration) {
-        this.Administration = Administration;
+        this.Administration = administration;
     }
 
     public String getIndications() {
