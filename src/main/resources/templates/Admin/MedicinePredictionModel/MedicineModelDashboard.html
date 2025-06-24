@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Disease Model Management</title>
+  <title>Medicine Model Management</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
@@ -55,36 +55,36 @@
     <div class="col-md-3 col-lg-2 d-md-block sidebar bg-dark collapse show">
       <div class="position-sticky pt-3">
         <div class="text-center mb-4">
-          <h4 class="text-white">Disease Model Management</h4>
+          <h4 class="text-white">Medicine Model Management</h4>
         </div>
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" href="/Admin/AddDisease">
-              <i class="bi bi-plus-circle me-2"></i>Add Disease
+            <a class="nav-link" href="/Admin/AddMedicine">
+              <i class="bi bi-plus-circle me-2"></i>Add Medicine
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/Admin/diseases">
-              <i class="bi bi-gear me-2"></i>Manage Disease
+            <a class="nav-link" href="/Admin/medicineDescription">
+              <i class="bi bi-gear me-2"></i>Manage Medicine
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/Admin/PredictDisease">
+            <a class="nav-link" href="/Admin/MedicinePrediction">
               <i class="bi bi-graph-up me-2"></i>Predict the Model
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/train">
+            <a class="nav-link" href="/Admin/Training">
               <i class="bi bi-cpu me-2"></i>Train The Model
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/Admin/ViewAllDisease">
-              <i class="bi bi-eye me-2"></i>View All Diseases
+            <a class="nav-link" href="/Admin/ViewAllMedicine">
+              <i class="bi bi-eye me-2"></i>View All Medicine
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/Admin/ViewAllValidations">
+            <a class="nav-link" href="/Admin/ViewAllMedicineValidations">
               <i class="bi bi-clipboard-check me-2"></i>View the Validation
             </a>
           </li>
@@ -96,7 +96,7 @@
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
       <div class="dashboard-header">
         <h1 class="h2">Dashboard</h1>
-        <p>Welcome to Disease Model Management System</p>
+        <p>Welcome to Medicine Model Management System</p>
       </div>
 
       <div class="row">
@@ -105,12 +105,12 @@
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <h5 class="card-title">Add Disease</h5>
-                  <p class="card-text">Add new disease to the system</p>
+                  <h5 class="card-title">Add Medicine</h5>
+                  <p class="card-text">Add new medicine to the system</p>
                 </div>
                 <i class="bi bi-plus-circle" style="font-size: 2rem;"></i>
               </div>
-              <a href="/Admin/AddDisease" class="stretched-link"></a>
+              <a href="/Admin/AddMedicine" class="stretched-link"></a>
             </div>
           </div>
         </div>
@@ -119,12 +119,12 @@
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <h5 class="card-title">Manage Disease</h5>
-                  <p class="card-text">Update or delete diseases</p>
+                  <h5 class="card-title">Manage Medicines</h5>
+                  <p class="card-text">Update or delete Medicines</p>
                 </div>
                 <i class="bi bi-gear" style="font-size: 2rem;"></i>
               </div>
-              <a href="/Admin/diseases" class="stretched-link"></a>
+              <a href="/Admin/medicineDescription" class="stretched-link"></a>
             </div>
           </div>
         </div>
@@ -133,12 +133,12 @@
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <h5 class="card-title">Predict Disease</h5>
+                  <h5 class="card-title">Predict Medicine</h5>
                   <p class="card-text">Use the model to predict</p>
                 </div>
                 <i class="bi bi-graph-up" style="font-size: 2rem;"></i>
               </div>
-              <a href="/Admin/PredictDisease" class="stretched-link"></a>
+              <a href="/Admin/MedicinePrediction" class="stretched-link"></a>
             </div>
           </div>
         </div>
@@ -155,7 +155,7 @@
                 </div>
                 <i class="bi bi-cpu" style="font-size: 2rem;"></i>
               </div>
-              <a href="/train" class="stretched-link"></a>
+              <a href="/Admin/Training" class="stretched-link"></a>
             </div>
           </div>
         </div>
@@ -164,12 +164,12 @@
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <h5 class="card-title">View Diseases</h5>
-                  <p class="card-text">View all diseases in system</p>
+                  <h5 class="card-title">View Medicines</h5>
+                  <p class="card-text">View all Medicines in system</p>
                 </div>
                 <i class="bi bi-eye" style="font-size: 2rem;"></i>
               </div>
-              <a href="/Admin/ViewAllDisease" class="stretched-link"></a>
+              <a href="/Admin/ViewAllMedicine" class="stretched-link"></a>
             </div>
           </div>
         </div>
@@ -183,7 +183,7 @@
                 </div>
                 <i class="bi bi-clipboard-check" style="font-size: 2rem;"></i>
               </div>
-              <a href="/Admin/ViewAllValidations" class="stretched-link"></a>
+              <a href="/Admin/ViewAllMedicineValidations" class="stretched-link"></a>
             </div>
           </div>
         </div>
