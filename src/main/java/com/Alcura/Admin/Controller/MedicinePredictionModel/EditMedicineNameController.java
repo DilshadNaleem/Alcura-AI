@@ -45,7 +45,7 @@ public class EditMedicineNameController {
                     MedicineInfo.class
             );
 
-            logger.info("Recieved response from Flask API: {}", response.getStatusCode(), response.getBody());
+            logger.info("Received response from Flask API: {}", response.getStatusCode(), response.getBody());
 
             if(response.getStatusCode() == HttpStatus.OK && response.getBody() != null)
             {
@@ -80,17 +80,17 @@ public class EditMedicineNameController {
             Map<String,Object> requestBody = new HashMap<>();
             requestBody.put("new_name", updatedMedicine.getClassName());
             requestBody.put("administration", updatedMedicine.getAdministration());
-            requestBody.put("scientificname", updatedMedicine.getScientificName());
+            requestBody.put("Scientific_Name", updatedMedicine.getScientificName());  // Changed from "scientificname"
             requestBody.put("dosage", updatedMedicine.getDosage());
             requestBody.put("contraindications", updatedMedicine.getContraindications());
-            requestBody.put("dosageform", updatedMedicine.getDosageForm());
+            requestBody.put("dosage_form", updatedMedicine.getDosageForm());  // Changed from "dosageform"
             requestBody.put("indications", updatedMedicine.getIndications());
-            requestBody.put("maxdose", updatedMedicine.getMaxDose());
+            requestBody.put("max_dose", updatedMedicine.getMaxDose());  // Changed from "maxdose"
             requestBody.put("precautions", updatedMedicine.getPrecautions());
-            requestBody.put("price",updatedMedicine.getPrice());
-            requestBody.put("serious", updatedMedicine.getSeriousEffects());
-            requestBody.put("side", updatedMedicine.getSideEffects());
-            requestBody.put("soi", updatedMedicine.getSourceOfInformation());
+            requestBody.put("price", updatedMedicine.getPrice());
+            requestBody.put("serious_effects", updatedMedicine.getSeriousEffects());  // Changed from "serious"
+            requestBody.put("side_effects", updatedMedicine.getSideEffects());  // Changed from "side"
+            requestBody.put("Source_of_information", updatedMedicine.getSourceOfInformation());  // Changed from "soi"
             requestBody.put("use", updatedMedicine.getUse());
 
             logger.info("Request body being sent: {}", requestBody);
@@ -107,27 +107,25 @@ public class EditMedicineNameController {
                     String.class
             );
 
-            logger.info("Recieved response from FLASK API: {}, Body: {}",
+            logger.info("Received response from FLASK API: {}, Body: {}",
                     response.getStatusCode(), response.getBody());
 
             if(response.getStatusCode().is2xxSuccessful())
             {
-                redirectAttributes.addFlashAttribute("success", "Medicine Updated Succesfully!");
+                redirectAttributes.addFlashAttribute("success", "Medicine Updated Successfully!");
             }
             else
             {
                 redirectAttributes.addFlashAttribute("error","Failed to update medicine: " + response.getBody());
             }
         }
-
         catch (Exception e)
         {
-            logger.error("Error updating mediicne - URL: {}, Error: {}",
+            logger.error("Error updating medicine - URL: {}, Error: {}",
                     requestUrl, e.getMessage(), e);
-            e.printStackTrace();
-            redirectAttributes.addFlashAttribute("error", "Error updating medicine " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error updating medicine: " + e.getMessage());
         }
 
-        return "redirect:/Admin/MedicinePredictionModel/ViewAllMedicines";
+        return "redirect:/Admin/medicineDescription";
     }
 }

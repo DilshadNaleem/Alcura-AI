@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>View Medicine Images</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .image-container {
+            position: relative;
+            margin-bottom: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+        .image-container.selected img {
+            border-color: #007bff;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+        .success-message {
+            color: green;
+            margin-bottom: 15px;
+        }
+        .error-message {
+            color: red;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <h1 th:text="${dataname != null and not dataname.empty} ? 'Images for ' + ${dataname[0]} : 'Medicine Images'">Medicine Images</h1>
+
+    <div th:if="${error}" class="alert alert-danger error-message" th:text="${error}"></div>
+    <div th:if="${success}" class="alert alert-success success-message" th:text="${success}"></div>
+
+    <form action="/Admin/deleteMedicineImage" method="post" id="deleteForm">
+        <div class="row" th:if="${data != null and not data.empty}">
+            <div class="col-md-4 image-container"
+                 th:each="m, iterStat : ${data}"
+                 th:data-name="${m.name}"
+                 th:data-dataset="${m.dataset}"
+                 th:id="'img-container-' + ${iterStat.index}"
+                 onclick="toggleImageSelect(this)">
+                <img th:src="${m.data}" alt="Medicine Image" class="img-fluid">
+                <p><strong th:text="${m.name}">Image Name</strong></p>
+                <p th:text="'Dataset: ' + ${m.dataset}"></p>
+            </div>
+        </div>
+
+        <div class="alert alert-info" th:if="${data == null or data.empty}">No images found for this medicine</div>
+        <div id="selectedInputs"></div>
+
+        <input type="hidden" name="datasetType" th:value="${dataname != null and not dataname.empty} ? ${dataname[0]} : ''" />
+        <input type="hidden" name="action" value="delete"/>
+
+        <button type="submit" class="btn btn-danger mt-3">Delete Selected Images</button>
+        <a th:href="@{/Admin/medicineDescription}" class="btn btn-secondary mt-3 ms-2">Back to Admin</a>
+    </form>
+</div>
+
+<script>
+    function toggleImageSelect(container) {
+        const isSelected = container.classList.toggle("selected");
+        const name = container.dataset.name;
+        const dataset = container.dataset.dataset;
+        const id = name + '|' + dataset;
+
+        const form = document.getElementById("selectedInputs");
+
+        if (isSelected) {
+            // Add hidden input
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "selectedImages";
+            input.value = id;
+            input.dataset.imageId = id;
+            form.appendChild(input);
+        } else {
+            // Remove the corresponding hidden input
+            const inputs = form.querySelectorAll('input[data-image-id="' + id + '"]');
+            inputs.forEach(input => form.removeChild(input));
+        }
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

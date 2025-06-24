@@ -163,6 +163,14 @@
                 <input type="hidden" name="medicineName" th:value="${m.ClassName}">
                 <button type="submit" class="edit-btn">Edit</button>
             </form>
+
+            <form th:action="@{/Admin/ViewMedicineImages}" method="get" th:id="'viewImagesForm-' + ${m.ClassName}">
+                <input type="hidden" name="medicineName" th:value = "${m.ClassName}">
+                <input type="hidden" name="ImageType" th:id = "'imageTypeInput-' + ${m.ClassName}" value="">
+                <button type="button" class="view-images-btn"
+                    th:attr = "onclick= 'showImageTypePopup(\'' + ${m.ClassName} + '\')'"> View Images
+                </button>
+            </form>
         </div>
     </div>
 </div>
@@ -201,6 +209,39 @@
                 }
             });
         }
+        function showImageTypePopup(medicineName) {
+        Swal.fire ({
+            title: 'Select Image Type',
+            text: 'Choose which images to view for ' + medicineName,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Confirm',
+            cancelButtonText: 'Cancel',
+
+
+             html:
+            '<div style="text-align: left; margin: 20px 0;">' +
+            '<label style="display: block; margin: 10px 0; cursor: pointer;">' +
+            '<input type="radio" name="imageType" value="Train" checked> Training Images' +
+            '</label>' +
+            '<label style="display: block; margin: 10px 0; cursor: pointer;">' +
+            '<input type="radio" name="imageType" value="Validation"> Validation Images' +
+            '</label>' +
+            '<label style="display: block; margin: 10px 0; cursor: pointer;">' +
+            '<input type="radio" name="imageType" value="All"> All Images' +
+            '</label>' +
+            '</div>',
+        preConfirm: () => {
+            const selectedValue = document.querySelector('input[name="imageType"]:checked').value;
+            const form = document.getElementById('viewImagesForm-' + medicineName);
+            const imageTypeInput = document.getElementById('imageTypeInput-' + medicineName);
+            // Convert to lowercase before submitting
+            imageTypeInput.value = selectedValue.toLowerCase();
+            form.submit();
+        }
+
+        });
+    }
     </script>
 </body>
 </html>
