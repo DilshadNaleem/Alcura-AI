@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Doctor Image</title>
+</head>
+<body>
+<h1>Doctor Profile Image</h1>
+<img th:src="@{'/doctor/' + ${doctorId} + '/image'}" alt="Doctor Image">
+</body>
+</html>

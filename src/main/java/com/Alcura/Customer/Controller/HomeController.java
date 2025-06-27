@@ -101,9 +101,9 @@ public class HomeController
         return "/Customer/Signing";
     }
 
-    @GetMapping("/Customer/AppoinmentBooking")
+    @GetMapping("/Customer/AppointmentBooking")
     public String appointmentBookings()
     {
-        return "/Customer/AppointmentBooking";
+        return "/Customer/Appointment_Booking";
     }
 }
