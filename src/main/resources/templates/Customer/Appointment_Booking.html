@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -377,13 +377,21 @@
     <div class="doctors-grid" id="doctorsGrid">
         <!-- Doctor 1 -->
         <div class="doctor-card">
-            <div class="doctor-img-container">
-                <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Dr. Sarah Johnson" class="doctor-img">
+            <div th:each="doctor : ${doctors}">
+                <div class="doctor-img-container">
+                    <img th:src="@{'/doctor/image/' + ${doctor.email}}"
+                         th:alt="${'Image of Dr. ' + doctor.first_name}"
+                         class="doctor-img">
+                </div>
+                <!-- Other doctor information -->
             </div>
             <div class="doctor-info">
-                <h3 class="doctor-name">Dr. Sarah Johnson</h3>
-                <div class="doctor-specialty">Cardiologist • 10 years experience</div>
-                <p class="doctor-bio">Specializes in heart-related conditions and cardiovascular diseases. Available for consultations and treatments.</p>
+                <h3 class="doctor-name"
+                    th:each="doctor : ${doctors}"
+                    th:text="${doctor.first_name + ' ' + doctor.last_name}">
+                </h3>
+                <div class="doctor-specialty" th:each="doctor : ${doctors}" th:text=" ${doctor.specialist}  + ' • ' +  ${doctor.experience}">Cardiologist • 10 years experience</div>
+                <p class="doctor-bio" th:each="doctor : ${doctors}" th:text="${doctor.special_info}">Specializes in heart-related conditions and cardiovascular diseases. Available for consultations and treatments.</p>
                 <div class="doctor-actions">
                     <a href="#" class="btn btn-profile">Profile</a>
                     <button type="button" class="btn btn-book book-btn" data-doctor-id="1" data-doctor-name="Dr. Sarah Johnson">Book Now</button>
@@ -391,53 +399,6 @@
             </div>
         </div>
 
-        <!-- Doctor 2 -->
-        <div class="doctor-card">
-            <div class="doctor-img-container">
-                <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Dr. Michael Chen" class="doctor-img">
-            </div>
-            <div class="doctor-info">
-                <h3 class="doctor-name">Dr. Michael Chen</h3>
-                <div class="doctor-specialty">Neurologist • 8 years experience</div>
-                <p class="doctor-bio">Expert in nervous system disorders including brain, spinal cord and peripheral nerve conditions.</p>
-                <div class="doctor-actions">
-                    <a href="#" class="btn btn-profile">Profile</a>
-                    <button type="button" class="btn btn-book book-btn" data-doctor-id="2" data-doctor-name="Dr. Michael Chen">Book Now</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Doctor 3 -->
-        <div class="doctor-card">
-            <div class="doctor-img-container">
-                <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Dr. Emily Wilson" class="doctor-img">
-            </div>
-            <div class="doctor-info">
-                <h3 class="doctor-name">Dr. Emily Wilson</h3>
-                <div class="doctor-specialty">Pediatrician • 12 years experience</div>
-                <p class="doctor-bio">Provides medical care for infants, children, and adolescents. Special focus on preventive care.</p>
-                <div class="doctor-actions">
-                    <a href="#" class="btn btn-profile">Profile</a>
-                    <button type="button" class="btn btn-book book-btn" data-doctor-id="3" data-doctor-name="Dr. Emily Wilson">Book Now</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Doctor 4 -->
-        <div class="doctor-card">
-            <div class="doctor-img-container">
-                <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Dr. Robert Garcia" class="doctor-img">
-            </div>
-            <div class="doctor-info">
-                <h3 class="doctor-name">Dr. Robert Garcia</h3>
-                <div class="doctor-specialty">Orthopedic Surgeon • 15 years experience</div>
-                <p class="doctor-bio">Specializes in musculoskeletal system - bones, joints, ligaments, tendons, muscles and nerves.</p>
-                <div class="doctor-actions">
-                    <a href="#" class="btn btn-profile">Profile</a>
-                    <button type="button" class="btn btn-book book-btn" data-doctor-id="4" data-doctor-name="Dr. Robert Garcia">Book Now</button>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 

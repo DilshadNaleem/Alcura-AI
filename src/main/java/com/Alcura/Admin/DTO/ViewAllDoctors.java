@@ -110,4 +110,26 @@ public class ViewAllDoctors
     public void setSpecial_info(String special_info) {
         this.special_info = special_info;
     }
+
+
+    public ViewAllDoctors(String uniqueId, String firstName, String lastName,
+                          String contactNumber, String email,
+                          String government_Hospitals, String nic,
+                          String other_specialization, String specialist,
+                          String special_note, String status,
+                          String specialist_info) {
+        this.unique_id = uniqueId;
+        this.first_name = firstName;
+        this.last_name = lastName;
+        this.contact_number = contactNumber;
+        this.email = email;
+        this.government_hospital = government_Hospitals;
+        this.nic = nic;
+        this.other_specialization = other_specialization;
+        this.specialist = specialist;
+        this.special_note = special_note;
+        this.status = status;
+        this.special_info = specialist_info;
+
+    }
 }

@@ -1,0 +1,25 @@
+package com.Alcura.Admin.Service;
+
+import com.Alcura.Admin.DTO.ViewAllDoctors;
+import com.Alcura.Admin.Repository.DoctorRepositoryAdmin;
+import com.Alcura.Doctor.Repository.DoctorRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class DoctorService {
+    private final DoctorRepository doctorRepositoryAdmin;
+
+    public DoctorService(DoctorRepository doctorRepositoryAdmin)
+    {
+        this.doctorRepositoryAdmin = doctorRepositoryAdmin;
+    }
+
+    public List<ViewAllDoctors> getAllDoctors()
+    {
+        return doctorRepositoryAdmin.findAllDoctors();
+    }
+
+
+}
