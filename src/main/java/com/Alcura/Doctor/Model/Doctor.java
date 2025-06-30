@@ -3,7 +3,9 @@ package com.Alcura.Doctor.Model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "doctor")
@@ -75,8 +77,19 @@ public class Doctor {
     @Column(name = "first_login", nullable = false)
     private boolean firstLogin = true;
 
+    @Column(name = "doctor_availability", nullable = false)
+    private LocalTime doctor_availablility;
 
     // Getters and Setters
+
+
+    public LocalTime getDoctor_availablility() {
+        return doctor_availablility;
+    }
+
+    public void setDoctor_availablility(LocalTime doctor_availablility) {
+        this.doctor_availablility = doctor_availablility;
+    }
 
     public boolean isFirstLogin() {
         return firstLogin;

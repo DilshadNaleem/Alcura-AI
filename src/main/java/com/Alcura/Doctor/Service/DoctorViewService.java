@@ -1,6 +1,7 @@
 package com.Alcura.Doctor.Service;
 
 import com.Alcura.Customer.DTO.ViewDoctorForm;
+import com.Alcura.Doctor.Model.Doctor;
 import com.Alcura.Doctor.Repository.DoctorRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,5 +20,10 @@ public class DoctorViewService
     public List<ViewDoctorForm> viewFullform()
     {
         return doctorRepository.viewDoctorinCustomerForm();
+    }
+
+    public List<Doctor> EditDoctor()
+    {
+        return doctorRepository.findAll();
     }
 }

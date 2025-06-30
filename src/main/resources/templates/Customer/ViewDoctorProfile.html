@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .doctor-profile {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .profile-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .doctor-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #f8f9fa;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .detail-item {
+            margin-bottom: 15px;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+        .detail-value {
+            color: #212529;
+            font-size: 1.1rem;
+        }
+        .specialization-badge {
+            font-size: 0.9rem;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="header bg-light py-4 mb-4">
+    <div class="container">
+        <h1 class="display-5">Doctor Profile</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Doctor Profile</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Check if doctor exists -->
+    <div th:if="${doctors.empty}" class="text-center py-5">
+        <div class="alert alert-warning" role="alert">
+            No doctor data available
+        </div>
+    </div>
+
+    <!-- Doctor Profile Card -->
+    <div th:each="doctor : ${doctors}" th:unless="${doctors.empty}" class="doctor-profile">
+        <div class="row">
+            <!-- Doctor Image -->
+            <div class="col-md-3 text-center mb-4 mb-md-0">
+                <img th:src="@{'/doctor/image/' + ${doctor.email}}"
+                     th:alt="${'Image of Dr. ' + doctor.firstName}"
+                     class="doctor-img img-fluid">
+            </div>
+
+            <!-- Doctor Details -->
+            <div class="col-md-9">
+                <div class="profile-header">
+                    <h2 th:text="${doctor.firstName + ' ' + doctor.lastName}" class="mb-2"></h2>
+                    <div class="d-flex flex-wrap align-items-center mb-2">
+                        <span class="badge bg-primary me-2 mb-2 specialization-badge"
+                              th:text="${doctor.specialist}"></span>
+                        <span th:if="${doctor.other_specialization}"
+                              class="badge bg-secondary me-2 mb-2 specialization-badge"
+                              th:text="${doctor.other_specialization}"></span>
+                    </div>
+                    <p class="text-muted mb-0" th:text="'Experience: ' + ${doctor.experience} + ' years'"></p>
+                </div>
+
+                <!-- Details Section -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="detail-item">
+                            <div class="detail-label">Qualification</div>
+                            <div class="detail-value" th:text="${doctor.Qualification}"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="detail-item">
+                            <div class="detail-label">Hospital</div>
+                            <div class="detail-value" th:text="${doctor.government_Hospitals}"></div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="detail-item">
+                            <div class="detail-label">Specialization Info</div>
+                            <div class="detail-value" th:text="${doctor.specialist_info}"></div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="detail-item">
+                            <div class="detail-label">Special Notes</div>
+                            <div class="detail-value" th:text="${doctor.special_note} ?: 'N/A'"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

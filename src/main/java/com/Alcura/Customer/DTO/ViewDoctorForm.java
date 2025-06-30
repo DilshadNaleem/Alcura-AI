@@ -1,5 +1,7 @@
 package com.Alcura.Customer.DTO;
 
+import java.time.LocalTime;
+
 public class ViewDoctorForm
 {
     private String first_name;
@@ -9,6 +11,24 @@ public class ViewDoctorForm
     private String special_info;
     private byte[] image;
     private String email;
+    private String unique_id;
+    private LocalTime  doctor_availablility;
+
+    public LocalTime getDoctor_availablility() {
+        return doctor_availablility;
+    }
+
+    public void setDoctor_availablility(LocalTime  doctor_availablility) {
+        this.doctor_availablility = doctor_availablility;
+    }
+
+    public String getUnique_id() {
+        return unique_id;
+    }
+
+    public void setUnique_id(String unique_id) {
+        this.unique_id = unique_id;
+    }
 
     public String getEmail() {
         return email;
@@ -70,7 +90,7 @@ public class ViewDoctorForm
     public ViewDoctorForm(String firstName, String lastName,
                           String specialist, String experience,
                           String specialist_info, byte[] image,
-                          String email)
+                          String email, String uniqueId, LocalTime doctor_availablility)
     {
         this.first_name = firstName;
         this.last_name = lastName;
@@ -79,6 +99,8 @@ public class ViewDoctorForm
         this.special_info = specialist_info;
         this.image = image;
         this.email = email;
+        this.unique_id = uniqueId;
+        this.doctor_availablility = doctor_availablility;
     }
 
 }

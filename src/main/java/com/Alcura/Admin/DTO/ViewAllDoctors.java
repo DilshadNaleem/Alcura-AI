@@ -14,6 +14,15 @@ public class ViewAllDoctors
     private String special_note;
     private String status;
     private String special_info;
+    private String experience;
+
+    public String getExperience() {
+        return experience;
+    }
+
+    public void setExperience(String experience) {
+        this.experience = experience;
+    }
 
     public String getUnique_id() {
         return unique_id;
@@ -117,7 +126,8 @@ public class ViewAllDoctors
                           String government_Hospitals, String nic,
                           String other_specialization, String specialist,
                           String special_note, String status,
-                          String specialist_info) {
+                          String specialist_info,
+                          String experience) {
         this.unique_id = uniqueId;
         this.first_name = firstName;
         this.last_name = lastName;
@@ -130,6 +140,6 @@ public class ViewAllDoctors
         this.special_note = special_note;
         this.status = status;
         this.special_info = specialist_info;
-
+        this.experience = experience;
     }
 }

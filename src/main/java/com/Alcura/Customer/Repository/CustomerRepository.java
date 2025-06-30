@@ -12,5 +12,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer>
     Customer findByEmailAndStatus (String email, int status);
     Optional <Customer> findTopByOrderByIdDesc();
     List<Customer> findByFaceDataIsNotNull();
+
 }
 

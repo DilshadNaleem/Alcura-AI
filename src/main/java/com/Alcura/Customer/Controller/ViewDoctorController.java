@@ -39,7 +39,7 @@ public class ViewDoctorController
     {
         List<ViewDoctorForm> doctorViewServices = doctorService.viewFullform();
         model.addAttribute("doctors", doctorViewServices);
-       logger.info("Size: " + doctorViewServices.size());
+        logger.info("Size: " + doctorViewServices.size());
         return "/Customer/Appointment_Booking";
     }
 
