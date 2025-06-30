@@ -30,5 +30,16 @@ public class DoctorHomeController
         return "/Doctor/Verification";
     }
 
+    @GetMapping("/Doctor/FaceEnrollment")
+    public String enrollFace()
+    {
+        return "/Doctor/DrFace_Enrollment";
+    }
+
+    @GetMapping("/Doctor/FaceLogin")
+    public String faceLogin()
+    {
+        return "/Doctor/DrFace_login";
+    }
 
 }

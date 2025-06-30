@@ -47,7 +47,7 @@ public class Doctor {
     @Column(name = "status", nullable = false)
     private int status;
 
-    @Column(name = "face_data")
+    @Column(name = "face_data", columnDefinition = "LONGTEXT")
     private String faceData;
 
     @Column(name = "user_type", nullable = false)

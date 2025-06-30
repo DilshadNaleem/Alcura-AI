@@ -328,9 +328,9 @@
             alert(result.message);
 
             if(result.status == 'success') {
-                window.location.href = '/Customer/Dashboard';
+                window.location.href = '/Doctor/Dashboard';
             } else if (result.message.includes('Session Expired')) {
-                window.location.href = '/Customer/Signing.html';
+                window.location.href = '/Doctor/Signing';
             } else {
                 retryBtn.style.display = 'block';
             }

@@ -330,7 +330,7 @@
             if(result.status == 'success') {
                 window.location.href = '/Customer/Dashboard';
             } else if (result.message.includes('Session Expired')) {
-                window.location.href = '/Customer/Signing.html';
+                window.location.href = '/Customer/Signing';
             } else {
                 retryBtn.style.display = 'block';
             }
