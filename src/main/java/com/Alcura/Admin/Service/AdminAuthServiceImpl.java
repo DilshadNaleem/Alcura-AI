@@ -10,11 +10,13 @@ import com.Alcura.Customer.Service.hashPassword;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,6 +30,8 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     private final EmailService emailService;
     private final AdminUniqueId adminUniqueId;
     private static final Logger logger = LoggerFactory.getLogger(AdminAuthServiceImpl.class);
+
+    private static final String DEFAULT_PROFILE_IMAGE_PATH = "static/Customer/image/profile/image.jpeg";
 
     public AdminAuthServiceImpl(AdminRepository adminRepository, hashPassword hashPassword, OtpService otpService,
                                 EmailService emailService, AdminUniqueId adminUniqueId) {
@@ -79,7 +83,14 @@ public class AdminAuthServiceImpl implements AdminAuthService {
             admin.setFaceData(request.getFaceData());
             admin.setAdminType("Admin");
             admin.setStatus(0);
-            admin.setImage("/Customer/image/profile/image.jpeg");
+
+            byte[] defaultImage = loadDefaultProfileImage();
+            if (defaultImage != null) {
+                admin.setImage(defaultImage);
+            } else {
+                logger.warn("Default profile image not found, setting image to null");
+                admin.setImage(null);
+            }
 
             admin = adminUniqueId.createAdmin(admin);
 
@@ -128,8 +139,20 @@ public class AdminAuthServiceImpl implements AdminAuthService {
                 .body("Invalid OTP");
     }
 
-    public byte[] getDefaultImageBytes() throws IOException {
-        Path imagePath = Paths.get("src/main/image.jpeg");
-        return Files.readAllBytes(imagePath);
+    private byte[] loadDefaultProfileImage() {
+        try {
+            ClassPathResource resource = new ClassPathResource(DEFAULT_PROFILE_IMAGE_PATH);
+            if (resource.exists()) {
+                try (InputStream inputStream = resource.getInputStream()) {
+                    return inputStream.readAllBytes();
+                }
+            } else {
+                logger.error("Default profile image not found at: {}", DEFAULT_PROFILE_IMAGE_PATH);
+                return null;
+            }
+        } catch (IOException e) {
+            logger.error("Error loading default profile image", e);
+            return null;
+        }
     }
 }

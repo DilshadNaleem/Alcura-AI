@@ -17,8 +17,9 @@ public class Admin
     @Column(name = "unique_id", unique = true)
     private String uniqueId;
 
-    @Column(name = "image_path")
-    private String image;
+    @Lob
+    @Column(name = "image", columnDefinition = "LONGBLOB")
+    private byte[] image;
 
     @Column (name = "first_name", nullable = false)
     private String firstName;
@@ -67,11 +68,11 @@ public class Admin
         this.uniqueId = uniqueId;
     }
 
-    public String getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 

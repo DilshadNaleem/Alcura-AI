@@ -24,7 +24,7 @@ public class HomeController
     {
         if (session.getAttribute("email") == null)
         {
-            return "redirect:/Customer/Signing.html";
+            return "/Customer/Signing";
         }
         return  "/Customer/Dashboard";
     }

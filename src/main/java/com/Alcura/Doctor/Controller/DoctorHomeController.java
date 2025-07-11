@@ -22,6 +22,7 @@ public class DoctorHomeController
     public String ResetPassword()
     {
         return "/Doctor/ResetPassword";
+
     }
 
     @GetMapping("/Doctor/Verification")

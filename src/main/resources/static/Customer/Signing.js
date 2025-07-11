@@ -437,6 +437,12 @@ function validateSignupForm() {
         return false;
     }
 
+     // NIC validation (example: old or new Sri Lankan NIC formats)
+        if (!/^(\d{9}[vVxX]|\d{12})$/.test(nic)) {
+            alert('Please enter a valid NIC (e.g. 123456789V or 200012345678).');
+            return false;
+        }
+
     return true;
 }
 

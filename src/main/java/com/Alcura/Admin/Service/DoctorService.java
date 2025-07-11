@@ -27,4 +27,9 @@ public class DoctorService {
        return doctorRepositoryAdmin.findByUniqueId(uniqueId);
     }
 
+    public List<Doctor> getDoctorForImage(String email)
+    {
+        return doctorRepositoryAdmin.findByEmail(email);
+    }
+
 }

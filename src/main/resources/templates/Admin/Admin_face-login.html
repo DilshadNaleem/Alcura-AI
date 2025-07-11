@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .login-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 400px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        video {
+            width: 100%;
+            max-width: 320px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 20px auto;
+            display: block;
+        }
+        canvas {
+            display: none;
+        }
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #3367d6;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 20px;
+            color: #666;
+        }
+        #error {
+            color: #d32f2f;
+            margin-top: 10px;
+        }
+        #loading {
+            display: none;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h1>Face Recognition Login</h1>
+
+    <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="Enter your registered email" required>
+    </div>
+
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas"></canvas>
+
+    <div id="loading">Verifying your face...</div>
+    <div id="error"></div>
+    <div id="status">Please look directly at the camera</div>
+
+    <button id="loginBtn" disabled>Login with Face</button>
+</div>
+
+<script>
+    // DOM elements
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const emailInput = document.getElementById('email');
+    const loginBtn = document.getElementById('loginBtn');
+    const statusDiv = document.getElementById('status');
+    const errorDiv = document.getElementById('error');
+    const loadingDiv = document.getElementById('loading');
+
+    let cameraStream = null;
+
+    // Initialize camera
+    async function initCamera() {
+        try {
+            cameraStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+                audio: false
+            });
+            video.srcObject = cameraStream;
+            loginBtn.disabled = false;
+        } catch (err) {
+            errorDiv.textContent = "Camera access error: " + err.message;
+            loginBtn.disabled = true;
+        }
+    }
+
+    // Check if image is too dark (crude eye-closed detection)
+    function isImageTooDark(imageData) {
+        let sum = 0;
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            sum += (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
+        }
+        const avgBrightness = sum / (imageData.data.length / 4);
+        return avgBrightness < 50; // Adjust threshold as needed
+    }
+
+    // Main face verification
+    async function verifyFace() {
+        const email = emailInput.value.trim();
+
+        if (!email) {
+            errorDiv.textContent = "Please enter your email";
+            return;
+        }
+
+        try {
+            errorDiv.textContent = "";
+            statusDiv.textContent = "Processing your face...";
+            loadingDiv.style.display = "block";
+            loginBtn.disabled = true;
+
+            // Capture image from camera
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Check image brightness (simple eye-closed detection)
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            if (isImageTooDark(imageData)) {
+                throw new Error("Image too dark. Ensure proper lighting and open eyes.");
+            }
+
+            // Convert to blob and send to backend
+            const blob = await new Promise(resolve => {
+                canvas.toBlob(resolve, 'image/jpeg', 0.95);
+            });
+
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('faceImage', blob, 'face_login.jpg');
+
+            const response = await fetch('/auth/Admin-face-login', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                statusDiv.textContent = "Login successful! Redirecting...";
+                window.location.href = result.redirectUrl || '/Admin/Dashboard';
+            } else {
+                errorDiv.textContent = result.message || "Face verification failed";
+                statusDiv.textContent = "Please try again";
+            }
+
+        } catch (error) {
+            console.error('Login error:', error);
+            errorDiv.textContent = error.message || "Unexpected error";
+            statusDiv.textContent = "Login failed";
+        } finally {
+            loadingDiv.style.display = "none";
+            loginBtn.disabled = false;
+        }
+    }
+
+    // Event listeners
+    loginBtn.addEventListener('click', verifyFace);
+    emailInput.addEventListener('input', () => {
+        loginBtn.disabled = !emailInput.value.trim();
+    });
+    window.addEventListener('DOMContentLoaded', initCamera);
+    window.addEventListener('beforeunload', () => {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+        }
+    });
+</script>
+</body>
+</html>

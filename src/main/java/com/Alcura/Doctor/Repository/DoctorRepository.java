@@ -36,5 +36,6 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer>
             "FROM Doctor d")
     List<ViewDoctorForm> viewDoctorinCustomerForm();
 
+    List<Doctor> findByEmail(String email);
 }
 

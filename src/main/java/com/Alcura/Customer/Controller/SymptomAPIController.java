@@ -14,7 +14,7 @@ import java.util.Map;
 @RequestMapping("/api/diseaseClassifier")
 public class SymptomAPIController {
 
-    private final String FLASK_API_URL = "http://localhost:5000/analyze";
+    private final String FLASK_API_URL = "http://localhost:5000/analyze"; // disease Sympyom API
 
     @PostMapping("/classify")
     public ResponseEntity<String> classifyMedicine(@RequestParam("message") String message) {

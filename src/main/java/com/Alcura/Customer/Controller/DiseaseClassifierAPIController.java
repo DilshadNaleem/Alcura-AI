@@ -16,7 +16,7 @@ import java.io.IOException;
 @RequestMapping("/api/disease")
 public class DiseaseClassifierAPIController
 {
-    private final String FLASK_API_URL = "http://localhost:5000/DiseaseClassify";
+    private final String FLASK_API_URL = "http://localhost:5000/DiseaseClassify"; // disease Detecor API
 
     @PostMapping("/classify")
     public ResponseEntity<String> classifyDisease(@RequestParam("file")MultipartFile file)

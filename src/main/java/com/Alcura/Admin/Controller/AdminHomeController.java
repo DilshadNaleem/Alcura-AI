@@ -68,4 +68,18 @@ public class AdminHomeController {
     {
         return "/Admin/MedicinePredictionModel/MedicineModelDashboard";
     }
+
+
+    @GetMapping("/Admin/FaceEnrollment")
+    public String enrollment()
+    {
+        return "/Admin/AdminFace_Enrollment";
+    }
+
+    @GetMapping("/Admin/FaceLogin")
+    public String update()
+    {
+        return "/Admin/Admin_face-login";
+    }
+
 }

@@ -207,7 +207,7 @@
     <aside>
         <div class="top">
             <div class="logo">
-                <h2>C <span class="danger">BABAR</span></h2>
+                <h2>A <span class="danger">lcura</span></h2>
             </div>
             <div class="close" id="close_btn">
                 <span class="material-symbols-sharp">close</span>
@@ -223,11 +223,11 @@
                 <span class="material-symbols-sharp">person_outline</span>
                 <h3>Customers</h3>
             </a>
-            <a href="/Admin/DiseaseModelDashboard">
+            <a href="">
                 <span class="material-symbols-sharp">insights</span>
                 <h3>Analytics</h3>
             </a>
-            <a th:href="@{/Admin/SOS}">
+            <a href="">
                 <span class="material-symbols-sharp">mail_outline</span>
                 <h3>Messages</h3>
                 <span class="msg_count notification-badge">0</span>
@@ -264,7 +264,7 @@
         <!-- Insights Cards -->
         <section class="insights">
             <div class="sales">
-                <a href="/Admin/DiseaseModelDashboard">
+                <a href="">
                     <span class="material-symbols-sharp">trending_up</span>
                     <div class="middle">
                         <div class="left">
@@ -368,12 +368,12 @@
             </div>
             <div class="profile">
                 <div class="info">
-                    <p><b th:text="${adminName}"></b></p>
+                    <p><b th:text="${adminName + ' ' + adminLastName}"></b></p>
                     <p>Admin</p>
                     <small class="text-muted"></small>
                 </div>
                 <div class="profile-photo">
-                    <img th:src="@{adminImage}" alt="Admin profile photo"/>
+                    <img th:src="@{/Doctor/Image}" alt="Admin profile photo"/>
                 </div>
             </div>
         </div>

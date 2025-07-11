@@ -36,7 +36,7 @@ public class ResetPasswordController
         {
             out.println("<script type = 'text/javascript'>");
             out.println("alert('Invalid or expired token Please try again!');");
-            out.println("window.location.href = '/Customer/Signing.html';");
+            out.println("window.location.href = '/Customer/Signing';");
             out.println("</script>");
             return null;
         }
@@ -86,7 +86,7 @@ public class ResetPasswordController
 
             out.println("<script type = 'text/javascript'>");
             out.println("alert('Password updated Successfully!');");
-            out.println("window.location.href = '/Customer/Signing.html';");
+            out.println("window.location.href = '/Customer/Signing';");
             out.println("</script>");
             return;
         }
@@ -94,7 +94,7 @@ public class ResetPasswordController
         {
             out.println("<script type = 'text/javascript'>");
             out.println("alert('User not found');");
-            out.println("window.location.href = '/Customer/Signing.html';");
+            out.println("window.location.href = '/Customer/Signing';");
             out.println("</script>");
             return;
         }
