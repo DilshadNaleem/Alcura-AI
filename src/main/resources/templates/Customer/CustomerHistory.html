@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Appointments</title>
+    <link rel="stylesheet" href="style.css">
+    <!---Boxicon css-->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
         :root {
             --primary: #4a6fa5;
@@ -167,11 +170,239 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+
+ .search-container {
+    margin-bottom: 20px;
+}
+
+.search-form {
+    display: flex;
+    gap: 8px; /* Reduced gap */
+    flex-wrap: wrap;
+    align-items: center; /* Align items vertically */
+}
+
+.search-form input[type="text"] {
+    flex: 1;
+    min-width: 180px; /* Slightly reduced min-width */
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-width: 300px; /* Added max-width */
+}
+
+.search-form select.status-filter {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    width: 120px; /* Fixed width for status filter */
+}
+
+.search-form button {
+    padding: 8px 12px; /* Reduced horizontal padding */
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 80px; /* Fixed width for button */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.search-form button:hover {
+    background-color: #3a5a8a;
+}
+
+.search-form select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+
+.search-form button {
+    padding: 8px 16px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-form button:hover {
+    background-color: #3a5a8a;
+}
+
+/* Status filter specific styles */
+.status-filter {
+    min-width: 100px;
+}
+
+/* Status indicator badges */
+.status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-left: 5px;
+}
+
+.status-Scheduled {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-Completed {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-Canceled {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-Rescheduled {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
     </style>
 </head>
 <body>
+
+<nav class="sidebar close">
+    <header>
+        <div class="image-text">
+                    <span class="image">
+                        <img src="log.png" alt="">
+                    </span>
+
+            <div class="text header-text">
+                <span class="name">Alucra</span>
+                <span class="profession">Web developer</span>
+            </div>
+        </div>
+
+        <i class='bx bx-chevron-right toggle'></i>
+    </header>
+
+    <div class="menu-bar">
+        <div class="menu">
+            <li class="search-box">
+                <i class='bx bx-search icon' ></i>
+                <input type="search" placeholder="Search" id="searchBox">
+            </li>
+
+
+            <ul class="menu-links">
+
+                <li class="nav-link">
+                    <a href="/Customer/Dashboard">
+                        <i class='bx bx-home-alt icon' ></i>
+                        <span class="text nav-text">Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="nav-link">
+                    <a href="/Customer/editProfile">
+                        <i class='bx bx-user icon' ></i>
+                        <span class="text nav-text">Edit profile</span>
+                    </a>
+                </li>
+
+                <li class="nav-link">
+                    <a href="/Customer/Model">
+                        <i class='bx bx-cube icon' ></i>
+                        <span class="text nav-text">Model</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="/Customer/FaceEnrollment">
+                        <i class='bx bx-face icon' ></i>
+                        <span class="text nav-text">Face</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="/Customer/SOS">
+                        <i class='bx bx-first-aid icon' ></i>
+                        <span class="text nav-text">SOS</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="/Customer/MedicineClassifier">
+                        <i class='bx bx-capsule icon' ></i>
+                        <span class="text nav-text">Drug</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="/Customer/DiseaseClassifier">
+                        <i class='bx bx-bug icon' ></i>
+                        <span class="text nav-text">Disease</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="/Customer/DiseaseSymptomChecker">
+                        <i class="bx bx-clinic icon"></i>
+                        <span class="text nav-text">Diseae Symptom</span>
+                    </a>
+                </li>
+
+                <li class="nav-link">
+                    <a href="/Customer/AppointmentBooking">
+                        <i class="bx bx-calendar icon"></i>
+                        <span class="text nav-text">Appointment Bookings</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+        <div class="bottom-content">
+            <li class="">
+                <a href="#">
+                    <i class='bx bx-log-out icon' ></i>
+                    <span class="text nav-text">Logout</span>
+                </a>
+            </li>
+
+            <li class="mode">
+                <div class="moon-sun">
+                    <i class='bx bx-moon icon moon' ></i>
+                    <i class='bx bx-sun icon sun' ></i>
+                </div>
+
+                <span class="mode-text text">Dark Mode</span>
+                <div class="toggle-switch">
+                    <span class="switch"></span>
+                </div>
+            </li>
+        </div>
+    </div>
+</nav>
+
+<section class="home">
 <div class="container">
     <h1>My Appointments</h1>
+
+    <div class="search-container">
+        <form th:action="@{/Customer/SearchAppointment}" method="get" class="search-form">
+            <input type="text" name="query" placeholder="Search by doctor name, ID, date, etc."
+                   th:value="${currentQuery}">
+
+            <select name="status" class="status-filter">
+                <option value="">All Statuses</option>
+                <option value="Scheduled" th:selected="${currentStatus == 'Scheduled'}">Scheduled</option>
+                <option value="Completed" th:selected="${currentStatus == 'Completed'}">Completed</option>
+                <option value="Canceled" th:selected="${currentStatus == 'Canceled'}">Canceled</option>
+                <option value="Rescheduled" th:selected="${currentStatus == 'Rescheduled'}">Rescheduled</option>
+            </select>
+
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
 
     <div th:if="${appointments.isEmpty()}" class="no-appointments">
         <p>No appointments found</p>
@@ -264,7 +495,8 @@
         </form>
     </div>
 </div>
-
+</section>
+<script src="script.js"></script>
 <script>
     // Cancel Appointment Modal Handling
     document.querySelectorAll('.btn-cancel-trigger').forEach(button => {
