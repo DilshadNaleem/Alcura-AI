@@ -49,7 +49,7 @@ public class DREditProfileController {
         }
 
         model.addAttribute("doctor", doctor);
-        return "/Doctor/EditProfile";
+        return "/Doctor/EditProfile.html";
     }
 
     @PostMapping("/Editform")
@@ -99,7 +99,7 @@ public class DREditProfileController {
             out.println("<script>alert('Update Successfully!'); window.location.href = '/Doctor/Dashboard';</script>");
         } catch (Exception e) {
             e.printStackTrace();
-            out.println("<script>alert('Error Updating profile'); window.location.href='/Doctor/EditProfile';</script>");
+            out.println("<script>alert('Error Updating profile'); window.location.href='/Doctor/EditProfile.html';</script>");
         }
     }
 

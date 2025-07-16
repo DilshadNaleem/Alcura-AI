@@ -1,7 +1,7 @@
-package com.Alcura.Customer.Controller;
+package com.Alcura.Customer.Controller.AppointmentController;
 
 import com.Alcura.Customer.Model.Appoinment;
-import com.Alcura.Customer.Service.AppointmentCancelEmailService;
+import com.Alcura.Customer.Service.AppointmentRescheduleEmailService;
 import com.Alcura.Customer.Service.Interfaces.AppointmentRepo;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -22,38 +22,41 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/Customer")
-public class CancelAppointmentController {
-    private final Logger logger = LoggerFactory.getLogger(CancelAppointmentController.class);
-
+public class AppointmentRescheduleRequestController
+{
+    @Autowired
+    private final AppointmentRescheduleEmailService appointmentRescheduleEmailService;
+    private final Logger logger = LoggerFactory.getLogger(AppointmentRescheduleRequestController.class);
     @Autowired
     private AppointmentRepo appointmentRepo;
 
-    @Autowired
-    private AppointmentCancelEmailService appointmentEmailService;
+    public AppointmentRescheduleRequestController(AppointmentRescheduleEmailService appointmentRescheduleEmailService)
+    {
+        this.appointmentRescheduleEmailService = appointmentRescheduleEmailService;
+    }
 
-    @PostMapping("/CancelAppointment")
-    public void Cancel(HttpSession session, Model model, HttpServletResponse response,
-                       @RequestParam("appointmentId") String appointmentId,
-                       @RequestParam(value = "cancelReason", required = false) String cancelReason) throws IOException {
-
-        System.out.println("DEBUG: Received appointmentId = " + appointmentId);
+    @PostMapping("/AppointmentReSchedule")
+    public void Reschedule(HttpSession session, Model model, HttpServletResponse response,
+                           @RequestParam("Id") String appointmentId,
+                           @RequestParam("notes") String notes) throws IOException {
+        System.out.println("DEBUG");
+        System.out.println("Appoitnment Id = " + appointmentId);
 
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter writer = response.getWriter();
 
         try {
             String email = (String) session.getAttribute("email");
-            logger.info("Session Email in Cancel Appointment: {}", email);
+            logger.info("Recieved Reschedule Email {}", email);
 
             if (email == null) {
-                writer.println("<script type='text/javascript'>");
-                writer.println("alert('You need to login first!');");
+                writer.println("<script>");
+                writer.println("alert('Login in First')");
                 writer.println("window.location='/Customer/Signing';");
                 writer.println("</script>");
                 return;
             }
 
-            // Find the appointment by unique ID
             Optional<Appoinment> optionalAppointment = appointmentRepo.findByUniqueIdNative(appointmentId);
             if (optionalAppointment.isEmpty()) {
                 writer.println("<script type='text/javascript'>");
@@ -63,10 +66,9 @@ public class CancelAppointmentController {
                 return;
             }
 
-            Appoinment appointment = optionalAppointment.get();
+            Appoinment appoinment = optionalAppointment.get();
 
-            // Verify the appointment belongs to the logged-in user
-            if (!appointment.getCustomer_email().equals(email)) {
+            if (!appoinment.getCustomer_email().equals(email)) {
                 writer.println("<script type='text/javascript'>");
                 writer.println("alert('You can only cancel your own appointments!');");
                 writer.println("window.location='/Customer/MyHistory';");
@@ -74,35 +76,30 @@ public class CancelAppointmentController {
                 return;
             }
 
-            // Update appointment status to "Canceled"
-            appointment.setStatus("Canceled");
-            appointment.setCancel_reason(cancelReason);
-            if (cancelReason != null && !cancelReason.isEmpty()) {
-                appointment.setSpecial_reasons(cancelReason);
-            }
-            appointmentRepo.save(appointment);
+            appoinment.setStatus("Rescheduled");
+            appoinment.setReschedule_reason(notes);
+            appointmentRepo.save(appoinment);
 
-            // Send cancellation email
-            LocalDate appointmentDate = appointment.getAppointment_date();
-            String formattedDate = appointmentDate.format(DateTimeFormatter.ofPattern("MMMM dd, yyyy"));
+            LocalDate apppointmentDate = appoinment.getAppointment_date();
+            String newDate = apppointmentDate.format(DateTimeFormatter.ofPattern("MMMM dd, yyyy"));
 
-            appointmentEmailService.sendAppointmentCancellation(
-                    appointment.getCustomer_email(),
-                    formattedDate,
-                    appointment.getDoctor_name(),
-                    appointment.getUnique_id(),
-                    appointment.getAppointment_time()
+            appointmentRescheduleEmailService.sendEmail(
+                    appoinment.getCustomer_email(),
+                    newDate,
+                    appoinment.getAppointment_time(),
+                    appoinment.getUnique_id(),
+                    appoinment.getDoctor_name(),
+                    notes
             );
 
             writer.println("<script type='text/javascript'>");
-            writer.println("alert('Appointment cancelled successfully!');");
+            writer.println("alert('Appointment Rescheduled Successful!');");
             writer.println("window.location='/Customer/MyHistory';");
             writer.println("</script>");
-
         } catch (Exception e) {
-            logger.error("Error cancelling appointment: ", e);
+            logger.error("Error Rescheduling appointment: ", e);
             writer.println("<script type='text/javascript'>");
-            writer.println("alert('Error cancelling appointment. Please try again.');");
+            writer.println("alert('Error Rescheduling appointment. Please try again.');");
             writer.println("window.location='/Customer/MyHistory';");
             writer.println("</script>");
         }

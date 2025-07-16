@@ -1,7 +1,5 @@
-package com.Alcura.Customer.Controller;
+package com.Alcura.Customer.Controller.AppointmentController;
 
-import com.Alcura.Admin.DTO.ViewAllDoctors;
-import com.Alcura.Admin.Service.DoctorService;
 import com.Alcura.Customer.DTO.ViewDoctorForm;
 import com.Alcura.Doctor.Model.Doctor;
 import com.Alcura.Doctor.Repository.DoctorRepository;

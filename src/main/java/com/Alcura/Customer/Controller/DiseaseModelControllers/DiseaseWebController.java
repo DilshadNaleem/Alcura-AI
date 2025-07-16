@@ -1,11 +1,9 @@
-package com.Alcura.Customer.Controller;
+package com.Alcura.Customer.Controller.DiseaseModelControllers;
 
 import com.Alcura.Customer.DTO.DiseaseClassificationResult;
 import com.Alcura.Customer.DTO.DiseaseInfo;
-import com.Alcura.Customer.DTO.MedicineClassificationResult;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hibernate.annotations.WhereJoinTable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

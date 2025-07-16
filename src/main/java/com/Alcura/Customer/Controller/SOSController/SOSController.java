@@ -1,4 +1,4 @@
-package com.Alcura.Customer.Controller;
+package com.Alcura.Customer.Controller.SOSController;
 
 import com.Alcura.Customer.DTO.EmergencyRequest;
 import com.Alcura.Customer.DTO.SOSRequest;

@@ -1,9 +1,7 @@
-package com.Alcura.Customer.Controller;
+package com.Alcura.Customer.Controller.AppointmentController;
 
-import com.Alcura.Admin.DTO.ViewAllDoctors;
 import com.Alcura.Admin.Service.DoctorService;
 import com.Alcura.Doctor.Model.Doctor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

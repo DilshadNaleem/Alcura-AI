@@ -1,4 +1,4 @@
-package com.Alcura.Customer.Controller;
+package com.Alcura.Customer.Controller.DiseaseModelControllers;
 
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

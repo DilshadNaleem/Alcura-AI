@@ -1,6 +1,5 @@
-package com.Alcura.Customer.Controller;
+package com.Alcura.Customer.Controller.MedicineModelController;
 
-import org.apache.coyote.Response;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;

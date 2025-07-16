@@ -1,4 +1,4 @@
-package com.Alcura.Customer.Controller;
+package com.Alcura.Customer.Controller.DiseaseModelControllers;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,4 +1,4 @@
-package com.Alcura.Customer.Controller;
+package com.Alcura.Customer.Controller.AppointmentController;
 
 import com.Alcura.Customer.Model.Appoinment;
 import com.Alcura.Customer.Service.Interfaces.AppoinmentService;
@@ -6,14 +6,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @RestController
 

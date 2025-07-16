@@ -1,14 +1,11 @@
 package com.Alcura.Doctor.Repository;
 
 import com.Alcura.Admin.DTO.ViewAllDoctors;
-import com.Alcura.Customer.Controller.DoctorProfileController;
 import com.Alcura.Customer.DTO.ViewDoctorForm;
 import com.Alcura.Doctor.Model.Doctor;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import javax.print.Doc;
 import java.util.List;
 import java.util.Optional;
 

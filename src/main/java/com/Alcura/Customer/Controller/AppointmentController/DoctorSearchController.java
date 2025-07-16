@@ -1,4 +1,4 @@
-package com.Alcura.Customer.Controller;
+package com.Alcura.Customer.Controller.AppointmentController;
 
 import com.Alcura.Customer.DTO.ViewDoctorForm;
 import com.Alcura.Doctor.Repository.DoctorRepository;
