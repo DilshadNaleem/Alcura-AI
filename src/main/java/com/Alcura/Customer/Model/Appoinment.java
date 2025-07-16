@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 
@@ -42,9 +43,15 @@ public class Appoinment
     @Column(name = "status")
     private String status;
 
+    @Column(name = "cancel_reason")
+    private String cancel_reason;
+
+    @Column(name = "reschedule_reason")
+    private String reschedule_reason;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalTime created_at;
+    private LocalDateTime created_at;
 
     public int getId() {
         return id;
@@ -110,11 +117,11 @@ public class Appoinment
         this.status = status;
     }
 
-    public LocalTime getCreated_at() {
+    public LocalDateTime getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(LocalTime created_at) {
+    public void setCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
     }
 
@@ -124,5 +131,21 @@ public class Appoinment
 
     public void setCustomer_email(String customer_email) {
         this.customer_email = customer_email;
+    }
+
+    public String getCancel_reason() {
+        return cancel_reason;
+    }
+
+    public void setCancel_reason(String cancel_reason) {
+        this.cancel_reason = cancel_reason;
+    }
+
+    public String getReschedule_reason() {
+        return reschedule_reason;
+    }
+
+    public void setReschedule_reason(String reschedule_reason) {
+        this.reschedule_reason = reschedule_reason;
     }
 }

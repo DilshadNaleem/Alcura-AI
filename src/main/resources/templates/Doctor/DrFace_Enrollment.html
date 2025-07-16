@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Face Enrollment</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="/Admin/style.css">
     <style>
         :root {
             --primary: #4361ee;
@@ -20,6 +23,59 @@
             --border-radius: 12px;
             --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Dark theme variables */
+        body.dark-theme-variables {
+            --primary: #4895ef;
+            --primary-dark: #3f7fd4;
+            --secondary: #4a4ecc;
+            --accent: #4cc9f0;
+            --light: #212529;
+            --dark: #f8f9fa;
+            --gray: #adb5bd;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f72585;
+            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%);
+        }
+
+        body.dark-theme-variables .container {
+            background: #2d2d2d;
+            color: #f8f9fa;
+        }
+
+        body.dark-theme-variables .paragraph p {
+            color: var(--gray);
+        }
+
+        body.dark-theme-variables .btn-secondary {
+            background-color: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+        }
+
+        body.dark-theme-variables .btn-secondary:hover {
+            background-color: var(--accent);
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .btn-tertiary {
+            background-color: #3a3a3a;
+            color: var(--gray);
+        }
+
+        body.dark-theme-variables .btn-tertiary:hover {
+            background-color: #4a4a4a;
+        }
+
+        body.dark-theme-variables .update-link {
+            color: var(--accent);
+        }
+
+        body.dark-theme-variables .update-link:hover {
+            color: var(--primary);
         }
 
         * {
@@ -38,6 +94,7 @@
             justify-content: center;
             align-items: center;
             padding: 2rem;
+            transition: var(--transition);
         }
 
         .container {
@@ -50,6 +107,7 @@
             padding: 2.5rem;
             text-align: center;
             animation: fadeIn 0.6s ease-out;
+            transition: var(--transition);
         }
 
         @keyframes fadeIn {
@@ -79,6 +137,7 @@
 
         .paragraph p {
             font-size: 1.1rem;
+            transition: var(--transition);
         }
 
         .video-container {
@@ -257,9 +316,78 @@
             outline: none;
             box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.5);
         }
+
+        /* Theme toggler styles */
+        .theme-toggler {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            margin-left: 1rem;
+        }
+
+        .theme-toggler span {
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .theme-toggler span.active {
+            color: var(--primary);
+        }
     </style>
 </head>
 <body>
+<aside>
+    <div class="top">
+        <div class="logo">
+            <h2>A <span class="danger">lcura</span></h2>
+        </div>
+        <div class="close" id="close_btn">
+            <span class="material-symbols-sharp">close</span>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <a href="/Doctor/FaceEnrollment">
+            <span class="material-symbols-sharp">grid_view</span>
+            <h3>Dashboard</h3>
+        </a>
+        <a href="/Doctor/Edit" class="active">
+            <span class="material-symbols-sharp">person_outline</span>
+            <h3>Customers</h3>
+        </a>
+        <a href="">
+            <span class="material-symbols-sharp">insights</span>
+            <h3>Analytics</h3>
+        </a>
+        <a href="">
+            <span class="material-symbols-sharp">mail_outline</span>
+            <h3>Messages</h3>
+            <span class="msg_count notification-badge">0</span>
+        </a>
+        <a href="#">
+            <span class="material-symbols-sharp">receipt_long</span>
+            <h3>Products</h3>
+        </a>
+        <a href="#">
+            <span class="material-symbols-sharp">report_gmailerrorred</span>
+            <h3>Reports</h3>
+        </a>
+        <a href="#">
+            <span class="material-symbols-sharp">settings</span>
+            <h3>Settings</h3>
+        </a>
+        <a href="#">
+            <span class="material-symbols-sharp">add</span>
+            <h3>Add Product</h3>
+        </a>
+        <a href="#">
+            <span class="material-symbols-sharp">logout</span>
+            <h3>Logout</h3>
+        </a>
+    </div>
+</aside>
+
 <div class="container">
     <div class="heading">
         <h1>Enroll Face</h1>
@@ -282,7 +410,7 @@
     </div>
     <a href="/Doctor/UpdateFace" class="update-link">Update Face</a>
 </div>
-
+<script src="/Doctor/DashboardDarkTheem.js"></script>
 <script>
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
@@ -350,6 +478,7 @@
     });
 
     initCamera();
+
 </script>
 </body>
 </html>

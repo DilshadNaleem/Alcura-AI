@@ -42,7 +42,7 @@ public class VerifyOtpController
 
             if (verificationResult.getStatusCode() == HttpStatus.OK) {
                 message = "Account verified successfully! Please login.";
-                redirectUrl = "'/Customer/Signing.html'";
+                redirectUrl = "'/Customer/Signing'";
             } else {
                 message = verificationResult.getBody() != null ?
                         verificationResult.getBody() : "Account verification failed. Please try again.";

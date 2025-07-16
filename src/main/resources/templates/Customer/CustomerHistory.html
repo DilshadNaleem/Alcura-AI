@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Appointments</title>
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --danger: #dc3545;
+            --light-gray: #e9ecef;
+            --reschedule: #130dd5;
+
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .appointment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .appointment-card {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .appointment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .doctor-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .appointment-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-cancel-trigger {
+            background-color: #ffebee;
+            color: var(--danger);
+        }
+
+        .btn-reschedule-trigger {
+            background-color: #e3f2fd;
+            color: var(--primary);
+        }
+
+        .btn-cancel-confirm {
+            background-color: #ffebee;
+            color: var(--danger);
+        }
+
+        .btn-reschedule-confirm {
+            background-color: #e3f2fd;
+            color: var(--primary);
+        }
+
+        .no-appointments {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+
+        .reschedule-reason
+        {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #8aa7c8;
+            border-radius: 4px;
+            color: var(--reschedule);
+        }
+        .cancel-reason {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #ffebee;
+            border-radius: 4px;
+            color: var(--danger);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>My Appointments</h1>
+
+    <div th:if="${appointments.isEmpty()}" class="no-appointments">
+        <p>No appointments found</p>
+    </div>
+
+    <div class="appointment-list">
+        <div th:each="appointment : ${appointments}" class="appointment-card">
+            <div class="appointment-header">
+                <div class="doctor-name" th:text="${appointment.doctor_name}">Doctor Name</div>
+                <div class="appointment-time" th:text="${appointment.appointment_time}">Time</div>
+            </div>
+
+            <div>
+                <p>ID: <span th:text="${appointment.unique_id}"></span></p>
+                <p>Date: <span th:text="${appointment.appointment_date}"></span></p>
+                <p>Time: <span th:text="${appointment.appointment_time}"></span></p>
+                <p th:if="${appointment.special_reasons != null}">
+                    Notes: <span th:text="${appointment.special_reasons}"></span>
+                </p>
+                <p>Status: <span th:text="${appointment.status}"></span></p>
+                <p>Created At: <span th:text="${#temporals.format(appointment.created_at, 'yyyy-MM-dd HH:mm')}"></span></p>
+
+                <!-- Show cancel reason if status is Canceled -->
+                <div th:if="${appointment.status == 'Canceled'}" class="cancel-reason">
+                    <p><strong>Cancel Reason:</strong> <span th:text="${appointment.cancel_reason} ?: 'No reason provided'"></span></p>
+                </div>
+
+                <div th:if="${appointment.status == 'Rescheduled'}" class="reschedule-reason">
+                    <p><strong>Reschedule Reason:</strong> <span th:text="${appointment.reschedule_reason} ?: 'No reason provided'"></span></p>
+                </div>
+
+            </div>
+
+            <div class="action-buttons" th:unless="${appointment.status == 'Canceled' or appointment.status == 'Rescheduled'}">
+                <button class="btn btn-reschedule-trigger"
+                        th:attr="data-appointment-id=${appointment.unique_id}">
+                    Reschedule
+                </button>
+                <button class="btn btn-cancel-trigger"
+                        th:attr="data-appointment-id=${appointment.unique_id}">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Appointment Modal -->
+<div id="cancelModal" class="modal">
+    <div class="modal-content">
+        <h2>Cancel Appointment</h2>
+        <p>Are you sure you want to cancel this appointment?</p>
+
+        <form id="cancelForm" th:action="@{/Customer/CancelAppointment}" method="post">
+            <input type="hidden" id="cancelAppointmentId" name="appointmentId" value="">
+
+            <div class="form-group">
+                <label for="cancelReason">Reason for cancellation (optional):</label>
+                <textarea id="cancelReason" name="cancelReason" rows="3"></textarea>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn" onclick="closeModal('cancelModal')">Close</button>
+                <button type="submit" class="btn btn-cancel-confirm">Confirm Cancellation</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Reschedule Appointment Modal -->
+<div id="rescheduleModal" class="modal">
+    <div class="modal-content">
+        <h2>Reschedule Appointment</h2>
+        <p>Are you sure you want to reschedule this appointment?</p>
+
+        <form id="rescheduleForm" th:action="@{/Customer/AppointmentReSchedule}" method="post" onsubmit="return validateRescheduleForm()">
+            <input type="hidden" id="rescheduleAppointmentId" name="Id" value="">
+
+
+
+            <div class="form-group">
+                <label for="rescheduleNotes">Notes (optional):</label>
+                <textarea id="rescheduleNotes" name="notes" rows="3"></textarea>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn" onclick="closeModal('rescheduleModal')">Close</button>
+                <button type="submit" class="btn btn-reschedule-confirm">Confirm Reschedule</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Cancel Appointment Modal Handling
+    document.querySelectorAll('.btn-cancel-trigger').forEach(button => {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            const appointmentId = this.getAttribute('data-appointment-id');
+            openModal('cancelModal', appointmentId, 'cancelAppointmentId');
+        });
+    });
+
+    // Reschedule Appointment Modal Handling
+    document.querySelectorAll('.btn-reschedule-trigger').forEach(button => {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            const appointmentId = this.getAttribute('data-appointment-id');
+            openModal('rescheduleModal', appointmentId, 'rescheduleAppointmentId');
+        });
+    });
+
+    function openModal(modalId, appointmentId, inputId) {
+        document.getElementById(inputId).value = appointmentId;
+        document.getElementById(modalId).style.display = 'block';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    window.onclick = function (event) {
+        if (event.target.classList.contains('modal')) {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+    }
+
+    document.querySelectorAll('.btn-reschedule-trigger').forEach(button => {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            const appointmentId = this.getAttribute('data-appointment-id');
+            openModal('rescheduleModal', appointmentId, 'rescheduleAppointmentId');
+
+            // Set minimum date based on current time
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const noonToday = new Date(today);
+            noonToday.setHours(12, 0, 0, 0); // 12:00 PM today
+
+            let minDate = today;
+            if (now >= noonToday) {
+                // If current time is after 12:00 PM, set min date to tomorrow
+                minDate = new Date(today);
+                minDate.setDate(today.getDate() + 1);
+            }
+
+            // Format as YYYY-MM-DD
+            const minDateStr = minDate.toISOString().split('T')[0];
+            document.getElementById('rescheduleDate').min = minDateStr;
+
+            // Clear previous values and errors
+            document.getElementById('rescheduleDate').value = '';
+            document.getElementById('rescheduleTime').value = '';
+            hideError('dateError');
+            hideError('timeError');
+        });
+    });
+
+    // Update time validation when date changes
+    document.getElementById('rescheduleDate').addEventListener('change', function() {
+        const selectedDate = new Date(this.value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const noonToday = new Date(today);
+        noonToday.setHours(12, 0, 0, 0);
+
+        // Check if selected date is today (but today should already be blocked if after noon)
+        if (selectedDate.getTime() === today.getTime() && new Date() < noonToday) {
+            // If before noon and somehow today is selected, set min time to current time + 1 hour
+            const now = new Date();
+            const minHours = now.getHours();
+            const minMinutes = now.getMinutes() + 1;
+            const minTime = `${String(minHours).padStart(2, '0')}:${String(minMinutes).padStart(2, '0')}`;
+            document.getElementById('rescheduleTime').min = minTime;
+        } else {
+            // For future dates, remove min time restriction
+            document.getElementById('rescheduleTime').removeAttribute('min');
+        }
+
+        validateDateTime();
+    });
+
+    // Previous validation functions remain the same
+    function validateDateTime() {
+        const dateInput = document.getElementById('rescheduleDate');
+        const timeInput = document.getElementById('rescheduleTime');
+
+        if (!dateInput.value || !timeInput.value) return;
+
+        const selectedDate = new Date(dateInput.value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // If selected date is today (shouldn't happen if after noon)
+        if (selectedDate.getTime() === today.getTime()) {
+            const [hours, minutes] = timeInput.value.split(':').map(Number);
+            const selectedDateTime = new Date();
+            selectedDateTime.setHours(hours, minutes, 0, 0);
+
+            if (selectedDateTime <= new Date()) {
+                showError('timeError', 'Please select a time in the future');
+                return false;
+            }
+        }
+
+        hideError('timeError');
+        return true;
+    }
+
+    function validateRescheduleForm() {
+        const dateInput = document.getElementById('rescheduleDate');
+        const timeInput = document.getElementById('rescheduleTime');
+
+        if (!dateInput.value) {
+            showError('dateError', 'Please select a date');
+            return false;
+        }
+
+        const selectedDate = new Date(dateInput.value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const noonToday = new Date(today);
+        noonToday.setHours(12, 0, 0, 0);
+
+        // Check if date is valid (should already be enforced by min attribute)
+        if (selectedDate < today || (new Date() >= noonToday && selectedDate.getTime() === today.getTime())) {
+            showError('dateError', 'Please select a valid future date');
+            return false;
+        }
+
+        if (!timeInput.value) {
+            showError('timeError', 'Please select a time');
+            return false;
+        }
+
+        return validateDateTime();
+    }
+
+    // Helper functions remain the same
+    function showError(elementId, message) {
+        const element = document.getElementById(elementId);
+        element.textContent = message;
+        element.style.display = 'block';
+    }
+
+    function hideError(elementId) {
+        document.getElementById(elementId).style.display = 'none';
+    }
+</script>
+</body>
+</html>
