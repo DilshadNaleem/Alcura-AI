@@ -16,247 +16,464 @@
 
     <!-- Emergency Alert Styles -->
     <style>
-        /* Emergency Notifications Styles */
-        .emergency-notifications {
-            margin-top: 20px;
-            background: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+        /* Dark Mode Styles for Emergency Alerts */
+        body.dark-theme-variables .emergency-notifications {
+            background: #181A1E !important;
+            color: #e2e8f0 !important;
         }
 
-        .emergency-alert {
-            background: #ffebee;
-            border-left: 4px solid #f44336;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
-            animation: fadeIn 0.5s;
+        body.dark-theme-variables .emergency-alert {
+            background: #4a1c1c !important;
+            border-left: 4px solid #f44336 !important;
+            color: #e2e8f0 !important;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        body.dark-theme-variables .emergency-alert h4 {
+            color: #f44336 !important;
         }
 
-        .emergency-alert h4 {
-            color: #f44336;
-            margin: 0 0 5px 0;
+        body.dark-theme-variables .emergency-alert button {
+            background: #f44336 !important;
+            color: white !important;
         }
 
-        .emergency-alert p {
-            margin: 5px 0;
+        body.dark-theme-variables .emergency-alert button.secondary {
+            background: #4a5568 !important;
         }
 
-        .emergency-alert .actions {
-            margin-top: 10px;
-        }
-
-        .emergency-alert button {
-            background: #f44336;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            margin-right: 5px;
-        }
-
-        .emergency-alert button.secondary {
-            background: #757575;
-        }
-
-        .notification-badge {
-            background: #f44336;
-            color: white;
-            border-radius: 50%;
-            padding: 2px 6px;
-            font-size: 12px;
-            margin-left: 5px;
-        }
-
-        /* Emergency Modal Styles */
+        /* Emergency Modal Styles with Dark Mode */
         .emergency-modal {
             position: fixed;
             top: 20px;
             right: 20px;
             width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             z-index: 1000;
             border-left: 5px solid #d32f2f;
-            max-height: 80vh;
+        }
+
+        body.dark-theme-variables .emergency-modal {
+            background-color: #2d3748 !important;
+            color: #e2e8f0 !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+        }
+
+        body.dark-theme-variables .emergency-modal h3 {
+            color: #f44336 !important;
+        }
+
+        /* Route Info Styles */
+        #routeInfo-* {
+            margin-top: 15px;
+            z-index: 1; /* Ensure it stays above the map */
+            position: relative; /* Needed for z-index to work */
+        }
+
+        #stepByStep-* {
+            margin-top: 15px;
+            z-index: 1; /* Ensure it stays above the map */
+            position: relative; /* Needed for z-index to work */
+        }
+
+        /* Map Container Fixes */
+        .emergency-modal .map-container {
+            position: relative;
+            height: 250px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            z-index: 0; /* Keep map below other elements */
+        }
+
+        body.dark-theme-variables .emergency-modal .map-container {
+            border-color: #4a5568 !important;
+        }
+
+        /* Dark Mode for Route Info */
+        body.dark-theme-variables #routeInfo-* div {
+            background: #4a5568 !important;
+            border-left-color: #1976d2 !important;
+            color: #e2e8f0 !important;
+        }
+
+        body.dark-theme-variables #routeInfo-* h4 {
+            color: #63b3ed !important;
+        }
+
+        /* Dark Mode for Step-by-Step */
+        body.dark-theme-variables #stepByStep-* div[style*="padding: 10px"] {
+            border-bottom-color: #4a5568 !important;
+            background-color: transparent !important;
+        }
+
+        body.dark-theme-variables #stepByStep-* div[style*="background-color: #f0f7ff"] {
+            background-color: #2c5282 !important;
+        }
+
+        /* New styles for turn-by-turn directions */
+        .directions-container {
+            margin-top: 15px;
+        }
+
+        .directions-title {
+            margin-bottom: 10px;
+            color: #1976d2;
+        }
+
+        .directions-steps-container {
+            max-height: 300px;
             overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 4px;
         }
 
-        .emergency-marker {
-            filter: drop-shadow(0 0 6px rgba(211, 47, 47, 0.8));
-        }
-        .hospital-marker {
-            filter: drop-shadow(0 0 6px rgba(25, 118, 210, 0.8));
-        }
-        .route-arrow {
-            filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
+        .direction-step {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
         }
 
-        @media screen and (max-width: 1200px) {
-            .container {
-                width: 94%;
-                grid-template-columns: 7rem auto 23rem;
-            }
-
-            aside .logo h2 {
-                display: none;
-            }
-
-            aside .sidebar h3 {
-                display: none;
-            }
-
-            aside .sidebar a {
-                width: 5.6rem;
-            }
-
-            aside .sidebar a:last-child {
-                position: relative;
-                margin-top: 1.8rem;
-            }
-
-            main .insights {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
-
-            main .recent-order {
-                width: 94%;
-                position: absolute;
-                left: 50%;
-                transform: translateX(-50%);
-                margin: 2rem 0 0 8.8rem;
-            }
-
-            main .recent-order table {
-                width: 83vw;
-            }
+        .first-step {
+            background-color: #f0f7ff;
         }
 
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background-color: #6c757d;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .first-step .step-number {
+            background-color: #1976d2;
+        }
+
+        .step-instruction {
+            font-weight: normal;
+        }
+
+        .first-step .step-instruction {
+            font-weight: bold;
+        }
+
+        .step-distance {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+
+        /* Dark mode styles for directions */
+        body.dark-theme-variables .directions-title {
+            color: #63b3ed !important;
+        }
+
+        body.dark-theme-variables .directions-steps-container {
+            border-color: #4a5568 !important;
+        }
+
+        body.dark-theme-variables .direction-step {
+            border-bottom-color: #4a5568 !important;
+        }
+
+        body.dark-theme-variables .first-step {
+            background-color: #2c5282 !important;
+        }
+
+        body.dark-theme-variables .step-number {
+            background-color: #4a5568 !important;
+            color: #e2e8f0 !important;
+        }
+
+        body.dark-theme-variables .first-step .step-number {
+            background-color: #1976d2 !important;
+        }
+
+        body.dark-theme-variables .step-instruction {
+            color: #e2e8f0 !important;
+        }
+
+        body.dark-theme-variables .step-distance {
+            color: #a0aec0 !important;
+        }
+
+        /* Notification Positioning Fix */
+        .emergency-notifications {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Responsive Fixes */
         @media screen and (max-width: 768px) {
-            .container {
-                width: 100%;
-                grid-template-columns: 1fr;
+            .emergency-modal {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+                top: 80px;
             }
 
-            aside {
+            #emergencyAlerts {
+                max-height: 300px;
+                overflow-y: auto;
+            }
+        }
+
+            /* Emergency Notifications Styles */
+            .emergency-notifications {
+                margin-top: 20px;
+                background: #fff;
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+
+            .emergency-alert {
+                background: #ffebee;
+                border-left: 4px solid #f44336;
+                padding: 10px;
+                margin: 10px 0;
+                border-radius: 4px;
+                animation: fadeIn 0.5s;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            .emergency-alert h4 {
+                color: #f44336;
+                margin: 0 0 5px 0;
+            }
+
+            .emergency-alert p {
+                margin: 5px 0;
+            }
+
+            .emergency-alert .actions {
+                margin-top: 10px;
+            }
+
+            .emergency-alert button {
+                background: #f44336;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 3px;
+                cursor: pointer;
+                margin-right: 5px;
+            }
+
+            .emergency-alert button.secondary {
+                background: #757575;
+            }
+
+            .notification-badge {
+                background: #f44336;
+                color: white;
+                border-radius: 50%;
+                padding: 2px 6px;
+                font-size: 12px;
+                margin-left: 5px;
+            }
+
+            /* Emergency Modal Styles */
+            .emergency-modal {
                 position: fixed;
-                left: -100%;
-                background: var(--white);
-                width: 18rem;
-                z-index: 3;
-                box-shadow: 1rem 3rem 4rem var(--light);
-                height: 100vh;
-                padding-right: var(--card-padding);
-                display: none;
-                animation: showMenu 400ms ease forwards;
+                top: 20px;
+                right: 20px;
+                width: 500px;
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                z-index: 1000;
+                border-left: 5px solid #d32f2f;
+                max-height: 80vh;
+                overflow-y: auto;
             }
 
-            @keyframes showMenu {
-                to {
-                    left: 0;
+            .emergency-marker {
+                filter: drop-shadow(0 0 6px rgba(211, 47, 47, 0.8));
+            }
+            .hospital-marker {
+                filter: drop-shadow(0 0 6px rgba(25, 118, 210, 0.8));
+            }
+            .route-arrow {
+                filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
+            }
+
+            @media screen and (max-width: 1200px) {
+                .container {
+                    width: 94%;
+                    grid-template-columns: 7rem auto 23rem;
+                }
+
+                aside .logo h2 {
+                    display: none;
+                }
+
+                aside .sidebar h3 {
+                    display: none;
+                }
+
+                aside .sidebar a {
+                    width: 5.6rem;
+                }
+
+                aside .sidebar a:last-child {
+                    position: relative;
+                    margin-top: 1.8rem;
+                }
+
+                main .insights {
+                    grid-template-columns: 1fr;
+                    gap: 0;
+                }
+
+                main .recent-order {
+                    width: 94%;
+                    position: absolute;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    margin: 2rem 0 0 8.8rem;
+                }
+
+                main .recent-order table {
+                    width: 83vw;
                 }
             }
 
-            aside .logo {
-                margin-left: 1rem;
-            }
+            @media screen and (max-width: 768px) {
+                .container {
+                    width: 100%;
+                    grid-template-columns: 1fr;
+                }
 
-            aside .logo h2 {
-                display: inline;
-            }
+                aside {
+                    position: fixed;
+                    left: -100%;
+                    background: var(--white);
+                    width: 18rem;
+                    z-index: 3;
+                    box-shadow: 1rem 3rem 4rem var(--light);
+                    height: 100vh;
+                    padding-right: var(--card-padding);
+                    display: none;
+                    animation: showMenu 400ms ease forwards;
+                }
 
-            aside .sidebar h3 {
-                display: inline;
-            }
+                @keyframes showMenu {
+                    to {
+                        left: 0;
+                    }
+                }
 
-            aside .sidebar a {
-                width: 100%;
-                height: 3.4rem;
-            }
+                aside .logo {
+                    margin-left: 1rem;
+                }
 
-            aside .sidebar a:last-child {
-                position: absolute;
-                bottom: 5rem;
-            }
+                aside .logo h2 {
+                    display: inline;
+                }
 
-            aside .close {
-                display: inline-block;
-                cursor: pointer;
-            }
+                aside .sidebar h3 {
+                    display: inline;
+                }
 
-            main {
-                margin-top: 8rem;
-                padding: 0 1rem;
-            }
+                aside .sidebar a {
+                    width: 100%;
+                    height: 3.4rem;
+                }
 
-            main .recent-order {
-                position: relative;
-                margin: 3rem 0 0 0;
-                width: 100%;
-            }
+                aside .sidebar a:last-child {
+                    position: absolute;
+                    bottom: 5rem;
+                }
 
-            main .recent-order table {
-                width: 100%;
-                margin: 0;
-            }
+                aside .close {
+                    display: inline-block;
+                    cursor: pointer;
+                }
 
-            .right {
-                width: 94%;
-                margin: 0 auto 4rem;
-            }
+                main {
+                    margin-top: 8rem;
+                    padding: 0 1rem;
+                }
 
-            .right .top {
-                position: fixed;
-                top: 0;
-                left: 0;
-                align-items: center;
-                padding: 0 0.8rem;
-                height: 4.6rem;
-                background: var(--white);
-                width: 100%;
-                margin: 0;
-                z-index: 2;
-                box-shadow: 0 1rem 1rem var(--light);
-            }
+                main .recent-order {
+                    position: relative;
+                    margin: 3rem 0 0 0;
+                    width: 100%;
+                }
 
-            .right .top .theme-toggler {
-                width: 4.4rem;
-                position: absolute;
-                left: 66%;
-            }
+                main .recent-order table {
+                    width: 100%;
+                    margin: 0;
+                }
 
-            .right .profile .info {
-                display: none;
-            }
+                .right {
+                    width: 94%;
+                    margin: 0 auto 4rem;
+                }
 
-            .right .top button {
-                display: inline-block;
-                background: transparent;
-                cursor: pointer;
-                color: var(--dark);
-                position: absolute;
-                left: 1rem;
-            }
+                .right .top {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    align-items: center;
+                    padding: 0 0.8rem;
+                    height: 4.6rem;
+                    background: var(--white);
+                    width: 100%;
+                    margin: 0;
+                    z-index: 2;
+                    box-shadow: 0 1rem 1rem var(--light);
+                }
 
-            .right .top button span {
-                font-size: 2rem;
-            }
+                .right .top .theme-toggler {
+                    width: 4.4rem;
+                    position: absolute;
+                    left: 66%;
+                }
 
-            .emergency-modal {
-                width: 90%;
-                right: 5%;
-            }
+                .right .profile .info {
+                    display: none;
+                }
+
+                .right .top .profile .profile-photo {
+            display: none;
         }
+
+                .right .top button {
+                    display: inline-block;
+                    background: transparent;
+                    cursor: pointer;
+                    color: var(--dark);
+                    position: absolute;
+                    left: 1rem;
+                }
+
+                .right .top button span {
+                    font-size: 2rem;
+                }
+
+                .emergency-modal {
+                    width: 90%;
+                    right: 5%;
+                }
+            }
     </style>
 </head>
 <body>
@@ -273,37 +490,53 @@
         </div>
 
         <div class="sidebar">
-            <a href="#">
-                <span class="material-symbols-sharp">grid_view</span>
+            <a href="/Admin/Dashboard" class="active">
+                <span class="material-symbols-sharp">dashboard</span>
                 <h3>Dashboard</h3>
             </a>
-            <a href="#" class="active">
-                <span class="material-symbols-sharp">person_outline</span>
+            <a href="/Admin/ManageCustomers" >
+                <span class="material-symbols-sharp">group</span>
                 <h3>Customers</h3>
             </a>
             <a href="/Admin/DiseaseModelDashboard">
-                <span class="material-symbols-sharp">insights</span>
-                <h3>Analytics</h3>
+                <span class="material-symbols-sharp">monitor_heart</span>
+                <h3>Disease Model</h3>
+            </a>
+            <a href="/Admin/MedicineModelDashboard">
+                <span class="material-symbols-sharp">medication</span>
+                <h3>Medicine Model</h3>
             </a>
             <a th:href="@{/Admin/SOS}">
-                <span class="material-symbols-sharp">mail_outline</span>
-                <h3>Messages</h3>
+                <span class="material-symbols-sharp">emergency</span>
+                <h3>Emergency Alerts</h3>
                 <span class="msg_count notification-badge">0</span>
             </a>
-            <a href="#">
-                <span class="material-symbols-sharp">receipt_long</span>
-                <h3>Products</h3>
+            <a th:href="@{/Admin/FaceEnrollment}">
+                <span class="material-symbols-sharp">face</span>
+                <h3>Face Enrollment</h3>
             </a>
-            <a href="#">
-                <span class="material-symbols-sharp">report_gmailerrorred</span>
+            <a href="/Admin/Manage_Doctors">
+                <span class="material-symbols-sharp">medical_services</span>
+                <h3>Doctors</h3>
+            </a>
+            <a href="/Admin/Feedbacks">
+                <span class="material-symbols-sharp">feedback</span>
                 <h3>Reports</h3>
+            </a>
+            <a href="/Admin/Manage_Appointments">
+                <span class="material-symbols-sharp">event_available</span>
+                <h3>Appointments</h3>
+            </a>
+            <a href="/Admin/ManageHospitals">
+                <span class="material-symbols-sharp">local_hospital</span>
+                <h3>Hospitals</h3>
             </a>
             <a href="#">
                 <span class="material-symbols-sharp">settings</span>
                 <h3>Settings</h3>
             </a>
             <a href="#">
-                <span class="material-symbols-sharp">add</span>
+                <span class="material-symbols-sharp">add_circle</span>
                 <h3>Add Product</h3>
             </a>
             <a href="#">
@@ -323,20 +556,20 @@
         <section class="insights">
             <div class="sales">
                 <a href="/Admin/DiseaseModelDashboard">
-                <span class="material-symbols-sharp">trending_up</span>
-                <div class="middle">
-                    <div class="left">
-                        <h3>Total Sales</h3>
-                        <h1>$25,024</h1>
+                    <span class="material-symbols-sharp">trending_up</span>
+                    <div class="middle">
+                        <div class="left">
+                            <h3>Total Sales</h3>
+                            <h1>$25,024</h1>
+                        </div>
+                        <div class="progress">
+                            <svg>
+                                <circle r="30" cy="40" cx="40"></circle>
+                            </svg>
+                            <div class="number"><p>80%</p></div>
+                        </div>
                     </div>
-                    <div class="progress">
-                        <svg>
-                            <circle r="30" cy="40" cx="40"></circle>
-                        </svg>
-                        <div class="number"><p>80%</p></div>
-                    </div>
-                </div>
-                <small>Last 24 Hours</small>
+                    <small>Last 24 Hours</small>
                 </a>
             </div>
 
@@ -385,27 +618,29 @@
         <!-- Recent Orders Table -->
         <section class="recent_order">
             <header>
-                <h2>Recent Orders</h2>
-                <a href="#" class="view-all">Show All</a>
+                <h2>Recent Appointments</h2>
+
             </header>
 
             <table>
                 <thead>
                 <tr>
-                    <th>Product Name</th>
-                    <th>Product Number</th>
-                    <th>Payments</th>
+                    <th>Appoinment ID</th>
+                    <th>Doctor </th>
+                    <th>Time</th>
                     <th>Status</th>
+                    <th>Date</th>
                     <th>Details</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Mini USB</td>
-                    <td>4563</td>
-                    <td>Due</td>
+                <tr th:each = "appointment : ${appointments}">
+                    <td th:text = "${appointment.unique_id}">Mini USB</td>
+                    <td th:text = "${appointment.doctor_name}">4563</td>
+                    <td th:text = "${appointment.appointment_time}">Due</td>
                     <td class="warning">Pending</td>
-                    <td class="primary">Details</td>
+                    <td th:text="${appointment.appointment_date}"></td>
+                    <td th:text="${appointment.customer_email}">Details</td>
                 </tr>
                 <tr>
                     <td>Wireless Mouse</td>
@@ -416,6 +651,8 @@
                 </tr>
                 </tbody>
             </table>
+
+            <a href="#" class="view-all">Show All</a>
         </section>
     </main>
 
@@ -425,46 +662,61 @@
             <button id="menu_bar" aria-label="Toggle menu">
                 <span class="material-symbols-sharp">menu</span>
             </button>
+
+
             <div class="theme-toggler">
                 <span class="material-symbols-sharp active">light_mode</span>
                 <span class="material-symbols-sharp">dark_mode</span>
             </div>
+
             <a href="/Admin/EditProfile">
-            <div class="profile">
-                <div class="info">
-                    <p><b th:text="${adminName}"></b></p>
-                    <p>Admin</p>
-                    <small class="text-muted"></small>
-                </div>
-                <div class="profile-photo">
-                    <img th:src="@{/Admin/Image}" alt="Admin profile photo"/>
-                </div>
+                <div class="profile">
+                    <div class="info">
+                        <p><b th:text="${adminName}"></b></p>
+                        <p>Admin</p>
+                        <small class="text-muted"></small>
+                    </div>
+                    <div class="profile-photo">
+                        <img th:src="@{/Admin/Image}" alt="Admin profile photo"/>
+                    </div>
 
 
-            </div>
+                </div>
             </a>
         </div>
 
         <!-- Recent Updates Section -->
         <section class="recent_updates">
-            <h2>Recent Updates</h2>
+            <h2>Recent Customers</h2>
             <div class="updates">
-                <div class="update">
+                <div class="update" th:each="customer : ${customers}">
                     <div class="profile-photo">
-                        <img th:src="@{/images/profile-4.jpg}" alt="Babar's profile photo"/>
+                        <img th:if="${customer.image != null}"
+                             th:src="${'http://localhost:8081' + customer.image}"
+                             th:alt="${customer.firstName + ' profile photo'}"/>
                     </div>
                     <div class="message">
-                        <p><b>Babar</b> Received his order of USB</p>
+                        <p><b th:text = "${customer.firstName}"></b> New Registrations</p>
                     </div>
                 </div>
-                <div class="update">
+
+            </div>
+        </section>
+
+        <section class="recent_updates">
+            <h2>Recent Doctors</h2>
+            <div class="updates">
+                <div class="update" th:each="doctor : ${doctors}">
                     <div class="profile-photo">
-                        <img th:src="@{/images/profile-3.jpg}" alt="Ali's profile photo"/>
+                        <img th:if="${doctor.image != null}"
+                             th:src="@{'/Admin/DoctorImage/' + ${doctor.email}}"
+                             th:alt="${doctor.firstName + ' profile photo'}"/>
                     </div>
                     <div class="message">
-                        <p><b>Ali</b> Received his order of USB</p>
+                        <p><b th:text = "${doctor.firstName}"></b> New Registrations</p>
                     </div>
                 </div>
+
             </div>
         </section>
 
@@ -493,6 +745,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+
 <script th:inline="javascript">
     /*<![CDATA[*/
     const ORS_API_KEY = '5b3ce3597851110001cf624849053b1ef3964be08e0d67c1ec1c1cbb';
@@ -503,26 +756,39 @@
     let emergencyCount = 0;
 
     // Initialize when page loads
+
     document.addEventListener('DOMContentLoaded', function() {
-        // Sidebar functionality
-        const sideMenu = document.querySelector('aside');
-        const menuBtn = document.querySelector('#menu_bar');
-        const closeBtn = document.querySelector('#close_btn');
-        const themeToggler = document.querySelector('.theme-toggler');
+    // Sidebar functionality
+    const sideMenu = document.querySelector('aside');
+    const menuBtn = document.querySelector('#menu_bar');
+    const closeBtn = document.querySelector('#close_btn');
+    const themeToggler = document.querySelector('.theme-toggler');
 
-        menuBtn.addEventListener('click', () => {
-            sideMenu.style.display = "block";
-        });
+    menuBtn.addEventListener('click', () => {
+        sideMenu.style.display = "block";
+    });
 
-        closeBtn.addEventListener('click', () => {
-            sideMenu.style.display = "none";
-        });
+    closeBtn.addEventListener('click', () => {
+        sideMenu.style.display = "none";
+    });
 
-        themeToggler.addEventListener('click', () => {
-            document.body.classList.toggle('dark-theme-variables');
-            themeToggler.querySelector('span:nth-child(1)').classList.toggle('active');
-            themeToggler.querySelector('span:nth-child(2)').classList.toggle('active');
-        });
+    // Check for saved theme preference
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    if (darkMode) {
+        document.body.classList.add('dark-theme-variables');
+        themeToggler.querySelector('span:nth-child(1)').classList.remove('active');
+        themeToggler.querySelector('span:nth-child(2)').classList.add('active');
+    }
+
+    themeToggler.addEventListener('click', () => {
+        document.body.classList.toggle('dark-theme-variables');
+        themeToggler.querySelector('span:nth-child(1)').classList.toggle('active');
+        themeToggler.querySelector('span:nth-child(2)').classList.toggle('active');
+
+        // Save the current theme preference to localStorage
+        const isDarkMode = document.body.classList.contains('dark-theme-variables');
+        localStorage.setItem('darkMode', isDarkMode);
+    });
 
         // Connect to WebSocket
         connectWebSocket();
@@ -857,10 +1123,10 @@
                 </div>
             `;
 
-            // Display step-by-step instructions
-            let stepsHTML = `<div style="margin-top: 15px;">
-                <h4 style="margin-bottom: 10px; color: #1976d2;"><i class="fas fa-list-ol"></i> Turn-by-Turn Directions</h4>
-                <div style="max-height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 4px;">`;
+            // Display step-by-step instructions using new CSS classes
+            let stepsHTML = `<div class="directions-container">
+                <h4 class="directions-title"><i class="fas fa-list-ol"></i> Turn-by-Turn Directions</h4>
+                <div class="directions-steps-container">`;
 
             steps.forEach((step, index) => {
                 const instruction = step.instruction.replace(/<\/?b>/g, '');
@@ -869,15 +1135,11 @@
                     step.distance + ' m';
 
                 stepsHTML += `
-                    <div style="padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; ${index === 0 ? 'background-color: #f0f7ff;' : ''}">
-                        <div style="width: 30px; height: 30px; background-color: ${index === 0 ? '#1976d2' : '#6c757d'};
-                            color: white; border-radius: 50%; display: flex; justify-content: center;
-                            align-items: center; margin-right: 10px; flex-shrink: 0;">
-                            ${index + 1}
-                        </div>
-                        <div>
-                            <div style="font-weight: ${index === 0 ? 'bold' : 'normal'}">${instruction}</div>
-                            <div style="font-size: 0.9em; color: #6c757d;">${distance}</div>
+                    <div class="direction-step ${index === 0 ? 'first-step' : ''}">
+                        <div class="step-number">${index + 1}</div>
+                        <div class="step-content">
+                            <div class="step-instruction">${instruction}</div>
+                            <div class="step-distance">${distance}</div>
                         </div>
                     </div>
                 `;
@@ -887,7 +1149,7 @@
             stepByStep.innerHTML = stepsHTML;
 
             // Add event listeners to steps for highlighting on map
-            document.querySelectorAll(`#stepByStep-${trackingId} div[style*="padding: 10px"]`).forEach((div, index) => {
+            document.querySelectorAll(`#stepByStep-${trackingId} .direction-step`).forEach((div, index) => {
                 div.addEventListener('mouseenter', () => {
                     const step = steps[index];
                     const stepCoords = step.way_points.map(i => coordinates[i]);

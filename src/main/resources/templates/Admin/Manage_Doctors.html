@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Manage Doctors</title>
+</head>
+<body>
+<h1> Doctor Management </h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Number</th>
+        <th>Unique ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Contact</th>
+        <th>Specialist</th>
+        <th>Experience</th>
+        <th>Other Specialization</th>
+        <th>Qualification</th>
+        <th>First Login</th>
+        <th>Created At</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${doctors != null and !doctors.empty}" th:each="doctor, stat : ${doctors}">
+        <td th:text="${stat.count}"></td>
+        <td th:text="${doctor.uniqueId} ?: 'Data is null'"></td>
+        <td>
+            <span th:text="${doctor.firstName + ' ' + doctor.lastName} ?: 'Data is null'"></span>
+        </td>
+        <td th:text="${doctor.email} ?: 'Data is null'"></td>
+        <td th:text="${doctor.contactNumber} ?: 'Data is null'"></td>
+        <td th:text="${doctor.specialist} ?: 'Data is null'"></td>
+        <td th:text="${doctor.experience} ?: 'Data is null'"></td>
+        <td th:text="${doctor.other_specialization} ?: 'Data is null'"></td>
+        <td th:text="${doctor.Qualification} ?: 'Data is null'"></td>
+        <td>
+            <span th:if="${doctor.firstLogin == 1}">Logged In</span>
+            <span th:if="${doctor.firstLogin == 0}">Not Logged In</span>
+            <span th:if="${doctor.firstLogin == null}">Data is null</span>
+        </td>
+        <td th:text="${doctor.createdAt != null} ? ${#temporals.format(doctor.createdAt, 'yyyy-MM-dd HH:mm')} : 'Data is null'"></td>
+        <td>
+            <span th:if="${doctor.status == 1}">Active</span>
+            <span th:if="${doctor.status == 0}">InActive</span>
+            <span th:if="${doctor.status == null}">Data is null</span>
+        </td>
+        <td>
+            <a th:href="@{/Admin/DeleteDoctor}">Delete</a>
+        </td>
+    </tr>
+    <tr th:if="${doctors == null or doctors.empty}">
+        <td colspan="13" style="text-align: center;">No doctors found</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

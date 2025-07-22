@@ -16,4 +16,9 @@ public interface HospitalRepository extends JpaRepository<Hospital,Long>
             "ORDER BY distance ASC " +
             "LIMIT 1", nativeQuery = true)
     Optional<Hospital> findNearest(double latitude, double longitude);
+    Optional<Hospital> findTopByOrderByUniqueIdDesc();
+    boolean existsByContactEmail(String email);
+    boolean existsByPhoneNumber(String PhoneNumber);
+    Optional<Hospital> findByName(String name);
+    Hospital findByUniqueId(String uniqueId);
 }

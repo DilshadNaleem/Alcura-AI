@@ -1,7 +1,6 @@
 package com.Alcura.Admin.Service;
 
 import com.Alcura.Admin.DTO.ViewAllDoctors;
-import com.Alcura.Admin.Repository.DoctorRepositoryAdmin;
 import com.Alcura.Doctor.Model.Doctor;
 import com.Alcura.Doctor.Repository.DoctorRepository;
 import org.springframework.stereotype.Service;

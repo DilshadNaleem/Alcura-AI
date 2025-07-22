@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sri Lankan Hospital Location Picker</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    h1 {
+        color: #1E8449;
+        text-align: center;
+    }
+    #map-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    #search-container {
+        position: relative;
+        display: flex;
+        gap: 10px;
+    }
+    #location-input {
+        flex-grow: 1;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    button {
+        padding: 8px 15px;
+        background-color: #1E8449;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #186A3B;
+    }
+    #map {
+        height: 500px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    #coordinates {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f5f5f5;
+        border-radius: 4px;
+    }
+    .coordinates-label {
+        font-weight: bold;
+        color: #1E8449;
+    }
+    #suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #ddd;
+        border-top: none;
+        border-radius: 0 0 4px 4px;
+        z-index: 1000;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+    }
+    .suggestion-item {
+        padding: 8px;
+        cursor: pointer;
+    }
+    .suggestion-item:hover {
+        background-color: #f0f0f0;
+    }
+    .suggestion-highlight {
+        font-weight: bold;
+        color: #1E8449;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #1E8449;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    textarea {
+        min-height: 100px;
+    }
+    #image-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .preview-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    .remove-image {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: red;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        line-height: 20px;
+        cursor: pointer;
+    }
+    .image-container {
+        position: relative;
+    }
+    #submit-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #1E8449;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    #submit-btn:hover {
+        background-color: #186A3B;
+    }
+  </style>
+</head>
+<body>
+<h1>Sri Lankan Hospital Location Picker</h1>
+
+<div id="map-container">
+  <div id="search-container">
+    <input type="text" id="location-input" placeholder="Search for a hospital in Sri Lanka" autocomplete="off">
+    <button id="search-button">Search</button>
+    <div id="suggestions"></div>
+  </div>
+
+  <div id="map"></div>
+  <div id="coordinates">
+    <span class="coordinates-label">Selected Coordinates:</span>
+    <span id="lat-lng-display">Click on the map to select a location</span>
+  </div>
+</div>
+
+<form id="hospital-form" action="/Admin/AddHospital" method="post" enctype="multipart/form-data">
+  <input type="hidden" id="latitude" name="latitude">
+  <input type="hidden" id="longitude" name="longitude">
+
+  <div class="form-group">
+    <label for="hospital-name">Hospital Name</label>
+    <input type="text" id="hospital-name" name="hospitalName" required>
+  </div>
+
+  <div class="form-group">
+    <label for="hospital-address">Address</label>
+    <textarea id="hospital-address" name="address" required></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="hospital-email">Email</label>
+    <input type="email" id="hospital-email" name="email">
+  </div>
+
+  <div class="form-group">
+    <label for="hospital-phone">Phone Number</label>
+    <input type="tel" id="hospital-phone" name="phone">
+  </div>
+
+  <div class="form-group">
+    <label for="hospital-description">Description</label>
+    <textarea id="hospital-description" name="description"></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="hospital-images">Upload Images</label>
+    <input type="file" id="hospital-images" name="images" accept="image/*">
+    <div id="image-preview"></div>
+  </div>
+
+  <button type="submit" id="submit-btn">Add Hospital</button>
+</form>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+  // Initialize the map centered on Sri Lanka
+  const map = L.map('map').setView([7.8731, 80.7718], 8);
+
+  // Add OpenStreetMap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  // Add a marker that can be dragged
+  let marker = null;
+  let debounceTimer;
+
+  // Function to update coordinates display and hidden fields
+  function updateCoordinates(lat, lng) {
+      document.getElementById('lat-lng-display').textContent = `Latitude: ${lat.toFixed(6)}, Longitude: ${lng.toFixed(6)}`;
+      document.getElementById('latitude').value = lat.toFixed(6);
+      document.getElementById('longitude').value = lng.toFixed(6);
+  }
+
+  // Handle map clicks
+  map.on('click', function(e) {
+      const { lat, lng } = e.latlng;
+
+      // Remove existing marker if any
+      if (marker) {
+          map.removeLayer(marker);
+      }
+
+      // Add new marker
+      marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+
+      // Update coordinates display
+      updateCoordinates(lat, lng);
+
+      // Handle marker drag
+      marker.on('dragend', function(e) {
+          const newLatLng = marker.getLatLng();
+          updateCoordinates(newLatLng.lat, newLatLng.lng);
+      });
+  });
+
+  // Function to display search suggestions
+  function showSuggestions(suggestions) {
+      const suggestionsContainer = document.getElementById('suggestions');
+      suggestionsContainer.innerHTML = '';
+
+      if (suggestions.length === 0) {
+          suggestionsContainer.style.display = 'none';
+          return;
+      }
+
+      // Filter for hospitals in Sri Lanka
+      const hospitalSuggestions = suggestions.filter(item =>
+          item.type === 'hospital' ||
+          item.class === 'amenity' ||
+          item.display_name.toLowerCase().includes('hospital') ||
+          item.display_name.toLowerCase().includes('clinic')
+      );
+
+      if (hospitalSuggestions.length === 0) {
+          suggestionsContainer.style.display = 'none';
+          return;
+      }
+
+      hospitalSuggestions.forEach(suggestion => {
+          const div = document.createElement('div');
+          div.className = 'suggestion-item';
+          div.textContent = suggestion.display_name;
+
+          // Highlight the part that matches the search query
+          const query = document.getElementById('location-input').value.toLowerCase();
+          const index = suggestion.display_name.toLowerCase().indexOf(query);
+          if (index >= 0) {
+              const before = suggestion.display_name.substring(0, index);
+              const match = suggestion.display_name.substring(index, index + query.length);
+              const after = suggestion.display_name.substring(index + query.length);
+
+              div.innerHTML = `${before}<span class="suggestion-highlight">${match}</span>${after}`;
+          }
+
+          div.addEventListener('click', function() {
+              document.getElementById('location-input').value = suggestion.display_name;
+              suggestionsContainer.style.display = 'none';
+              goToLocation(suggestion.lat, suggestion.lon, suggestion.display_name);
+
+              // Try to extract hospital information
+              extractHospitalInfo(suggestion);
+          });
+
+          suggestionsContainer.appendChild(div);
+      });
+
+      suggestionsContainer.style.display = 'block';
+  }
+
+  // Function to extract hospital information from the suggestion
+  function extractHospitalInfo(suggestion) {
+      // Set the hospital name
+      const hospitalName = suggestion.display_name.split(',')[0];
+      document.getElementById('hospital-name').value = hospitalName;
+
+      // Set the address
+      document.getElementById('hospital-address').value = suggestion.display_name;
+
+      // Try to get more details using Nominatim's details API
+      if (suggestion.osm_id) {
+          const osmType = suggestion.osm_type.charAt(0); // 'n' for node, 'w' for way, 'r' for relation
+          fetch(`https://nominatim.openstreetmap.org/details?osmtype=${osmType}&osmid=${suggestion.osm_id}&format=json`)
+              .then(response => response.json())
+              .then(data => {
+                  // Try to find email and phone from tags
+                  if (data.tags) {
+                      if (data.tags.email) {
+                          document.getElementById('hospital-email').value = data.tags.email;
+                      }
+                      if (data.tags.phone) {
+                          document.getElementById('hospital-phone').value = data.tags.phone;
+                      }
+                  }
+              })
+              .catch(error => {
+                  console.error('Error fetching hospital details:', error);
+              });
+      }
+  }
+
+  // Function to handle going to a location
+  function goToLocation(lat, lon, displayName) {
+      // Remove existing marker if any
+      if (marker) {
+          map.removeLayer(marker);
+      }
+
+      // Add new marker and center map
+      marker = L.marker([lat, lon], { draggable: true }).addTo(map);
+      map.setView([lat, lon], 16);
+
+      // Update coordinates display
+      updateCoordinates(parseFloat(lat), parseFloat(lon));
+
+      // Handle marker drag
+      marker.on('dragend', function(e) {
+          const newLatLng = marker.getLatLng();
+          updateCoordinates(newLatLng.lat, newLatLng.lng);
+      });
+  }
+
+  // Function to fetch search suggestions
+  function fetchSuggestions(query) {
+      if (query.length < 3) {
+          document.getElementById('suggestions').style.display = 'none';
+          return;
+      }
+
+      // Use OpenStreetMap Nominatim API for search suggestions
+      fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Sri Lanka')}&format=json&limit=10`)
+          .then(response => response.json())
+          .then(data => {
+              showSuggestions(data);
+          })
+          .catch(error => {
+              console.error('Error fetching suggestions:', error);
+              document.getElementById('suggestions').style.display = 'none';
+          });
+  }
+
+  // Handle location search input
+  document.getElementById('location-input').addEventListener('input', function(e) {
+      clearTimeout(debounceTimer);
+      const query = e.target.value.trim();
+
+      if (query) {
+          debounceTimer = setTimeout(() => {
+              fetchSuggestions(query);
+          }, 300);
+      } else {
+          document.getElementById('suggestions').style.display = 'none';
+      }
+  });
+
+  // Handle location search button click
+  document.getElementById('search-button').addEventListener('click', function() {
+      const location = document.getElementById('location-input').value.trim();
+      document.getElementById('suggestions').style.display = 'none';
+
+      if (!location) return;
+
+      // Use OpenStreetMap Nominatim API for geocoding
+      fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location + ', Sri Lanka')}&format=json&limit=1`)
+          .then(response => response.json())
+          .then(data => {
+              if (data.length > 0) {
+                  goToLocation(parseFloat(data[0].lat), parseFloat(data[0].lon), data[0].display_name);
+                  extractHospitalInfo(data[0]);
+              } else {
+                  alert('Hospital not found in Sri Lanka. Please try a different name.');
+              }
+          })
+          .catch(error => {
+              console.error('Error searching location:', error);
+              alert('Error searching for location. Please try again.');
+          });
+  });
+
+  // Allow pressing Enter to search
+  document.getElementById('location-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+          document.getElementById('suggestions').style.display = 'none';
+          document.getElementById('search-button').click();
+      }
+  });
+
+  // Close suggestions when clicking outside
+  document.addEventListener('click', function(e) {
+      if (!e.target.closest('#search-container')) {
+          document.getElementById('suggestions').style.display = 'none';
+      }
+  });
+
+  // Handle image upload preview
+  document.getElementById('hospital-images').addEventListener('change', function(e) {
+      const files = e.target.files;
+      const previewContainer = document.getElementById('image-preview');
+      previewContainer.innerHTML = '';
+
+      for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          if (!file.type.match('image.*')) continue;
+
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              const container = document.createElement('div');
+              container.className = 'image-container';
+
+              const img = document.createElement('img');
+              img.src = e.target.result;
+              img.className = 'preview-image';
+
+              const removeBtn = document.createElement('span');
+              removeBtn.className = 'remove-image';
+              removeBtn.innerHTML = '×';
+              removeBtn.onclick = function() {
+                  container.remove();
+                  // TODO: Handle removing the file from the FileList
+              };
+
+              container.appendChild(img);
+              container.appendChild(removeBtn);
+              previewContainer.appendChild(container);
+          }
+          reader.readAsDataURL(file);
+      }
+  });
+
+  // Form submission handler
+  document.getElementById('hospital-form').addEventListener('submit', function(e) {
+      if (!document.getElementById('latitude').value || !document.getElementById('longitude').value) {
+          e.preventDefault();
+          alert('Please select a location on the map by clicking on it.');
+          return;
+      }
+
+      if (!document.getElementById('hospital-name').value) {
+          e.preventDefault();
+          alert('Please enter a hospital name.');
+          return;
+      }
+
+      // You can add more validation here if needed
+  });
+</script>
+</body>
+</html>

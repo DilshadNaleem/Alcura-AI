@@ -33,6 +33,8 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer>
             "FROM Doctor d")
     List<ViewDoctorForm> viewDoctorinCustomerForm();
 
+    @Query("SELECT d FROM Doctor d ORDER BY d.createdAt DESC LIMIT 10")
+    List<Doctor> findRecentDoctors();
     List<Doctor> findByEmail(String email);
 }
 

@@ -65,6 +65,30 @@
             font-weight: bold;
             text-decoration: underline;
         }
+        #hospital-image-container {
+            text-align: center;
+            margin-bottom: 15px;
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #hospital-image {
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-width: 100%;
+            max-height: 200px;
+            background: #f0f0f0;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-style: italic;
+        }
+        .image-loading {
+            background: #f0f0f0 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" stroke="%23ddd" stroke-width="8" fill="none"><animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="1s" repeatCount="indefinite"/></circle></svg>') no-repeat center;
+            background-size: 50px;
+        }
     </style>
 </head>
 <body>
@@ -87,7 +111,17 @@
 
         <div class="info-card">
             <h3>Hospital Information</h3>
+            <div id="hospital-image-container">
+                <img id="hospital-image"
+                     alt="Hospital Image"
+                     onerror="this.onerror=null;this.src='https://via.placeholder.com/300x200?text=Image+Not+Available'">
+            </div>
             <div id="hospital-info">Loading hospital details...</div>
+
+            <div class="contact-box">
+                <h4>Emergency Contact</h4>
+                <p id="hospital-phone"><i class='bx bx-phone'></i> Loading...</p>
+            </div>
         </div>
 
         <div class="info-card">
@@ -141,26 +175,59 @@
             `Tracking Patient: <strong>${trackingId}</strong>`;
         fetchInitialData();
         connectWebSocket();
-        getUserLocation();  // Track user's own location
+        getUserLocation();
     } else {
         document.getElementById('tracking-status').innerHTML =
             `<span class="error">Error: No tracking ID provided</span>`;
     }
 
-    // Fetch initial hospital data from local storage
     async function fetchInitialData() {
         try {
             const sosData = JSON.parse(localStorage.getItem('sosData'));
             if (!sosData || sosData.trackingId !== trackingId)
                 throw new Error("Invalid or missing SOS data.");
+
             hospitalData = {
+                id: sosData.hospitalId,
                 name: sosData.hospital,
                 contactEmail: sosData.contact,
                 latitude: parseFloat(sosData.hospitalLat),
-                longitude: parseFloat(sosData.hospitalLng)
+                longitude: parseFloat(sosData.hospitalLng),
+                address: sosData.address || "Address not available",
+                phoneNumber: sosData.phoneNumber || "Phone not available",
+                description: sosData.description || "No additional description"
             };
+                // Assuming hospitalData is already defined as shown in your code
+console.log("Hospital ID:", hospitalData.id);
+console.log("Hospital Name:", hospitalData.name);
+console.log("Contact Email:", hospitalData.contactEmail);
+console.log("Latitude:", hospitalData.latitude);
+console.log("Longitude:", hospitalData.longitude);
+console.log("Address:", hospitalData.address);
+console.log("Phone Number:", hospitalData.phoneNumber);
+console.log("Description:", hospitalData.description);
+            console.log("Loaded hospital data:", hospitalData);
+
+            // Load hospital image via JavaScript
+            if (hospitalData && hospitalData.name) {
+                console.log("Attempting to load hospital image for ID:", hospitalData.name);
+                const imgUrl = `/api/sos/hospital/image/${hospitalData.name}`;
+                console.log("Image URL:", imgUrl);
+
+                const imgElement = document.getElementById('hospital-image');
+                imgElement.src = imgUrl;
+
+                // For debugging
+                imgElement.onload = () => console.log("Hospital image loaded successfully");
+                imgElement.onerror = () => {
+                    console.log("Failed to load hospital image, using fallback");
+                    imgElement.src = 'https://via.placeholder.com/300x200?text=Image+Not+Available';
+                };
+            }
+
             updateHospitalDisplay();
         } catch (error) {
+            console.error("Error loading hospital data:", error);
             document.getElementById('hospital-details').innerHTML = `
                 <div class="error">
                     <h3>⚠️ Error Loading Hospital Information</h3>
@@ -170,21 +237,44 @@
         }
     }
 
-    // Update hospital display
     function updateHospitalDisplay() {
+        if (!hospitalData.address) hospitalData.address = "Address not available";
+        if (!hospitalData.phoneNumber) hospitalData.phoneNumber = "Phone not available";
+        if (!hospitalData.description) hospitalData.description = "No additional description";
+
         document.getElementById('hospital-details').innerHTML = `
             <h3>Assigned Hospital</h3>
             <p><strong>Name:</strong> ${hospitalData.name}</p>
-            <p><strong>Contact:</strong> ${hospitalData.contactEmail}</p>`;
+            <p><strong>Address:</strong> ${hospitalData.address}</p>
+            <p><strong>Phone:</strong> ${hospitalData.phoneNumber}</p>
+            <p><strong>Contact:</strong> ${hospitalData.contactEmail}</p>
+            <p><strong>Description:</strong> ${hospitalData.description}</p>
+        `;
+
         document.getElementById('hospital-info').innerHTML = `
             <p><strong>Name:</strong> ${hospitalData.name}</p>
+            <p><strong>Address:</strong> ${hospitalData.address}</p>
+            <p><strong>Phone:</strong> ${hospitalData.phoneNumber}</p>
             <p><strong>Location:</strong> ${hospitalData.latitude.toFixed(6)}, ${hospitalData.longitude.toFixed(6)}</p>
-            <p><strong>Contact:</strong> ${hospitalData.contactEmail}</p>`;
+            <p><strong>Contact:</strong> ${hospitalData.contactEmail}</p>
+            <p><strong>Description:</strong> ${hospitalData.description}</p>
+        `;
+
+        document.getElementById('hospital-phone').innerHTML = `
+            <i class='bx bx-phone'></i> ${hospitalData.phoneNumber}
+        `;
+
         hospitalMarker = L.marker(
             [hospitalData.latitude, hospitalData.longitude],
             {icon: hospitalIcon}
         ).addTo(map)
-         .bindPopup(`<b>${hospitalData.name}</b><br>${hospitalData.contactEmail}`);
+         .bindPopup(`
+            <b>${hospitalData.name}</b><br>
+            ${hospitalData.address}<br>
+            Phone: ${hospitalData.phoneNumber}<br>
+            ${hospitalData.contactEmail}<br>
+            ${hospitalData.description}
+         `);
     }
 
     // WebSocket connection to receive patient updates
@@ -272,7 +362,7 @@
                 position => {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
-                    updatePatientPosition(lat, lng);  // You can disable WebSocket to only use this
+                    updatePatientPosition(lat, lng);
                 },
                 error => {
                     console.warn("Geolocation error:", error.message);

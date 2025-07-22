@@ -1,7 +1,7 @@
 package com.Alcura.Customer.Service;
 
 import com.Alcura.Customer.Model.Appoinment;
-import com.Alcura.Customer.Service.Interfaces.AppointmentRepo;
+import com.Alcura.Customer.Repository.AppointmentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

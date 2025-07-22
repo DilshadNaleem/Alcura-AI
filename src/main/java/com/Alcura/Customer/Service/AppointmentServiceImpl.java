@@ -3,12 +3,11 @@ package com.Alcura.Customer.Service;
 import com.Alcura.Customer.Model.Appoinment;
 import com.Alcura.Customer.Service.Interfaces.AppoinmentService;
 import com.Alcura.Customer.Service.Interfaces.AppointmentEmailService;
-import com.Alcura.Customer.Service.Interfaces.AppointmentRepo;
+import com.Alcura.Customer.Repository.AppointmentRepo;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Service
 public class AppointmentServiceImpl implements AppoinmentService {

@@ -1,7 +1,7 @@
 package com.Alcura.Customer.Controller.AppointmentController;
 
 import com.Alcura.Customer.Model.Appoinment;
-import com.Alcura.Customer.Service.Interfaces.AppointmentRepo;
+import com.Alcura.Customer.Repository.AppointmentRepo;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

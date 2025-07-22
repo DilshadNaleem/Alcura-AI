@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Hospital Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <style>
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: block;
+            border: 5px solid #f8f9fa;
+        }
+        .profile-header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .hospital-image {
+            max-width: 100%;
+            max-height: 300px;
+            display: block;
+            margin: 0 auto;
+            border-radius: 5px;
+        }
+        .image-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-4">
+    <h1>Hospital Management</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">All Hospitals</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="hospitalTable" class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th>Unique ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>Longitude</th>
+                        <th>Latitude</th>
+                        <th>Address</th>
+                        <th>Description</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="hospital, stat : ${hospitals}">
+                        <td th:text="${stat.count}"></td>
+                        <td th:text="${hospital.uniqueId}"></td>
+                        <td>
+                            <span th:text="${hospital.name}"></span>
+                        </td>
+                        <td th:text="${hospital.contactEmail}"></td>
+                        <td th:text="${hospital.phoneNumber}"></td>
+                        <td th:text="${hospital.longitude}"></td>
+                        <td th:text="${hospital.latitude}"></td>
+                        <td th:text="${hospital.address}"></td>
+                        <td th:text="${hospital.description}"></td>
+                        <td th:text="${#temporals.format(hospital.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td>
+                            <button th:attr="data-id=${hospital.uniqueId}, data-unique-id=${hospital.uniqueId}"
+                                    class="btn btn-sm btn-info view-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#hospitalModal">View</button>
+                            <a th:href="@{/Admin/DeleteHospitals/{id}(id=${hospital.uniqueId})}"
+                               class="btn btn-sm btn-warning">Delete</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hospital View Modal -->
+<div class="modal fade" id="hospitalModal" tabindex="-1" aria-labelledby="hospitalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="hospitalModalLabel">Hospital Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-header text-center">
+                    <div class="image-container">
+                        <img id="hospitalImage" class="hospital-image" src="" alt="Hospital Image"
+                             onerror="this.src='https://via.placeholder.com/300x200?text=No+Image+Available'">
+                    </div>
+                    <h3 id="hospitalName">Loading...</h3>
+                    <p class="text-muted" id="hospitalType">Medical Facility</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Basic Information</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Unique ID</th>
+                                <td id="hospitalUniqueId">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td id="hospitalEmail">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>Contact Number</th>
+                                <td id="hospitalContact">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>Address</th>
+                                <td id="hospitalAddress">Loading...</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Location Information</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Longitude</th>
+                                <td id="hospitalLongitude">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>Latitude</th>
+                                <td id="hospitalLatitude">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td id="hospitalDescription">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>Account Created</th>
+                                <td id="hospitalCreatedAt">Loading...</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="#" id="deleteHospitalBtn" class="btn btn-danger">Delete Hospital</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#hospitalTable').DataTable();
+
+        // Handle view button click
+        $('.view-btn').click(function() {
+            const uniqueId = $(this).data('unique-id');
+            loadHospitalData(uniqueId);
+        });
+
+        // Function to load hospital data
+        function loadHospitalData(uniqueId) {
+            const row = $(`button[data-unique-id="${uniqueId}"]`).closest('tr');
+
+            if (row.length) {
+                // Extract data from the row
+                const data = {
+                    uniqueId: uniqueId,
+                    name: row.find('td:nth-child(3) span').text(),
+                    email: row.find('td:nth-child(4)').text(),
+                    contact: row.find('td:nth-child(5)').text(),
+                    longitude: row.find('td:nth-child(6)').text(),
+                    latitude: row.find('td:nth-child(7)').text(),
+                    address: row.find('td:nth-child(8)').text(),
+                    description: row.find('td:nth-child(9)').text(),
+                    createdAt: row.find('td:nth-child(10)').text()
+                };
+
+                // Update modal with the data
+                $('#hospitalName').text(data.name);
+                $('#hospitalUniqueId').text(data.uniqueId);
+                $('#hospitalEmail').text(data.email);
+                $('#hospitalContact').text(data.contact);
+                $('#hospitalAddress').text(data.address);
+                $('#hospitalLongitude').text(data.longitude);
+                $('#hospitalLatitude').text(data.latitude);
+                $('#hospitalDescription').text(data.description);
+                $('#hospitalCreatedAt').text(data.createdAt);
+
+                // Set the image source
+                $('#hospitalImage').attr('src', `/Admin/ViewHospitalImage/${data.uniqueId}`);
+
+                // Update the delete button with uniqueId
+                $('#deleteHospitalBtn').attr('href', `/Admin/DeleteHospitals/${data.uniqueId}`);
+            }
+        }
+
+        // When modal is shown, reset its content
+        $('#hospitalModal').on('show.bs.modal', function() {
+            $('#hospitalName').text('Loading...');
+            $('#hospitalUniqueId').text('Loading...');
+            $('#hospitalEmail').text('Loading...');
+            $('#hospitalContact').text('Loading...');
+            $('#hospitalAddress').text('Loading...');
+            $('#hospitalLongitude').text('Loading...');
+            $('#hospitalLatitude').text('Loading...');
+            $('#hospitalDescription').text('Loading...');
+            $('#hospitalCreatedAt').text('Loading...');
+            $('#hospitalImage').attr('src', '');
+        });
+    });
+</script>
+
+</body>
+</html>

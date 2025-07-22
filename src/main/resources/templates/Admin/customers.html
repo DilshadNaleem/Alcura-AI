@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Customer Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <style>
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: block;
+            border: 5px solid #f8f9fa;
+        }
+        .profile-header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-4">
+    <h1>Customer Management</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">All Customers</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="customerTable" class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th>Unique ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>NIC</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="customer, stat : ${customers}">
+                        <td th:text="${stat.count}"></td>
+                        <td th:text="${customer.uniqueId}"></td>
+                        <td>
+                            <span th:text="${customer.firstName + ' ' + customer.lastName}"></span>
+                        </td>
+                        <td th:text="${customer.email}"></td>
+                        <td th:text="${customer.contactNumber}"></td>
+                        <td th:text="${customer.nic}"></td>
+                        <td th:text="${customer.customer_type}"></td>
+                        <td>
+                            <span th:if="${customer.status == 1}" class="badge bg-success">Active</span>
+                            <span th:if="${customer.status == 0}" class="badge bg-danger">Inactive</span>
+                        </td>
+                        <td th:text="${#temporals.format(customer.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td>
+                            <button th:attr="data-id=${customer.id}, data-unique-id=${customer.uniqueId}"
+                                    class="btn btn-sm btn-info view-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#customerModal">View</button>
+                            <a th:href="@{/Admin/DeleteCustomers/{id}(id=${customer.uniqueId})}"
+                               class="btn btn-sm btn-warning">Delete</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Customer View Modal -->
+<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customerModalLabel">Customer Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-header text-center">
+                    <h3 id="customerName">Loading...</h3>
+                    <p class="text-muted" id="customerType">Loading...</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Basic Information</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Unique ID</th>
+                                <td id="customerUniqueId">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td id="customerEmail">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>Contact Number</th>
+                                <td id="customerContact">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>NIC</th>
+                                <td id="customerNic">Loading...</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Additional Information</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Status</th>
+                                <td id="customerStatus">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>Account Created</th>
+                                <td id="customerCreatedAt">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>Last Updated</th>
+                                <td id="customerUpdatedAt">Loading...</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="#" id="deleteCustomerBtn" class="btn btn-danger">Delete Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#customerTable').DataTable();
+
+        // Handle view button click
+        $('.view-btn').click(function() {
+            const uniqueId = $(this).data('unique-id');
+            loadCustomerData(uniqueId);
+        });
+
+        // Function to load customer data
+        function loadCustomerData(uniqueId) {
+            const row = $(`button[data-unique-id="${uniqueId}"]`).closest('tr');
+
+            if (row.length) {
+                // Extract data from the row
+                const data = {
+                    uniqueId: uniqueId,
+                    name: row.find('td:nth-child(3) span').text(),
+                    email: row.find('td:nth-child(4)').text(),
+                    contact: row.find('td:nth-child(5)').text(),
+                    nic: row.find('td:nth-child(6)').text(),
+                    type: row.find('td:nth-child(7)').text(),
+                    status: row.find('td:nth-child(8) .badge').text(),
+                    createdAt: row.find('td:nth-child(9)').text()
+                };
+
+                // Update modal with the data
+                $('#customerName').text(data.name);
+                $('#customerType').text(data.type);
+                $('#customerUniqueId').text(data.uniqueId);
+                $('#customerEmail').text(data.email);
+                $('#customerContact').text(data.contact);
+                $('#customerNic').text(data.nic);
+                $('#customerStatus').html(data.status === 'Active' ?
+                    '<span class="badge bg-success">Active</span>' :
+                    '<span class="badge bg-danger">Inactive</span>');
+                $('#customerCreatedAt').text(data.createdAt);
+                $('#customerUpdatedAt').text(data.createdAt);
+
+                // Update the delete button with uniqueId
+                $('#deleteCustomerBtn').attr('href', `/Admin/DeleteCustomers/${data.uniqueId}`);
+            }
+        }
+
+        // When modal is shown, reset its content
+        $('#customerModal').on('show.bs.modal', function() {
+            $('#customerName').text('Loading...');
+            $('#customerType').text('Loading...');
+            $('#customerUniqueId').text('Loading...');
+            $('#customerEmail').text('Loading...');
+            $('#customerContact').text('Loading...');
+            $('#customerNic').text('Loading...');
+            $('#customerStatus').html('Loading...');
+            $('#customerCreatedAt').text('Loading...');
+            $('#customerUpdatedAt').text('Loading...');
+        });
+    });
+</script>
+</body>
+</html>

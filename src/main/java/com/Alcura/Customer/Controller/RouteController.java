@@ -1,4 +1,4 @@
-package com.Alcura.Customer.Controller.SOSController;
+package com.Alcura.Customer.Controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;

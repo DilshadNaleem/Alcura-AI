@@ -1,4 +1,4 @@
-package com.Alcura.Customer.Service.Interfaces;
+package com.Alcura.Customer.Repository;
 
 import com.Alcura.Customer.Model.Appoinment;
 import org.springframework.data.jpa.repository.JpaRepository;

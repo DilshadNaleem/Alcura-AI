@@ -1,19 +1,20 @@
-const  sideMenu = document.querySelector('aside');
-const menuBtn = document.querySelector('#menu_bar');
-const closeBtn = document.querySelector('#close_btn');
+// Simple Dark Mode for Face Enrollment
+document.addEventListener('DOMContentLoaded', function() {
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    const container = document.querySelector('.container');
 
-const themeToggler = document.querySelector('.theme-toggler');
+    if (darkMode && container) {
+        container.style.background = '#212529';
+        container.style.color = '#f8f9fa';
 
-menuBtn.addEventListener('click',()=>{
-       sideMenu.style.display = "block"
-})
-closeBtn.addEventListener('click',()=>{
-    sideMenu.style.display = "none"
-})
+        // Adjust button colors for dark mode
+        document.querySelectorAll('.btn').forEach(btn => {
+            if (btn.classList.contains('btn-secondary')) {
+                btn.style.borderColor = '#f8f9fa';
+                btn.style.color = '#f8f9fa';
+            }
+        });
+    }
+});
 
-themeToggler.addEventListener('click',()=>{
-     document.body.classList.toggle('dark-theme-variables')
-     themeToggler.querySelector('span:nth-child(1').classList.toggle('active')
-     themeToggler.querySelector('span:nth-child(2').classList.toggle('active')
-})
 
