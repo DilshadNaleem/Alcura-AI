@@ -76,7 +76,7 @@ public class AppointmentRescheduleRequestController
                 return;
             }
 
-            appoinment.setStatus("Rescheduled");
+            appoinment.setStatus("Rescheduled Request");
             appoinment.setReschedule_reason(notes);
             appointmentRepo.save(appoinment);
 

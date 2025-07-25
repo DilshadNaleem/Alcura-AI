@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/Admin/AdminNav.css">
+
+    <style>
+
+
+        :root {
+            --clr-danger: #ff7782;
+            --clr-primary: #7380ec;
+            --clr-light: rgba(132, 139, 200, 0.18);
+            --clr-info-dark: #7d8da1;
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f72585;
+            --border-radius: 12px;
+            --clr-info-dark: #7d8da1;
+            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --clr-white: #fff;
+            --clr-dark-variant: #677483;
+            --clr-color-background: #f6f6f9;
+        }
+
+        /* Dark theme variables */
+        body.dark-theme-variables {
+            --primary: #4895ef;
+            --primary-dark: #3f7fd4;
+            --secondary: #4a4ecc;
+            --accent: #4cc9f0;
+            --light: #212529;
+            --dark: #f8f9fa;
+            --gray: #adb5bd;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f72585;
+            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            --clr-white: #202528;
+            --clr-dark-variant: #677483;
+            --clr-color-background: #181a1e;
+            background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%);
+        }
+
+        body.dark-theme-variables .container {
+            background: #2d2d2d;
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .card {
+            background-color: #343a40;
+            border-color: #495057;
+        }
+
+        body.dark-theme-variables .card-header {
+            background-color: #495057;
+            border-bottom-color: #6c757d;
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .card-footer {
+            background-color: #495057;
+            border-top-color: #6c757d;
+            color: var(--gray);
+        }
+
+        body.dark-theme-variables .table {
+            background-color: #343a40 !important;
+            color: var(--dark) !important;
+        }
+
+        body.dark-theme-variables .table th,
+        body.dark-theme-variables .table td {
+            background-color: #343a40 !important;
+            color: var(--dark) !important;
+            border-color: #495057 !important;
+        }
+
+        body.dark-theme-variables .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+        body.dark-theme-variables .modal-content {
+            background-color: #343a40;
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .modal-header,
+        body.dark-theme-variables .modal-footer {
+            border-color: #495057;
+            background-color: #2d2d2d;
+        }
+
+        body.dark-theme-variables .modal-title {
+            color: var(--dark) !important;
+        }
+
+        body.dark-theme-variables .text-muted {
+            color: var(--gray) !important;
+        }
+
+        body.dark-theme-variables .input-group-text {
+            background-color: #495057;
+            border-color: #6c757d;
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .form-control {
+            background-color: #495057;
+            border-color: #6c757d;
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .form-control::placeholder {
+            color: var(--gray);
+        }
+
+        body.dark-theme-variables .btn-outline-secondary {
+            background-color: transparent;
+            border-color: #6c757d;
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .btn-outline-secondary:hover {
+            background-color: #495057;
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .empty-state {
+            color: var(--gray);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .mt-4 {
+            margin-top: 1.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .justify-content-between {
+            justify-content: space-between;
+        }
+
+        .align-items-center {
+            align-items: center;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .card-footer {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 0.85rem;
+        }
+
+        .shadow {
+            box-shadow: var(--box-shadow);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .danger {
+            color: var(--clr-danger); /* This is #ff7782 from your variables */
+        }
+
+        .btn-info {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.875rem;
+        }
+
+        .float-end {
+            float: right;
+        }
+
+        .text-muted {
+            color: var(--gray);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+
+        .col-md-6 {
+            width: 50%;
+            padding: 0 10px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+        }
+
+        .table th {
+            text-align: left;
+            background-color: #f8f9fa;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .input-group-text {
+            padding: 8px 12px;
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .form-control {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-left: none;
+            border-right: none;
+            flex: 1;
+        }
+
+        .btn-outline-secondary {
+            background-color: transparent;
+            border: 1px solid #ced4da;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .appointment-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+
+        .appointment-col {
+            width: 100%;
+            padding: 10px;
+        }
+
+        @media (min-width: 768px) {
+            .appointment-col {
+                width: 50%;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .appointment-col {
+                width: 33.333%;
+            }
+        }
+
+        .appointment-card {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            height: 100%;
+        }
+
+        .appointment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-canceled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-rescheduled {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        .status-rescheduled_request {
+            background-color: #e2d4f0;
+            color: #4a2d7a;
+        }
+
+        .status-completed {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .action-btn {
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            width: 100%;
+        }
+
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 20px;
+            color: #dee2e6;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--gray);
+            width: 150px;
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        /* Reschedule Modal Specific Styles */
+        .reschedule-form-group {
+            margin-bottom: 15px;
+        }
+
+        .reschedule-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .reschedule-form-group input,
+        .reschedule-form-group select,
+        .reschedule-form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+        .reschedule-form-group textarea {
+            min-height: 100px;
+        }
+
+        .reschedule-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        /* Theme toggle button */
+        .theme-toggler {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .theme-toggler span {
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-toggler span.active {
+            opacity: 1;
+        }
+
+        @media (max-width: 576px) {
+            .detail-row {
+                flex-direction: column;
+            }
+
+            .detail-label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+
+            .reschedule-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .reschedule-actions .btn {
+                width: 100%;
+            }
+
+            .col-md-6 {
+                width: 100%;
+            }
+        }
+
+
+body.dark-theme-variables .card-body div,
+body.dark-theme-variables .info-label,
+body.dark-theme-variables .detail-value,
+body.dark-theme-variables .detail-label,
+
+body.dark-theme-variables .text-muted {
+    color: var(--gray) !important;
+}
+
+body.dark-theme-variables .card-body .info-label {
+    color: var(--gray) !important;
+}
+
+body.dark-theme-variables h5 {
+    color: white !important;
+}
+
+    </style>
+</head>
+<body>
+<div class="main-container">
+<!-- Sidebar Navigation -->
+<aside>
+    <div class="top">
+        <div class="logo">
+            <h2>A <span class="danger">lcura</span></h2>
+        </div>
+        <div class="close" id="close_btn">
+            <span class="material-symbols-sharp">close</span>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <a href="/Admin/Dashboard">
+            <span class="material-symbols-sharp">dashboard</span>
+            <h3>Dashboard</h3>
+        </a>
+        <a href="/Admin/ManageCustomers">
+            <span class="material-symbols-sharp">group</span>
+            <h3>Customers</h3>
+        </a>
+        <a href="/Admin/DiseaseModelDashboard">
+            <span class="material-symbols-sharp">monitor_heart</span>
+            <h3>Disease Model</h3>
+        </a>
+        <a href="/Admin/MedicineModelDashboard">
+            <span class="material-symbols-sharp">medication</span>
+            <h3>Medicine Model</h3>
+        </a>
+        <a th:href="@{/Admin/SOS}">
+            <span class="material-symbols-sharp">emergency</span>
+            <h3>Emergency Alerts</h3>
+            <span class="msg_count notification-badge">0</span>
+        </a>
+        <a th:href="@{/Admin/FaceEnrollment}">
+            <span class="material-symbols-sharp">face</span>
+            <h3>Face Enrollment</h3>
+        </a>
+        <a href="/Admin/Manage_Doctors">
+            <span class="material-symbols-sharp">medical_services</span>
+            <h3>Doctors</h3>
+        </a>
+        <a href="/Admin/Feedbacks">
+            <span class="material-symbols-sharp">feedback</span>
+            <h3>Reports</h3>
+        </a>
+        <a href="/Admin/Manage_Appointments"  class="active">
+            <span class="material-symbols-sharp">event_available</span>
+            <h3>Appointments</h3>
+        </a>
+        <a href="/Admin/ManageHospitals">
+            <span class="material-symbols-sharp">local_hospital</span>
+            <h3>Hospitals</h3>
+        </a>
+        <a href="#">
+            <span class="material-symbols-sharp">settings</span>
+            <h3>Settings</h3>
+        </a>
+        <a href="#">
+            <span class="material-symbols-sharp">add_circle</span>
+            <h3>Add Product</h3>
+        </a>
+        <a href="#">
+            <span class="material-symbols-sharp">logout</span>
+            <h3>Logout</h3>
+        </a>
+    </div>
+</aside>
+
+<div class="right">
+    <div class="top">
+        <button id="menu_bar" aria-label="Toggle menu">
+            <span class="material-symbols-sharp">menu</span>
+        </button>
+    </div>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-calendar-check"></i> Appointment Management</h1>
+        <div>
+            <a href="#" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Add New
+            </a>
+        </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search appointments...">
+                        <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Filter Section -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h5 class="mb-3">Filter by Status</h5>
+            <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-sm btn-outline-primary filter-btn active" data-status="all">All</button>
+                <button class="btn btn-sm btn-outline-secondary filter-btn" data-status="pending">Pending</button>
+                <button class="btn btn-sm btn-outline-warning filter-btn" data-status="rescheduled_request">Reschedule Request</button>
+                <button class="btn btn-sm btn-outline-info filter-btn" data-status="rescheduled">Rescheduled</button>
+                <button class="btn btn-sm btn-outline-success filter-btn" data-status="completed">Completed</button>
+                <button class="btn btn-sm btn-outline-danger filter-btn" data-status="canceled">Canceled</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointment Cards -->
+    <div class="appointment-container" id="appointmentContainer">
+        <div th:each="app, stat : ${app}" class="appointment-col" th:data-status="${#strings.toLowerCase(#strings.replace(app.status, ' ', '_'))}">
+            <div class="card appointment-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span th:text="${app.doctor_name}"></span>
+                    <span class="status-badge" th:classappend="'status-' + ${#strings.toLowerCase(#strings.replace(app.status, ' ', '_'))}">
+                        <span th:text="${app.status}"></span>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="info-label">Appointment ID</div>
+                        <div th:text="${app.unique_id}" class="info-value"></div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="info-label">Date</div>
+                            <div th:text="${app.appointment_date}" class="info-value"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-label">Time</div>
+                            <div th:text="${app.appointment_time}" class="info-value" ></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="info-label">Patient Email</div>
+                        <div th:text="${app.customer_email}" class="info-value"></div>
+                    </div>
+
+                    <div class="mb-3" th:if="${app.special_reasons}">
+                        <div class="info-label">Special Reasons</div>
+                        <div th:text="${app.special_reasons} ?: 'None'" class="info-value"></div>
+                    </div>
+
+                    <div class="mb-3" th:if="${app.status == 'Canceled'}">
+                        <div class="info-label">Cancel Reason</div>
+                        <div th:text="${app.cancel_reason} ?: 'N/A'" class="info-value"></div>
+                    </div>
+
+                    <div class="mb-3" th:if="${app.status == 'Rescheduled' or app.status == 'Reschedule Request'}">
+                        <div class="info-label">Reschedule Reason</div>
+                        <div th:text="${app.reschedule_reason} ?: 'No reason provided'" class="info-value"></div>
+                    </div>
+
+                    <div class="d-flex flex-wrap mt-3">
+                        <button class="btn btn-sm btn-info action-btn view-btn" th:attr="data-id=${app.unique_id}">
+                            <i class="bi bi-eye"></i> View
+                        </button>
+                        <button th:if="${app.status == 'Rescheduled Request'}"
+                                class="btn btn-sm btn-warning action-btn reschedule-btn"
+                                th:attr="data-id=${app.unique_id}">
+                            <i class="bi bi-calendar-event"></i> Handle Reschedule
+                        </button>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>Created on: <span th:text="${#temporals.format(app.created_at, 'yyyy-MM-dd HH:mm')}"></span></small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty state (shown when no appointments match search) -->
+        <div class="col-12 empty-state-container" style="display: none;">
+            <div class="card empty-state">
+                <i class="bi bi-calendar-x"></i>
+                <h3>No appointments found</h3>
+                <p>Try adjusting your search criteria</p>
+                <button class="btn btn-primary" id="resetFilters">Reset Search</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for viewing appointment details -->
+<div class="modal-overlay" id="appointmentModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Appointment Details</h3>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Dynamic content will be inserted here -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary close-modal">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for handling reschedule -->
+<div class="modal-overlay" id="rescheduleModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Handle Reschedule Request</h3>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="rescheduleForm">
+                <input type="hidden" id="rescheduleAppointmentId">
+
+                <div class="reschedule-form-group">
+                    <label for="rescheduleAction">Action</label>
+                    <select id="rescheduleAction" class="form-control" required>
+                        <option value="">Select action</option>
+                        <option value="approve">Approve Reschedule</option>
+                        <option value="reject">Reject Reschedule</option>
+                    </select>
+                </div>
+
+                <div class="reschedule-form-group" id="newDateGroup" style="display: none;">
+                    <label for="newAppointmentDate">New Appointment Date</label>
+                    <input type="date" id="newAppointmentDate" class="form-control">
+                </div>
+
+                <div class="reschedule-form-group" id="newTimeGroup" style="display: none;">
+                    <label for="newAppointmentTime">New Appointment Time</label>
+                    <input type="time" id="newAppointmentTime" class="form-control">
+                </div>
+
+                <div class="reschedule-form-group">
+                    <label for="adminNotes">Admin Notes</label>
+                    <textarea id="adminNotes" class="form-control" placeholder="Add any notes for the patient..."></textarea>
+                </div>
+
+                <div class="reschedule-actions">
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Theme toggle button -->
+<div class="theme-toggler">
+    <span class="material-symbols-sharp active">light_mode</span>
+    <span class="material-symbols-sharp">dark_mode</span>
+</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="/Admin/AdminNav.js"></script>
+<script>
+
+
+        // Search functionality
+        $('#searchButton').click(function() {
+            performSearch();
+        });
+
+        $('#searchInput').on('keyup', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        function performSearch() {
+            const value = $('#searchInput').val().toLowerCase();
+            if (value === '') {
+                $('.appointment-col').removeClass('hidden');
+                checkEmptyState();
+                return;
+            }
+
+            $('.appointment-col').each(function() {
+                const cardText = $(this).text().toLowerCase();
+                $(this).toggleClass('hidden', cardText.indexOf(value) === -1);
+            });
+            checkEmptyState();
+        }
+
+        // Reset search
+        $('#resetFilters').click(function() {
+            $('#searchInput').val('');
+            $('.appointment-col').removeClass('hidden');
+            checkEmptyState();
+            // Also reset filter buttons
+            $('.filter-btn').removeClass('active');
+            $('.filter-btn[data-status="all"]').addClass('active');
+        });
+
+        // Check if no appointments are visible and show empty state
+        function checkEmptyState() {
+            const visibleCards = $('.appointment-col:not(.hidden)').length;
+            if (visibleCards === 0) {
+                $('.empty-state-container').show();
+            } else {
+                $('.empty-state-container').hide();
+            }
+        }
+
+        // Status filter functionality
+        $('.filter-btn').click(function() {
+            const status = $(this).data('status');
+
+            // Remove active class from all buttons
+            $('.filter-btn').removeClass('active');
+
+            // Add active class to clicked button
+            $(this).addClass('active');
+
+            if (status === 'all') {
+                $('.appointment-col').removeClass('hidden');
+            } else {
+                $('.appointment-col').each(function() {
+                    const appointmentStatus = $(this).data('status');
+                    $(this).toggleClass('hidden', appointmentStatus !== status);
+                });
+            }
+
+            checkEmptyState();
+        });
+
+        // View button functionality
+        $(document).on('click', '.view-btn', function() {
+            const appointmentCard = $(this).closest('.appointment-card');
+
+
+        const doctorName = appointmentCard.find('.card-header span:first').text();
+const status = appointmentCard.find('.status-badge span').text();
+const appointmentId = appointmentCard.find('.card-body > div:first .info-value').text();
+const appointmentDate = appointmentCard.find('.row.mb-3 .col-md-6:first .info-value').text();
+const appointmentTime = appointmentCard.find('.row.mb-3 .col-md-6:last .info-value').text();
+const patientEmail = appointmentCard.find('.card-body > div:nth-child(3) .info-value').text();
+
+// Check for optional fields
+let specialReasons = appointmentCard.find('.card-body > div:nth-child(4) .info-value').text();
+specialReasons = specialReasons || 'None';
+
+let cancelReason = appointmentCard.find('.card-body > div:nth-child(5) .info-value').text();
+cancelReason = cancelReason || 'No reason provided';
+
+let rescheduleReason = appointmentCard.find('.card-body > div:nth-child(6) .info-value').text();
+rescheduleReason = rescheduleReason || 'No reason provided';
+
+
+
+            // Create the modal content
+            const modalContent = `
+                <div class="detail-row">
+                    <div class="detail-label">Doctor:</div>
+                    <div class="detail-value">${doctorName}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Status:</div>
+                    <div class="detail-value"><span class="status-badge status-${status.toLowerCase().replace(' ', '_')}">${status}</span></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Appointment ID:</div>
+                    <div class="detail-value">${appointmentId}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Date:</div>
+                    <div class="detail-value">${appointmentDate}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Time:</div>
+                    <div class="detail-value">${appointmentTime}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Patient Email:</div>
+                    <div class="detail-value">${patientEmail}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Special Reasons:</div>
+                    <div class="detail-value">${specialReasons}</div>
+                </div>
+                ${status === 'Canceled' ? `
+                <div class="detail-row">
+                    <div class="detail-label">Cancel Reason:</div>
+                    <div class="detail-value">${cancelReason}</div>
+                </div>
+                ` : ''}
+                ${status === 'Rescheduled Request' || status === 'Rescheduled' ? `
+                <div class="detail-row">
+                    <div class="detail-label">Reschedule Reason:</div>
+                    <div class="detail-value">${rescheduleReason}</div>
+                </div>
+                ` : ''}
+            `;
+
+            // Insert content into modal and show it
+            $('#modalBody').html(modalContent);
+            $('#appointmentModal').addClass('active');
+
+
+        });
+
+        // Reschedule button functionality
+        $(document).on('click', '.reschedule-btn', function() {
+            const appointmentCard = $(this).closest('.appointment-card');
+            const appointmentId = appointmentCard.find('.card-body > div:first div').text();
+
+            // Set the appointment ID in the form
+            $('#rescheduleAppointmentId').val(appointmentId);
+
+            // Reset form
+            $('#rescheduleForm')[0].reset();
+            $('#newDateGroup').hide();
+            $('#newTimeGroup').hide();
+
+            // Show the modal
+            $('#rescheduleModal').addClass('active');
+            $('body').css('overflow', 'hidden');
+        });
+
+        // Handle reschedule action change
+        $('#rescheduleAction').change(function() {
+            if ($(this).val() === 'approve') {
+                $('#newDateGroup').show();
+                $('#newTimeGroup').show();
+            } else {
+                $('#newDateGroup').hide();
+                $('#newTimeGroup').hide();
+            }
+        });
+
+        // Handle reschedule form submission
+        $('#rescheduleForm').submit(function(e) {
+            e.preventDefault();
+
+            const appointmentId = $('#rescheduleAppointmentId').val();
+            const action = $('#rescheduleAction').val();
+            const newDate = $('#newAppointmentDate').val();
+            const newTime = $('#newAppointmentTime').val();
+            const adminNotes = $('#adminNotes').val();
+
+            // Validate form
+            if (action === 'approve' && (!newDate || !newTime)) {
+                alert('Please select both date and time for the new appointment');
+                return;
+            }
+
+            // Here you would typically make an AJAX call to your backend
+            // For demonstration, we'll just show an alert
+            const actionText = action === 'approve' ? 'approved' : 'rejected';
+            alert(`Reschedule request ${actionText} for appointment ${appointmentId}\nNew date: ${newDate}\nNew time: ${newTime}\nNotes: ${adminNotes}`);
+
+            // Close the modal
+            $('#rescheduleModal').removeClass('active');
+            $('body').css('overflow', 'auto');
+
+            // In a real application, you would update the UI here after successful backend response
+            // For example, change the status of the appointment card
+        });
+
+        // Close modal functionality
+        $(document).on('click', '.close-modal', function() {
+            $('.modal-overlay').removeClass('active');
+            $('body').css('overflow', 'auto');
+        });
+
+        // Close modal when clicking outside content
+        $('.modal-overlay').on('click', function(e) {
+            if ($(e.target).hasClass('modal-overlay')) {
+                $(this).removeClass('active');
+                $('body').css('overflow', 'auto');
+            }
+        });
+
+        // Close modal with ESC key
+        $(document).on('keyup', function(e) {
+            if (e.key === 'Escape' && $('.modal-overlay.active').length) {
+                $('.modal-overlay').removeClass('active');
+                $('body').css('overflow', 'auto');
+            }
+        });
+</script>
+
+</body>
+</html>

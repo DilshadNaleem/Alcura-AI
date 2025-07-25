@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Edit Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Add Leaflet CSS for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #3498db;
+            margin-bottom: 10px;
+        }
+
+        .image-upload {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-upload-label {
+            background-color: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .image-upload-label:hover {
+            background-color: #2980b9;
+        }
+
+        .image-upload input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        input[readonly] {
+            background-color: #f9f9f9;
+            color: #777;
+            cursor: not-allowed;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .btn-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+
+        /* Map container styles */
+        #map-container {
+            margin: 20px 0;
+            height: 350px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            position: relative;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        #search-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            width: calc(100% - 20px);
+            display: flex;
+            gap: 5px;
+        }
+
+        #search {
+            flex: 1;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+
+        #suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1001;
+        }
+
+        .suggestion-item {
+            padding: 8px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .map-controls {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .map-btn {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .map-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .loading {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.8);
+            padding: 10px 15px;
+            border-radius: 4px;
+            z-index: 1002;
+            font-size: 14px;
+        }
+
+        .error-message {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            z-index: 1002;
+            font-size: 14px;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            form {
+                padding: 15px;
+            }
+
+            #map-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+<form th:action="@{/Admin/EditHospital}" enctype="multipart/form-data" method="post" th:object="${admin}">
+    <input type="hidden" name="id" th:value="${hospital.uniqueId}" readonly>
+
+    <div class="profile-image-container">
+        <img th:if="${hospital.image != null}" th:src="@{'/Admin/ViewHospitalImage/' + ${hospital.uniqueId}}"
+             alt="Profile Image" class="profile-image" id="profileImage">
+        <img th:unless="${hospital.image != null}" src="/path/to/default/image.jpg"
+             alt="Profile Image" class="profile-image" id="profileImage">
+        <div class="image-upload">
+            <label for="image" class="image-upload-label">
+                <i class="fas fa-camera"></i> Change Photo
+            </label>
+            <input type="file" id="image" name="image" accept="image/*" onchange="previewImage(this)">
+        </div>
+    </div>
+
+    <label>Unique ID</label>
+    <input type="text" name="uniqueId" th:value="${hospital.uniqueId}" readonly>
+
+    <label>Hospital Name</label>
+    <input type="text" id="name" name="fullname" th:value="${hospital.name}" required>
+
+    <label>Address</label>
+    <input type="text" id="address" name="address" th:value="${hospital.Address}" required>
+
+    <label>Email</label>
+    <input type="text" name="email" id="email" th:value="${hospital.contactEmail}">
+
+    <label>Description</label>
+    <input type="text" name="description" th:value="${hospital.Description}" >
+
+    <!-- === MAP SECTION === -->
+    <div id="map-container">
+        <div class="loading" id="loading">Searching locations...</div>
+        <div class="error-message" id="error-message"></div>
+
+        <div id="search-container">
+            <input type="text" id="search" placeholder="Search for a location in Sri Lanka...">
+            <div id="suggestions"></div>
+        </div>
+
+        <div class="map-controls">
+            <button type="button" class="map-btn" id="current-location" title="Use current location">
+                <i class="fas fa-location-arrow"></i>
+            </button>
+            <button type="button" class="map-btn" id="reset-location" title="Reset to hospital location">
+                <i class="fas fa-home"></i>
+            </button>
+            <button type="button" class="map-btn" id="zoom-in" title="Zoom in">
+                <i class="fas fa-plus"></i>
+            </button>
+            <button type="button" class="map-btn" id="zoom-out" title="Zoom out">
+                <i class="fas fa-minus"></i>
+            </button>
+        </div>
+
+        <div id="map"></div>
+    </div>
+
+    <label>Latitude</label>
+    <input type="text" id="latitude" name="latitude" th:value="${hospital.latitude}" readonly>
+
+    <label>Longitude</label>
+    <input type="text" id="longitude" name="longitude" th:value="${hospital.longitude}" readonly>
+
+    <label>Contact Number</label>
+    <input type="text" name="contactNumber" th:value="${hospital.phoneNumber}" >
+
+    <label>Created Date</label>
+    <input type="text" name="createdAt" th:value="${#temporals.format(hospital.createdAt, 'yyyy-MM-dd HH:mm')}" readonly>
+
+    <div class="form-actions">
+        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+        <button type="button" class="btn btn-warning" id="reset-button">Reset</button>
+        <button type="submit" class="btn btn-primary">Update Profile</button>
+    </div>
+</form>
+
+<!-- === LEAFLET + GEOCODER SCRIPTS === -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profileImage').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Define Sri Lanka boundaries
+        const SRI_LANKA_BOUNDS = {
+            north: 9.9,
+            south: 5.9,
+            west: 79.5,
+            east: 81.9
+        };
+
+        // Initialize the map centered on Sri Lanka
+        const map = L.map('map', {
+            maxBounds: [
+                [SRI_LANKA_BOUNDS.south - 1, SRI_LANKA_BOUNDS.west - 1],
+                [SRI_LANKA_BOUNDS.north + 1, SRI_LANKA_BOUNDS.east + 1]
+            ],
+            maxBoundsViscosity: 1.0
+        }).setView([7.8731, 80.7718], 8);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Store original coordinates
+        const originalLat = parseFloat(document.getElementById('latitude').value) || 7.8731;
+        const originalLng = parseFloat(document.getElementById('longitude').value) || 80.7718;
+
+        // Add a marker that can be dragged
+        let marker = null;
+        let debounceTimer;
+
+        const latInput = document.getElementById('latitude');
+        const lngInput = document.getElementById('longitude');
+        const nameInput = document.getElementById('name');
+        const addressInput = document.getElementById('address');
+        const emailInput = document.getElementById('email');
+
+        // Function to check if coordinates are within Sri Lanka
+        function isInSriLanka(lat, lng) {
+            return lat >= SRI_LANKA_BOUNDS.south &&
+                   lat <= SRI_LANKA_BOUNDS.north &&
+                   lng >= SRI_LANKA_BOUNDS.west &&
+                   lng <= SRI_LANKA_BOUNDS.east;
+        }
+
+        // Function to show error message
+        function showError(message) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 3000);
+        }
+
+        // Set initial marker if coordinates exist and are within Sri Lanka
+        if (latInput.value && lngInput.value) {
+            const lat = parseFloat(latInput.value);
+            const lng = parseFloat(lngInput.value);
+
+            if (isInSriLanka(lat, lng)) {
+                marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+                marker.bindPopup(nameInput.value || 'Hospital Location').openPopup();
+                map.setView([lat, lng], 16);
+            } else {
+                // If coordinates are outside Sri Lanka, use default center
+                showError('Hospital coordinates were outside Sri Lanka. Reset to center.');
+                latInput.value = originalLat.toFixed(6);
+                lngInput.value = originalLng.toFixed(6);
+            }
+        }
+
+        // Function to update coordinates display and hidden fields
+        function updateCoordinates(lat, lng) {
+            latInput.value = lat.toFixed(6);
+            lngInput.value = lng.toFixed(6);
+
+            if (marker) {
+                marker.setLatLng([lat, lng]);
+                marker.bindPopup(nameInput.value || 'Hospital Location').openPopup();
+            }
+        }
+
+        // Function to reset to original location
+        function resetToOriginalLocation() {
+            if (marker) {
+                map.removeLayer(marker);
+            }
+
+            marker = L.marker([originalLat, originalLng], { draggable: true }).addTo(map);
+            map.setView([originalLat, originalLng], 16);
+            updateCoordinates(originalLat, originalLng);
+
+            // Reverse geocode to get address
+            reverseGeocode(originalLat, originalLng);
+        }
+
+        // Handle map clicks
+        map.on('click', function(e) {
+            const { lat, lng } = e.latlng;
+
+            // Check if clicked location is within Sri Lanka
+            if (!isInSriLanka(lat, lng)) {
+                showError('Please select a location within Sri Lanka');
+                return;
+            }
+
+            // Remove existing marker if any
+            if (marker) {
+                map.removeLayer(marker);
+            }
+
+            // Add new marker
+            marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+
+            // Update coordinates display
+            updateCoordinates(lat, lng);
+
+            // Handle marker drag
+            marker.on('dragend', function(e) {
+                const newLatLng = marker.getLatLng();
+                if (!isInSriLanka(newLatLng.lat, newLatLng.lng)) {
+                    showError('Location must be within Sri Lanka');
+                    // Snap back to previous valid position
+                    marker.setLatLng([lat, lng]);
+                    return;
+                }
+                updateCoordinates(newLatLng.lat, newLatLng.lng);
+            });
+
+            // Reverse geocode to get address
+            reverseGeocode(lat, lng);
+        });
+
+        // Function to reverse geocode coordinates
+        function reverseGeocode(lat, lng) {
+            document.getElementById('loading').style.display = 'block';
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.display_name) {
+                        // Check if the location is in Sri Lanka by checking the address
+                        if (data.address && data.address.country && data.address.country.toLowerCase() !== 'sri lanka') {
+                            showError('Selected location is not in Sri Lanka');
+                            document.getElementById('loading').style.display = 'none';
+                            return;
+                        }
+
+                        // Check if the location is water
+                        if (data.type === 'body_of_water' || data.type === 'water' ||
+                            (data.address && data.address.waterway)) {
+                            showError('Cannot select water areas. Please choose land.');
+                            document.getElementById('loading').style.display = 'none';
+                            return;
+                        }
+
+                        addressInput.value = data.display_name;
+                    }
+                    document.getElementById('loading').style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error fetching address:', error);
+                    document.getElementById('loading').style.display = 'none';
+                });
+        }
+
+        // Function to display search suggestions
+        function showSuggestions(suggestions) {
+            const suggestionsContainer = document.getElementById('suggestions');
+            suggestionsContainer.innerHTML = '';
+
+            // Filter suggestions to only include Sri Lanka locations
+            suggestions = suggestions.filter(suggestion => {
+                // Check if the suggestion has an address component for Sri Lanka
+                if (suggestion.address && suggestion.address.country &&
+                    suggestion.address.country.toLowerCase() === 'sri lanka') {
+                    return true;
+                }
+
+                // Check if the display name includes Sri Lanka
+                if (suggestion.display_name &&
+                    suggestion.display_name.toLowerCase().includes('sri lanka')) {
+                    return true;
+                }
+
+                // Check if coordinates are within Sri Lanka
+                if (suggestion.lat && suggestion.lon) {
+                    return isInSriLanka(parseFloat(suggestion.lat), parseFloat(suggestion.lon));
+                }
+
+                return false;
+            });
+
+            if (suggestions.length === 0) {
+                suggestionsContainer.style.display = 'none';
+                return;
+            }
+
+            suggestions.forEach(suggestion => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.textContent = suggestion.display_name;
+
+                // Highlight the part that matches the search query
+                const query = document.getElementById('search').value.toLowerCase();
+                const index = suggestion.display_name.toLowerCase().indexOf(query);
+                if (index >= 0) {
+                    const before = suggestion.display_name.substring(0, index);
+                    const match = suggestion.display_name.substring(index, index + query.length);
+                    const after = suggestion.display_name.substring(index + query.length);
+
+                    div.innerHTML = `${before}<span style="font-weight:bold;color:#3498db">${match}</span>${after}`;
+                }
+
+                div.addEventListener('click', function() {
+                    document.getElementById('search').value = suggestion.display_name;
+                    suggestionsContainer.style.display = 'none';
+                    goToLocation(suggestion.lat, suggestion.lon, suggestion.display_name);
+                });
+
+                suggestionsContainer.appendChild(div);
+            });
+
+            suggestionsContainer.style.display = 'block';
+        }
+
+        // Function to handle going to a location
+        function goToLocation(lat, lon, displayName) {
+            const numLat = parseFloat(lat);
+            const numLon = parseFloat(lon);
+
+            // Check if location is within Sri Lanka
+            if (!isInSriLanka(numLat, numLon)) {
+                showError('Selected location is not in Sri Lanka');
+                return;
+            }
+
+            // Remove existing marker if any
+            if (marker) {
+                map.removeLayer(marker);
+            }
+
+            // Add new marker and center map
+            marker = L.marker([numLat, numLon], { draggable: true }).addTo(map);
+            map.setView([numLat, numLon], 16);
+
+            // Update coordinates display
+            updateCoordinates(numLat, numLon);
+
+            // Set address if available
+            if (displayName) {
+                addressInput.value = displayName;
+            }
+
+            // Handle marker drag
+            marker.on('dragend', function(e) {
+                const newLatLng = marker.getLatLng();
+                if (!isInSriLanka(newLatLng.lat, newLatLng.lng)) {
+                    showError('Location must be within Sri Lanka');
+                    // Snap back to previous valid position
+                    marker.setLatLng([numLat, numLon]);
+                    return;
+                }
+                updateCoordinates(newLatLng.lat, newLatLng.lng);
+            });
+
+            // Reverse geocode to verify location type
+            reverseGeocode(numLat, numLon);
+        }
+
+        // Function to fetch search suggestions
+        function fetchSuggestions(query) {
+            if (query.length < 3) {
+                document.getElementById('suggestions').style.display = 'none';
+                return;
+            }
+
+            // Use OpenStreetMap Nominatim API for search suggestions
+            document.getElementById('loading').style.display = 'block';
+            fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Sri Lanka')}&format=json&limit=10&countrycodes=lk`)
+                .then(response => response.json())
+                .then(data => {
+                    showSuggestions(data);
+                    document.getElementById('loading').style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error fetching suggestions:', error);
+                    document.getElementById('suggestions').style.display = 'none';
+                    document.getElementById('loading').style.display = 'none';
+                });
+        }
+
+        // Handle location search input
+        document.getElementById('search').addEventListener('input', function(e) {
+            clearTimeout(debounceTimer);
+            const query = e.target.value.trim();
+
+            if (query) {
+                debounceTimer = setTimeout(() => {
+                    fetchSuggestions(query);
+                }, 300);
+            } else {
+                document.getElementById('suggestions').style.display = 'none';
+            }
+        });
+
+        // Handle location search button click
+        document.getElementById('search').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const location = document.getElementById('search').value.trim();
+                document.getElementById('suggestions').style.display = 'none';
+
+                if (!location) return;
+
+                // Use OpenStreetMap Nominatim API for geocoding
+                document.getElementById('loading').style.display = 'block';
+                fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1&countrycodes=lk`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            goToLocation(parseFloat(data[0].lat), parseFloat(data[0].lon), data[0].display_name);
+                        } else {
+                            showError('Location not found in Sri Lanka. Please try a different name.');
+                        }
+                        document.getElementById('loading').style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error searching location:', error);
+                        showError('Error searching for location. Please try again.');
+                        document.getElementById('loading').style.display = 'none';
+                    });
+            }
+        });
+
+        // Close suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#search-container')) {
+                document.getElementById('suggestions').style.display = 'none';
+            }
+        });
+
+        // Current location button
+        document.getElementById('current-location').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                document.getElementById('loading').style.display = 'block';
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    // Check if within Sri Lanka
+                    if (isInSriLanka(lat, lng)) {
+                        goToLocation(lat, lng, 'Current Location');
+                        reverseGeocode(lat, lng);
+                    } else {
+                        showError('Your location is outside Sri Lanka.');
+                    }
+                    document.getElementById('loading').style.display = 'none';
+                }, function(error) {
+                    showError('Error getting location: ' + error.message);
+                    document.getElementById('loading').style.display = 'none';
+                });
+            } else {
+                showError('Geolocation is not supported by your browser.');
+            }
+        });
+
+        // Reset location button
+        document.getElementById('reset-location').addEventListener('click', resetToOriginalLocation);
+
+        // Reset button in form actions
+        document.getElementById('reset-button').addEventListener('click', resetToOriginalLocation);
+
+        // Zoom controls
+        document.getElementById('zoom-in').addEventListener('click', function() {
+            map.zoomIn();
+        });
+
+        document.getElementById('zoom-out').addEventListener('click', function() {
+            map.zoomOut();
+        });
+    });
+</script>
+</body>
+</html>

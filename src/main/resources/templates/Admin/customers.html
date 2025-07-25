@@ -2,10 +2,418 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Customer Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/Admin/AdminNav.css">
     <style>
+        :root {
+            --clr-danger: #ff7782;
+            --clr-primary: #7380ec;
+            --clr-light: rgba(132, 139, 200, 0.18);
+            --clr-info-dark: #7d8da1;
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f72585;
+            --border-radius: 12px;
+            --clr-info-dark: #7d8da1;
+            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --clr-white: #fff;
+            --clr-dark-variant: #677483;
+            --clr-color-background: #f6f6f9;
+        }
+
+        /* Dark theme variables */
+        body.dark-theme-variables {
+            --primary: #4895ef;
+            --primary-dark: #3f7fd4;
+            --secondary: #4a4ecc;
+            --accent: #4cc9f0;
+            --light: #212529;
+            --dark: #f8f9fa;
+            --gray: #adb5bd;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f72585;
+            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            --clr-white: #202528;
+            --clr-dark-variant: #677483;
+            --clr-color-background: #181a1e;
+            background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%);
+        }
+
+        body.dark-theme-variables .container {
+            background: #2d2d2d;
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .card {
+            background-color: #343a40;
+            border-color: #495057;
+        }
+
+        body.dark-theme-variables .card-header {
+            background-color: #495057;
+            border-bottom-color: #6c757d;
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .card-footer {
+            background-color: #495057;
+            border-top-color: #6c757d;
+            color: var(--gray);
+        }
+
+        body.dark-theme-variables .table {
+            background-color: #343a40 !important;
+            color: var(--dark) !important;
+        }
+
+        body.dark-theme-variables .table th,
+        body.dark-theme-variables .table td {
+            background-color: #343a40 !important;
+            color: var(--dark) !important;
+            border-color: #495057 !important;
+        }
+
+        body.dark-theme-variables .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        body.dark-theme-variables .modal-content {
+            background-color: #343a40;
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .modal-header,
+        body.dark-theme-variables .modal-footer {
+            border-color: #495057;
+            background-color: #2d2d2d;
+        }
+
+        body.dark-theme-variables .modal-title {
+            color: var(--dark) !important;
+        }
+
+        body.dark-theme-variables .text-muted {
+            color: var(--gray) !important;
+        }
+
+        body.dark-theme-variables .input-group-text {
+            background-color: #495057;
+            border-color: #6c757d;
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .form-control {
+            background-color: #495057;
+            border-color: #6c757d;
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .form-control::placeholder {
+            color: var(--gray);
+        }
+
+        body.dark-theme-variables .btn-outline-secondary {
+            background-color: transparent;
+            border-color: #6c757d;
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .btn-outline-secondary:hover {
+            background-color: #495057;
+            color: var(--dark);
+        }
+
+        body.dark-theme-variables .empty-state {
+            color: var(--gray);
+        }
+
+        body.dark-theme-variables .card-body div,
+        body.dark-theme-variables .info-label,
+        body.dark-theme-variables .detail-value,
+        body.dark-theme-variables .detail-label,
+        body.dark-theme-variables .text-muted {
+            color: var(--gray) !important;
+        }
+
+        body.dark-theme-variables .card-body .info-label {
+            color: var(--gray) !important;
+        }
+
+        body.dark-theme-variables h5 {
+            color: white !important;
+        }
+
+        body {
+            overflow-x: hidden;
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .mt-4 {
+            margin-top: 1.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .justify-content-between {
+            justify-content: space-between;
+        }
+
+        .align-items-center {
+            align-items: center;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .card-footer {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 0.85rem;
+        }
+
+        .shadow {
+            box-shadow: var(--box-shadow);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .danger {
+            color: var(--clr-danger);
+        }
+
+        .btn-info {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.875rem;
+        }
+
+        .float-end {
+            float: right;
+        }
+
+        .text-muted {
+            color: var(--gray);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+
+        .col-md-6 {
+            width: 50%;
+            padding: 0 10px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+        }
+
+        .table th {
+            text-align: left;
+            background-color: #f8f9fa;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .input-group-text {
+            padding: 8px 12px;
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .form-control {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-left: none;
+            border-right: none;
+            flex: 1;
+        }
+
+        .btn-outline-secondary {
+            background-color: transparent;
+            border: 1px solid #ced4da;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-canceled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-rescheduled {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        .status-rescheduled_request {
+            background-color: #e2d4f0;
+            color: #4a2d7a;
+        }
+
+        .status-completed {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .action-btn {
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            width: 100%;
+        }
+
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 20px;
+            color: #dee2e6;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        /* Profile image styles */
         .profile-img {
             width: 150px;
             height: 150px;
@@ -15,142 +423,336 @@
             display: block;
             border: 5px solid #f8f9fa;
         }
+
         .profile-header {
             background-color: #f8f9fa;
             padding: 20px;
             border-radius: 5px;
             margin-bottom: 20px;
         }
+
+        /* Theme toggle button */
+        .theme-toggler {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .theme-toggler span {
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-toggler span.active {
+            opacity: 1;
+        }
+
+        /* Dark mode adjustments for profile image */
+        body.dark-theme-variables .profile-header {
+            background-color: #495057;
+        }
+
+        body.dark-theme-variables .profile-img {
+            border-color: #495057;
+        }
     </style>
 </head>
 <body>
-
-<div class="container mt-4">
-    <h1>Customer Management</h1>
-
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">All Customers</h6>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="customerTable" class="table table-striped table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Number</th>
-                        <th>Unique ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Contact</th>
-                        <th>NIC</th>
-                        <th>Type</th>
-                        <th>Status</th>
-                        <th>Created At</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="customer, stat : ${customers}">
-                        <td th:text="${stat.count}"></td>
-                        <td th:text="${customer.uniqueId}"></td>
-                        <td>
-                            <span th:text="${customer.firstName + ' ' + customer.lastName}"></span>
-                        </td>
-                        <td th:text="${customer.email}"></td>
-                        <td th:text="${customer.contactNumber}"></td>
-                        <td th:text="${customer.nic}"></td>
-                        <td th:text="${customer.customer_type}"></td>
-                        <td>
-                            <span th:if="${customer.status == 1}" class="badge bg-success">Active</span>
-                            <span th:if="${customer.status == 0}" class="badge bg-danger">Inactive</span>
-                        </td>
-                        <td th:text="${#temporals.format(customer.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
-                        <td>
-                            <button th:attr="data-id=${customer.id}, data-unique-id=${customer.uniqueId}"
-                                    class="btn btn-sm btn-info view-btn"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#customerModal">View</button>
-                            <a th:href="@{/Admin/DeleteCustomers/{id}(id=${customer.uniqueId})}"
-                               class="btn btn-sm btn-warning">Delete</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+<div class="main-container">
+    <!-- Sidebar Navigation -->
+    <aside>
+        <div class="top">
+            <div class="logo">
+                <h2>A <span class="danger">lcura</span></h2>
+            </div>
+            <div class="close" id="close_btn">
+                <span class="material-symbols-sharp">close</span>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Customer View Modal -->
-<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="customerModalLabel">Customer Profile</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="profile-header text-center">
-                    <h3 id="customerName">Loading...</h3>
-                    <p class="text-muted" id="customerType">Loading...</p>
+        <div class="sidebar">
+            <a href="/Admin/Dashboard">
+                <span class="material-symbols-sharp">dashboard</span>
+                <h3>Dashboard</h3>
+            </a>
+            <a href="/Admin/ManageCustomers" class="active">
+                <span class="material-symbols-sharp">group</span>
+                <h3>Customers</h3>
+            </a>
+            <a href="/Admin/DiseaseModelDashboard">
+                <span class="material-symbols-sharp">monitor_heart</span>
+                <h3>Disease Model</h3>
+            </a>
+            <a href="/Admin/MedicineModelDashboard">
+                <span class="material-symbols-sharp">medication</span>
+                <h3>Medicine Model</h3>
+            </a>
+            <a th:href="@{/Admin/SOS}">
+                <span class="material-symbols-sharp">emergency</span>
+                <h3>Emergency Alerts</h3>
+                <span class="msg_count notification-badge">0</span>
+            </a>
+            <a th:href="@{/Admin/FaceEnrollment}">
+                <span class="material-symbols-sharp">face</span>
+                <h3>Face Enrollment</h3>
+            </a>
+            <a href="/Admin/Manage_Doctors">
+                <span class="material-symbols-sharp">medical_services</span>
+                <h3>Doctors</h3>
+            </a>
+            <a href="/Admin/Feedbacks">
+                <span class="material-symbols-sharp">feedback</span>
+                <h3>Reports</h3>
+            </a>
+            <a href="/Admin/Manage_Appointments">
+                <span class="material-symbols-sharp">event_available</span>
+                <h3>Appointments</h3>
+            </a>
+            <a href="/Admin/ManageHospitals">
+                <span class="material-symbols-sharp">local_hospital</span>
+                <h3>Hospitals</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">settings</span>
+                <h3>Settings</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">add_circle</span>
+                <h3>Add Product</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">logout</span>
+                <h3>Logout</h3>
+            </a>
+        </div>
+    </aside>
+
+    <div class="right">
+        <div class="top">
+            <button id="menu_bar" aria-label="Toggle menu">
+                <span class="material-symbols-sharp">menu</span>
+            </button>
+        </div>
+
+        <div class="container mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1><i class="bi bi-people-fill"></i> Customer Management</h1>
+                <div>
+                    <a href="#" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Add New
+                    </a>
                 </div>
+            </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>Basic Information</h5>
-                        <table class="table table-bordered">
+            <!-- Search Section -->
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input type="text" id="searchInput" class="form-control" placeholder="Search customers...">
+                                <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Table -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold">All Customers</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-sm btn-outline-primary filter-btn active" data-status="all">All</button>
+                        <button class="btn btn-sm btn-outline-success filter-btn" data-status="active">Active</button>
+                        <button class="btn btn-sm btn-outline-danger filter-btn" data-status="inactive">Inactive</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="customerTable" class="table table-striped table-bordered">
+                            <thead>
                             <tr>
+                                <th>Number</th>
                                 <th>Unique ID</th>
-                                <td id="customerUniqueId">Loading...</td>
-                            </tr>
-                            <tr>
+                                <th>Name</th>
                                 <th>Email</th>
-                                <td id="customerEmail">Loading...</td>
-                            </tr>
-                            <tr>
-                                <th>Contact Number</th>
-                                <td id="customerContact">Loading...</td>
-                            </tr>
-                            <tr>
+                                <th>Contact</th>
                                 <th>NIC</th>
-                                <td id="customerNic">Loading...</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="col-md-6">
-                        <h5>Additional Information</h5>
-                        <table class="table table-bordered">
-                            <tr>
+                                <th>Type</th>
                                 <th>Status</th>
-                                <td id="customerStatus">Loading...</td>
+                                <th>Created At</th>
+                                <th>Actions</th>
                             </tr>
-                            <tr>
-                                <th>Account Created</th>
-                                <td id="customerCreatedAt">Loading...</td>
+                            </thead>
+                            <tbody>
+                            <tr th:each="customer, stat : ${customers}">
+                                <td th:text="${stat.count}"></td>
+                                <td th:text="${customer.uniqueId}"></td>
+                                <td>
+                                    <span th:text="${customer.firstName + ' ' + customer.lastName}"></span>
+                                </td>
+                                <td th:text="${customer.email}"></td>
+                                <td th:text="${customer.contactNumber}"></td>
+                                <td th:text="${customer.nic}"></td>
+                                <td th:text="${customer.customer_type}"></td>
+                                <td>
+                                    <span th:if="${customer.status == 1}" class="badge bg-success">Active</span>
+                                    <span th:if="${customer.status == 0}" class="badge bg-danger">Inactive</span>
+                                </td>
+                                <td th:text="${#temporals.format(customer.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                                <td>
+                                    <button th:attr="data-id=${customer.id}, data-unique-id=${customer.uniqueId}"
+                                            class="btn btn-sm btn-info view-btn action-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#customerModal">
+                                        <i class="bi bi-eye"></i> View
+                                    </button>
+                                    <a th:href="@{/Admin/DeleteCustomers/{id}(id=${customer.uniqueId})}"
+                                       class="btn btn-sm btn-warning action-btn">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </td>
                             </tr>
-                            <tr>
-                                <th>Last Updated</th>
-                                <td id="customerUpdatedAt">Loading...</td>
-                            </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <a href="#" id="deleteCustomerBtn" class="btn btn-danger">Delete Profile</a>
+        </div>
+
+        <!-- Customer View Modal -->
+        <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="customerModalLabel">Customer Profile</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="profile-header text-center">
+
+                            <h3 id="customerName">Loading...</h3>
+                            <p class="text-muted" id="customerType">Loading...</p>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Basic Information</h5>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>Unique ID</th>
+                                        <td id="customerUniqueId">Loading...</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email</th>
+                                        <td id="customerEmail">Loading...</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Contact Number</th>
+                                        <td id="customerContact">Loading...</td>
+                                    </tr>
+                                    <tr>
+                                        <th>NIC</th>
+                                        <td id="customerNic">Loading...</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Additional Information</h5>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>Status</th>
+                                        <td id="customerStatus">Loading...</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Account Created</th>
+                                        <td id="customerCreatedAt">Loading...</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Last Updated</th>
+                                        <td id="customerUpdatedAt">Loading...</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <a href="#" id="deleteCustomerBtn" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete Profile
+                        </a>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <!-- Theme toggle button -->
+        <div class="theme-toggler">
+            <span class="material-symbols-sharp active">light_mode</span>
+            <span class="material-symbols-sharp">dark_mode</span>
         </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/Admin/AdminNav.js"></script>
 <script>
     $(document).ready(function() {
-        $('#customerTable').DataTable();
+        // Initialize DataTable
+        $('#customerTable').DataTable({
+            responsive: true
+        });
+
+        // Search functionality
+        $('#searchButton').click(function() {
+            const value = $('#searchInput').val().toLowerCase();
+            $('#customerTable tbody tr').filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+
+        $('#searchInput').on('keyup', function(e) {
+            if (e.key === 'Enter') {
+                $('#searchButton').click();
+            }
+        });
+
+        // Status filter functionality
+        $('.filter-btn').click(function() {
+            const status = $(this).data('status');
+
+            // Remove active class from all buttons
+            $('.filter-btn').removeClass('active');
+
+            // Add active class to clicked button
+            $(this).addClass('active');
+
+            if (status === 'all') {
+                $('#customerTable tbody tr').show();
+            } else {
+                $('#customerTable tbody tr').each(function() {
+                    const rowStatus = $(this).find('td:nth-child(8) .badge').text().toLowerCase();
+                    $(this).toggle(rowStatus === status);
+                });
+            }
+        });
 
         // Handle view button click
         $('.view-btn').click(function() {
@@ -205,7 +807,8 @@
             $('#customerCreatedAt').text('Loading...');
             $('#customerUpdatedAt').text('Loading...');
         });
-    });
+});
+
 </script>
 </body>
 </html>

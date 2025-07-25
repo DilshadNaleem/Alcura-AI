@@ -277,7 +277,7 @@ body.dark .menu-bar .mode .mode-text {
 }
 
 .home {
-    height: 100vh;
+    min-height: 100vh;
     position: relative;
     left: 250px;
     width: calc(100% - 250px);
