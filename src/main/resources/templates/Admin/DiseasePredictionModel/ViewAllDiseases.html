@@ -4,428 +4,471 @@
     <meta charset="UTF-8">
     <title>All Diseases</title>
     <!-- SweetAlert2 CSS -->
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
+
     <style>
-        .disease-card {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 20px;
-            background-color: #f9f9f9;
-        }
-        .disease-name {
-            color: #2c3e50;
-            margin-top: 0;
-        }
-        .search-container {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #e9ecef;
-            border-radius: 5px;
-        }
-        .search-form {
-            display: flex;
-            gap: 10px;
-        }
-        .search-input {
-            flex-grow: 1;
-            padding: 8px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-        }
-        .search-button {
-            padding: 8px 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .search-button:hover {
-            background-color: #0056b3;
-        }
-        .view-all-link {
-            display: inline-block;
-            margin-top: 10px;
-            color: #007bff;
-            text-decoration: none;
-        }
-        .delete-btn {
-            padding: 8px 15px;
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .delete-btn:hover {
-            background-color: #c82333;
-        }
-        .edit-btn {
-            padding: 8px 15px;
-            background-color: #ffc107;
-            color: #212529;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .edit-btn:hover {
-            background-color: #e0a800;
-        }
-        .view-images-btn {
-            padding: 8px 15px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .view-images-btn:hover {
-            background-color: #218838;
-        }
-        /* SweetAlert customization */
-        .swal2-popup {
-            font-size: 1.6rem !important;
-            border-radius: 10px !important;
-        }
-        .alert-success {
-            color: #155724;
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-        }
-        .alert-error {
-            color: #721c24;
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-        }
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
 
-        :root {
-            --clr-primary: #4361ee;
-            --clr-primary-light: #3a86ff;
-            --clr-danger: #ef233c;
-            --clr-danger-light: #ff758f;
-            --clr-success: #2ecc71;
-            --clr-warning: #ff9f1c;
-            --clr-white: #ffffff;
-            --clr-light: #f8f9fa;
-            --clr-gray: #adb5bd;
-            --clr-dark: #212529;
-            --clr-dark-variant: #495057;
-            --clr-background: #f6f6f9;
-            --card-border-radius: 12px;
-            --border-radius-1: 8px;
-            --border-radius-2: 4px;
-            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
+        .theme-toggler {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: var(  --clr-primary-navtheme);
+          color: white;
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+          z-index: 9999;
+      }
 
-        /* Sidebar Styles */
-        .sidebar-container {
-            width: 280px;
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            background: var(--clr-white);
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            transition: var(--transition);
-        }
+      .theme-toggler span {
+          position: absolute;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+      }
 
-        .sidebar-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
+      .theme-toggler span.active {
+          opacity: 1;
+      }
 
-        .sidebar-logo h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 0;
-            color: var(--clr-dark);
-        }
+        .dark-theme-variables .theme-toggler {
+       background: var(--clr-primary) !important;
+       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+   }
+       .disease-card {
+           border: 1px solid #ddd;
+           border-radius: 5px;
+           padding: 15px;
+           margin-bottom: 20px;
+           background-color: #f9f9f9;
+       }
+       .disease-name {
+           color: #2c3e50;
+           margin-top: 0;
+       }
+       .search-container {
+           margin-bottom: 20px;
+           padding: 15px;
+           background-color: #e9ecef;
+           border-radius: 5px;
+       }
+       .search-form {
+           display: flex;
+           gap: 10px;
+       }
+       .search-input {
+           flex-grow: 1;
+           padding: 8px;
+           border: 1px solid #ced4da;
+           border-radius: 4px;
+       }
+       .search-button {
+           padding: 8px 15px;
+           background-color: #007bff;
+           color: white;
+           border: none;
+           border-radius: 4px;
+           cursor: pointer;
+       }
+       .search-button:hover {
+           background-color: #0056b3;
+       }
+       .view-all-link {
+           display: inline-block;
+           margin-top: 10px;
+           color: #007bff;
+           text-decoration: none;
+       }
+       .delete-btn {
+           padding: 8px 15px;
+           background-color: #dc3545;
+           color: white;
+           border: none;
+           border-radius: 4px;
+           cursor: pointer;
+           margin-top: 10px;
+       }
+       .delete-btn:hover {
+           background-color: #c82333;
+       }
+       .edit-btn {
+           padding: 8px 15px;
+           background-color: #ffc107;
+           color: #212529;
+           border: none;
+           border-radius: 4px;
+           cursor: pointer;
+           margin-top: 10px;
+       }
+       .edit-btn:hover {
+           background-color: #e0a800;
+       }
+       .view-images-btn {
+           padding: 8px 15px;
+           background-color: #28a745;
+           color: white;
+           border: none;
+           border-radius: 4px;
+           cursor: pointer;
+           margin-top: 10px;
+       }
+       .view-images-btn:hover {
+           background-color: #218838;
+       }
+       /* SweetAlert customization */
+       .swal2-popup {
+           font-size: 1.6rem !important;
+           border-radius: 10px !important;
+       }
+       .alert-success {
+           color: #155724;
+           background-color: #d4edda;
+           border-color: #c3e6cb;
+           padding: 10px;
+           margin-bottom: 15px;
+           border-radius: 4px;
+       }
+       .alert-error {
+           color: #721c24;
+           background-color: #f8d7da;
+           border-color: #f5c6cb;
+           padding: 10px;
+           margin-bottom: 15px;
+           border-radius: 4px;
+       }
+       .button-group {
+           display: flex;
+           gap: 10px;
+           margin-top: 15px;
+       }
 
-        .sidebar-logo .danger {
-            color: var(--clr-danger);
-        }
+       :root {
+         --clr-primary-navtheme: #4361ee;
+         --clr-primary-theme: #7380ec;
+           --clr-primary: #4361ee;
+           --clr-primary-light: #3a86ff;
+           --clr-danger: #ef233c;
+           --clr-danger-light: #ff758f;
+           --clr-success: #2ecc71;
+           --clr-warning: #ff9f1c;
+           --clr-white: #ffffff;
+           --clr-light: #f8f9fa;
+           --clr-gray: #adb5bd;
+           --clr-dark: #212529;
+           --clr-dark-variant: #495057;
+           --clr-background: #f6f6f9;
+           --card-border-radius: 12px;
+           --border-radius-1: 8px;
+           --border-radius-2: 4px;
+           --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+           --transition: all 0.3s ease;
+       }
 
-        .sidebar-close-btn {
-            display: none;
-            cursor: pointer;
-            color: var(--clr-dark);
-        }
+       /* Sidebar Styles */
+       .sidebar-container {
+           width: 280px;
+           height: 100vh;
+           position: fixed;
+           left: 0;
+           top: 0;
+           background: var(--clr-white);
+           box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+           z-index: 1000;
+           transition: var(--transition);
+       }
 
-        .sidebar-menu {
-            padding: 1rem 0;
-            height: calc(100vh - 5rem);
-            overflow-y: auto;
-        }
+       .sidebar-top {
+           display: flex;
+           align-items: center;
+           justify-content: space-between;
+           padding: 1.5rem;
+           border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+       }
 
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1.5rem;
-            color: var(--clr-dark-variant);
-            text-decoration: none;
-            transition: var(--transition);
-            margin: 0.25rem 0;
-            border-left: 3px solid transparent;
-        }
+       .sidebar-logo h2 {
+           font-size: 1.5rem;
+           font-weight: 700;
+           margin: 0;
+           color: var(--clr-dark);
+       }
 
-        .sidebar-menu a:hover {
-            background-color: rgba(67, 97, 238, 0.05);
-            color: var(--clr-primary);
-        }
+       .sidebar-logo .danger {
+           color: var(--clr-danger);
+       }
 
-        .sidebar-menu a.active {
-            background-color: rgba(67, 97, 238, 0.1);
-            color: var(--clr-primary);
-            border-left: 3px solid var(--clr-primary);
-        }
+       .sidebar-close-btn {
+           display: none;
+           cursor: pointer;
+           color: var(--clr-dark);
+       }
 
-        .sidebar-menu a span {
-            margin-right: 1rem;
-            font-size: 1.25rem;
-        }
+       .sidebar-menu {
+           padding: 1rem 0;
+           height: calc(100vh - 5rem);
+           overflow-y: auto;
+       }
 
-        .sidebar-menu h3 {
-            font-size: 1rem;
-            font-weight: 500;
-            margin: 0;
-        }
+       .sidebar-menu a {
+           display: flex;
+           align-items: center;
+           padding: 0.75rem 1.5rem;
+           color: var(--clr-dark-variant);
+           text-decoration: none;
+           transition: var(--transition);
+           margin: 0.25rem 0;
+           border-left: 3px solid transparent;
+       }
 
-        .sidebar-menu .notification-badge {
-            background-color: var(--clr-danger);
-            color: var(--clr-white);
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            border-radius: 50px;
-            margin-left: auto;
-        }
+       .sidebar-menu a:hover {
+           background-color: rgba(67, 97, 238, 0.05);
+           color: var(--clr-primary);
+       }
 
-        .sidebar-menu .logout-btn {
-            position: absolute;
-            bottom: 1rem;
-            width: 100%;
-            color: var(--clr-danger);
-        }
+       .sidebar-menu a.active {
+           background-color: rgba(67, 97, 238, 0.1);
+           color: var(--clr-primary);
+           border-left: 3px solid var(--clr-primary);
+       }
 
-        .sidebar-menu .logout-btn:hover {
-            background-color: rgba(239, 35, 60, 0.05);
-        }
+       .sidebar-menu a span {
+           margin-right: 1rem;
+           font-size: 1.25rem;
+       }
 
-        /* Mobile Menu Toggle */
-        .menu-toggle-btn {
-            display: none;
-            position: fixed;
-            top: 1.5rem;
-            left: 1.5rem;
-            z-index: 999;
-            background: var(--clr-white);
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: var(--transition);
-        }
+       .sidebar-menu h3 {
+           font-size: 1rem;
+           font-weight: 500;
+           margin: 0;
+       }
 
-        .menu-toggle-btn:hover {
-            background-color: var(--clr-light);
-        }
+       .sidebar-menu .notification-badge {
+           background-color: var(--clr-danger);
+           color: var(--clr-white);
+           padding: 0.25rem 0.5rem;
+           font-size: 0.75rem;
+           border-radius: 50px;
+           margin-left: auto;
+       }
 
-        @media screen and (max-width: 1200px) {
-            .sidebar-container {
-                left: -280px;
-            }
+       .sidebar-menu .logout-btn {
+           position: absolute;
+           bottom: 1rem;
+           width: 100%;
+           color: var(--clr-danger);
+       }
 
-            .sidebar-container.active {
-                left: 0;
-            }
+       .sidebar-menu .logout-btn:hover {
+           background-color: rgba(239, 35, 60, 0.05);
+       }
 
-            .menu-toggle-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+       /* Mobile Menu Toggle */
+       .menu-toggle-btn {
+           display: none;
+           position: fixed;
+           top: 1.5rem;
+           left: 1.5rem;
+           z-index: 999;
+           background: var(--clr-white);
+           border: none;
+           border-radius: 50%;
+           width: 40px;
+           height: 40px;
+           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+           cursor: pointer;
+           transition: var(--transition);
+       }
 
-            .sidebar-close-btn {
-                display: block;
-            }
-        }
+       .menu-toggle-btn:hover {
+           background-color: var(--clr-light);
+       }
 
-        /* Main Content Styles (for demo purposes) */
-        .main-content {
-            margin-left: 280px;
-            padding: 2rem;
-            transition: var(--transition);
-        }
+       @media screen and (max-width: 1200px) {
+           .sidebar-container {
+               left: -280px;
+           }
 
-        @media screen and (max-width: 1200px) {
-            .main-content {
-                margin-left: 0;
-                padding: 1rem;
-            }
-        }
+           .sidebar-container.active {
+               left: 0;
+           }
+
+           .menu-toggle-btn {
+               display: flex;
+               align-items: center;
+               justify-content: center;
+           }
+
+           .sidebar-close-btn {
+               display: block;
+           }
+       }
+
+       /* Main Content Styles (for demo purposes) */
+       .main-content {
+           margin-left: 280px;
+           padding: 2rem;
+           transition: var(--transition);
+       }
+
+       @media screen and (max-width: 1200px) {
+           .main-content {
+               margin-left: 0;
+               padding: 1rem;
+           }
+       }
 /* Dark Theme Variables */
 .dark-theme-variables {
-    --clr-primary: #3a86ff;
-    --clr-primary-light: #4d9eff;
-    --clr-danger: #ff758f;
-    --clr-danger-light: #ff9aae;
-    --clr-success: #4cdf8c;
-    --clr-warning: #ffb347;
-    --clr-white: #212529;
-    --clr-light: #343a40;
-    --clr-gray: #6c757d;
-    --clr-dark: #f8f9fa;
-    --clr-dark-variant: #e9ecef;
-    --clr-background: #121212;
-    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --clr-primary-theme:#4316ee;
+   --clr-primary: #3a86ff;
+   --clr-primary-light: #4d9eff;
+   --clr-danger: #ff758f;
+   --clr-danger-light: #ff9aae;
+   --clr-success: #4cdf8c;
+   --clr-warning: #ffb347;
+   --clr-white: #212529;
+   --clr-light: #343a40;
+   --clr-gray: #6c757d;
+   --clr-dark: #f8f9fa;
+   --clr-dark-variant: #e9ecef;
+   --clr-background: #121212;
+   --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Dark Theme Specific Styles */
 .dark-theme-variables {
-    background-color: var(--clr-background);
-    color: var(--clr-dark);
+   background-color: var(--clr-background);
+   color: var(--clr-dark);
 }
 
 .dark-theme-variables .disease-card {
-    background-color: #1e1e1e;
-    border-color: #333;
+   background-color: #1e1e1e;
+   border-color: #333;
 }
 
 .dark-theme-variables .disease-name {
-    color: var(--clr-primary-light);
+   color: var(--clr-primary-light);
 }
 
 .dark-theme-variables .search-container {
-    background-color: #2d2d2d;
+   background-color: #2d2d2d;
 }
 
 .dark-theme-variables .sidebar-container {
-    background-color: #1a1a1a;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+   background-color: #1a1a1a;
+   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .dark-theme-variables .sidebar-logo h2 {
-    color: var(--clr-dark);
+   color: var(--clr-dark);
 }
 
 .dark-theme-variables .sidebar-menu a {
-    color: var(--clr-dark-variant);
+   color: var(--clr-dark-variant);
 }
 
 .dark-theme-variables .sidebar-menu a:hover {
-    background-color: rgba(58, 134, 255, 0.1);
-    color: var(--clr-primary-light);
+   background-color: rgba(58, 134, 255, 0.1);
+   color: var(--clr-primary-light);
 }
 
 .dark-theme-variables .sidebar-menu a.active {
-    background-color: rgba(58, 134, 255, 0.2);
-    color: var(--clr-primary-light);
+   background-color: rgba(58, 134, 255, 0.2);
+   color: var(--clr-primary-light);
 }
 
 .dark-theme-variables .menu-toggle-btn {
-    background: #1e1e1e;
-    color: var(--clr-dark-variant);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+   background: #1e1e1e;
+   color: var(--clr-dark-variant);
+   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .dark-theme-variables .menu-toggle-btn:hover {
-    background-color: #2d2d2d;
+   background-color: #2d2d2d;
 }
 
 .dark-theme-variables .sidebar-top {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .dark-theme-variables .alert-success {
-    color: #b8f2d6;
-    background-color: #1a3a2a;
-    border-color: #2a5a3a;
+   color: #b8f2d6;
+   background-color: #1a3a2a;
+   border-color: #2a5a3a;
 }
 
 .dark-theme-variables .alert-error {
-    color: #f8b8c0;
-    background-color: #3a1a1a;
-    border-color: #5a2a2a;
+   color: #f8b8c0;
+   background-color: #3a1a1a;
+   border-color: #5a2a2a;
 }
 
 .dark-theme-variables .search-input {
-    background-color: #2d2d2d;
-    border-color: #444;
-    color: var(--clr-dark-variant);
+   background-color: #2d2d2d;
+   border-color: #444;
+   color: var(--clr-dark-variant);
 }
 
 .dark-theme-variables .search-button {
-    background-color: var(--clr-primary);
+   background-color: var(--clr-primary);
 }
 
 .dark-theme-variables .search-button:hover {
-    background-color: var(--clr-primary-light);
+   background-color: var(--clr-primary-light);
 }
 
 .dark-theme-variables .view-all-link {
-    color: var(--clr-primary-light);
+   color: var(--clr-primary-light);
 }
 
 .dark-theme-variables .delete-btn {
-    background-color: var(--clr-danger);
+   background-color: var(--clr-danger);
 }
 
 .dark-theme-variables .delete-btn:hover {
-    background-color: var(--clr-danger-light);
+   background-color: var(--clr-danger-light);
 }
 
 .dark-theme-variables .edit-btn {
-    background-color: var(--clr-warning);
-    color: #121212;
+   background-color: var(--clr-warning);
+   color: #121212;
 }
 
 .dark-theme-variables .edit-btn:hover {
-    background-color: #ffb347;
+   background-color: #ffb347;
 }
 
 .dark-theme-variables .view-images-btn {
-    background-color: var(--clr-success);
+   background-color: var(--clr-success);
 }
 
 .dark-theme-variables .view-images-btn:hover {
-    background-color: #4cdf8c;
+   background-color: #4cdf8c;
 }
 
 .dark-theme-variables .swal2-popup {
-    background-color: #2d2d2d !important;
-    color: var(--clr-dark-variant) !important;
+   background-color: #2d2d2d !important;
+   color: var(--clr-dark-variant) !important;
 }
 
 .dark-theme-variables .swal2-title,
 .dark-theme-variables .swal2-content {
-    color: var(--clr-dark-variant) !important;
+   color: var(--clr-dark-variant) !important;
 }
     </style>
 </head>
 <body>
 
+<div class="theme-toggler">
+    <span class="material-symbols-sharp active">light_mode</span>
+    <span class="material-symbols-sharp">dark_mode</span>
+</div>
 
 <!-- Sidebar Navigation -->
 <aside class="sidebar-container">
@@ -482,6 +525,12 @@
         <a href="/Admin/ViewAllValidations">
             <span class="material-symbols-sharp">checklist</span>
             <h3>View All Validations</h3>
+        </a>
+
+        <a  href="/Admin/SOSView">
+            <span class="material-symbols-sharp">emergency</span>
+            <h3>Emergency Alerts</h3>
+            <span class="msg_count notification-badge">0</span>
         </a>
 
         <a href="/Admin/Signing" class="logout-btn">
@@ -655,5 +704,8 @@
     });
 }
 </script>
+<script src="/Admin/SOSSocket.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </body>
 </html>

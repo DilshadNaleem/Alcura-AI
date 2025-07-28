@@ -3,25 +3,422 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Medicine</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <style>
-        .edit-container {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        :root {
+        --clr-primary: #4361ee;
+        --clr-primary-light: #3a86ff;
+        --clr-danger: #ef233c;
+        --clr-danger-light: #ff758f;
+        --clr-success: #2ecc71;
+        --clr-warning: #ff9f1c;
+        --clr-white: #ffffff;
+        --clr-light: #f8f9fa;
+        --clr-gray: #adb5bd;
+        --clr-dark: #212529;
+        --clr-dark-variant: #495057;
+        --clr-background: #f6f6f9;
+        --card-border-radius: 12px;
+        --border-radius-1: 8px;
+        --border-radius-2: 4px;
+        --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar-container {
+        width: 280px;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background: var(--clr-white);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        transition: var(--transition);
+    }
+
+    .sidebar-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .sidebar-logo h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--clr-dark);
+    }
+
+    .sidebar-logo .danger {
+        color: var(--clr-danger);
+    }
+
+    .sidebar-close-btn {
+        display: none;
+        cursor: pointer;
+        color: var(--clr-dark);
+    }
+
+    .sidebar-menu {
+        padding: 1rem 0;
+        height: calc(100vh - 5rem);
+        overflow-y: auto;
+    }
+
+    .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        color: var(--clr-dark-variant);
+        text-decoration: none;
+        transition: var(--transition);
+        margin: 0.25rem 0;
+        border-left: 3px solid transparent;
+    }
+
+    .sidebar-menu a:hover {
+        background-color: rgba(67, 97, 238, 0.05);
+        color: var(--clr-primary);
+    }
+
+    .sidebar-menu a.active {
+        background-color: rgba(67, 97, 238, 0.1);
+        color: var(--clr-primary);
+        border-left: 3px solid var(--clr-primary);
+    }
+
+    .sidebar-menu a span {
+        margin-right: 1rem;
+        font-size: 1.25rem;
+    }
+
+    .sidebar-menu h3 {
+        font-size: 1rem;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .sidebar-menu .notification-badge {
+        background-color: var(--clr-danger);
+        color: var(--clr-white);
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        border-radius: 50px;
+        margin-left: auto;
+    }
+
+    .sidebar-menu .logout-btn {
+        position: absolute;
+        bottom: 1rem;
+        width: 100%;
+        color: var(--clr-danger);
+    }
+
+    .sidebar-menu .logout-btn:hover {
+        background-color: rgba(239, 35, 60, 0.05);
+    }
+
+    /* Mobile Menu Toggle */
+    .menu-toggle-btn {
+        display: none;
+        position: fixed;
+        top: 1.5rem;
+        left: 1.5rem;
+        z-index: 999;
+        background: var(--clr-white);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .menu-toggle-btn:hover {
+        background-color: var(--clr-light);
+    }
+
+    @media screen and (max-width: 1200px) {
+        .sidebar-container {
+            left: -280px;
         }
-        .form-label {
-            font-weight: 500;
+
+        .sidebar-container.active {
+            left: 0;
         }
-        textarea {
-            min-height: 100px;
+
+        .menu-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
+        .sidebar-close-btn {
+            display: block;
+        }
+    }
+
+    /* Main Content Styles */
+    .main-content {
+        margin-left: 280px;
+        padding: 2rem;
+        transition: var(--transition);
+        min-height: 100vh;
+        background-color: #f8f9fa;
+    }
+
+    @media screen and (max-width: 1200px) {
+        .main-content {
+            margin-left: 0;
+            padding: 1rem;
+        }
+    }
+
+    /* Table styles */
+    .table {
+        background-color: white;
+        border-radius: var(--border-radius-1);
+        overflow: hidden;
+        box-shadow: var(--box-shadow);
+    }
+
+    .table th {
+        background-color: var(--clr-primary);
+        color: white;
+    }
+
+    .alert {
+        border-radius: var(--border-radius-1);
+    }
+
+    /* ====================== */
+    /* ENHANCED DARK THEME CSS */
+    /* ====================== */
+    .dark-theme-variables {
+        --clr-primary: #3a86ff;
+        --clr-primary-light: #4d9eff;
+        --clr-danger: #ff758f;
+        --clr-danger-light: #ff9aae;
+        --clr-success: #4cdf8c;
+        --clr-warning: #ffb347;
+        --clr-white: #121212;
+        --clr-light: #1e1e1e;
+        --clr-gray: #6c757d;
+        --clr-dark: #f8f9fa;
+        --clr-dark-variant: #e9ecef;
+        --clr-background: #121212;
+        --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Body and text elements */
+    .dark-theme-variables {
+        background-color: var(--clr-background);
+        color: var(--clr-dark-variant);
+    }
+
+    .dark-theme-variables h1,
+    .dark-theme-variables h2,
+    .dark-theme-variables h3,
+    .dark-theme-variables h4,
+    .dark-theme-variables h5,
+    .dark-theme-variables h6,
+    .dark-theme-variables p,
+    .dark-theme-variables li,
+    .dark-theme-variables .alert,
+    .dark-theme-variables .alert-heading {
+        color: var(--clr-dark-variant);
+    }
+
+    /* Table styling - Updated for black table with white cells */
+    .dark-theme-variables .table {
+        background-color: #000000; /* Pure black table background */
+        color: white; /* Default text color for table */
+        border-color: #444;
+    }
+
+    .dark-theme-variables .table th {
+        background-color: var(--clr-primary);
+        color: white;
+        border-color: #444;
+    }
+
+    .dark-theme-variables .table td {
+        background-color: #000000; /* Black background for cells */
+        color: white; /* White text in cells */
+        border-color: #444;
+    }
+
+    .dark-theme-variables .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0, 0, 0, 0.8); /* Slightly lighter black for odd rows */
+    }
+
+    .dark-theme-variables .table-striped tbody tr:nth-of-type(even) {
+        background-color: #000000; /* Pure black for even rows */
+    }
+
+    .dark-theme-variables .table-hover tbody tr:hover {
+        background-color: rgba(30, 30, 30, 0.9); /* Dark gray on hover */
+        color: white;
+    }
+
+    /* Alert boxes */
+    .dark-theme-variables .alert {
+        background-color: var(--clr-light);
+        color: var(--clr-dark-variant);
+        border-color: #444;
+    }
+
+    .dark-theme-variables .alert-danger {
+        background-color: rgba(239, 35, 60, 0.2);
+        border-color: rgba(239, 35, 60, 0.3);
+    }
+
+    .dark-theme-variables .alert-warning {
+        background-color: rgba(255, 159, 28, 0.2);
+        border-color: rgba(255, 159, 28, 0.3);
+    }
+
+    /* Code elements */
+    .dark-theme-variables code {
+        background-color: rgba(0, 0, 0, 0.3);
+        color: #f8f9fa;
+    }
+
+    /* Main content area */
+    .dark-theme-variables .main-content {
+        background-color: var(--clr-background);
+    }
+
+    /* Links */
+    .dark-theme-variables a {
+        color: var(--clr-primary-light);
+    }
+
+    .dark-theme-variables a:hover {
+        color: var(--clr-primary);
+    }
+
+    /* Theme toggler */
+    .theme-toggler {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--clr-primary);
+        color: white;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+    }
+
+    .theme-toggler span {
+        position: absolute;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .theme-toggler span.active {
+        opacity: 1;
+    }
     </style>
 </head>
 <body>
+
+
+<!-- Sidebar Navigation -->
+<aside class="sidebar-container">
+    <div class="sidebar-top">
+        <div class="sidebar-logo">
+            <h2>A <span class="danger">lcura</span></h2>
+        </div>
+        <div class="sidebar-close-btn" id="close_btn">
+            <span class="material-symbols-sharp">close</span>
+        </div>
+    </div>
+
+    <div class="sidebar-menu">
+        <a href="/Admin/Dashboard">
+            <span class="material-symbols-sharp">dashboard</span>
+            <h3>Dashboard</h3>
+        </a>
+
+        <a href="/Admin/DiseaseModelDashboard">
+            <span class="material-symbols-sharp">monitor_heart</span>
+            <h3>Disease Model</h3>
+        </a>
+
+        <a href="/Admin/MedicineModelDashboard">
+            <span class="material-symbols-sharp">medication</span>
+            <h3>Medicine Model</h3>
+        </a>
+
+        <a href="/Admin/AddMedicine">
+            <span class="material-symbols-sharp">add_circle</span>
+            <h3>Add Medicine</h3>
+        </a>
+
+        <a href="/Admin/medicineDescription" class="active">
+            <span class="material-symbols-sharp">manage_accounts</span>
+            <h3>Manage Medicine</h3>
+        </a>
+
+        <a href="/Admin/MedicinePrediction">
+            <span class="material-symbols-sharp">clinical_notes</span>
+            <h3>Predict Mediicne</h3>
+        </a>
+
+        <a href="/Admin/Training">
+            <span class="material-symbols-sharp">model_training</span>
+            <h3>Train Mediicne Model</h3>
+        </a>
+
+        <a href="/Admin/ViewAllMedicine">
+            <span class="material-symbols-sharp">visibility</span>
+            <h3>View Medicines</h3>
+        </a>
+
+        <a href="/Admin/ViewAllMedicineValidations">
+            <span class="material-symbols-sharp">checklist</span>
+            <h3>View All Validations</h3>
+        </a>
+
+        <a  href="/Admin/SOSView">
+            <span class="material-symbols-sharp">emergency</span>
+            <h3>Emergency Alerts</h3>
+            <span class="msg_count notification-badge">0</span>
+        </a>
+
+        <a href="/Admin/Signing" class="logout-btn">
+            <span class="material-symbols-sharp">logout</span>
+            <h3>Logout</h3>
+        </a>
+    </div>
+</aside>
+
+<!-- Mobile menu toggle button -->
+<button class="menu-toggle-btn" id="menu_toggle">
+    <span class="material-symbols-sharp">menu</span>
+</button>
+
+<div class="theme-toggler">
+    <span class="material-symbols-sharp active">light_mode</span>
+    <span class="material-symbols-sharp">dark_mode</span>
+</div>
+
 <div class="container">
     <div class="edit-container">
         <h1 class="mb-4">Edit Medicine: <span th:text="${medicine.className}"></span></h1>
@@ -122,6 +519,13 @@
     </div>
 </div>
 
+
+
+
+<script src="/Admin/SOSSocket.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // Auto-hide toast after 5 seconds
@@ -136,6 +540,46 @@
             }, 5000);
         }
     });
+
+     document.addEventListener('DOMContentLoaded', function() {
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menu_toggle');
+        const sidebar = document.querySelector('.sidebar-container');
+        const closeBtn = document.getElementById('close_btn');
+
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                sidebar.classList.toggle('active');
+            });
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    sidebar.classList.remove('active');
+                });
+            }
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 1200 &&
+                    !sidebar.contains(event.target) &&
+                    event.target !== menuToggle &&
+                    !menuToggle.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // Close sidebar when window is resized above 1200px
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 1200) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+
+
+    });
 </script>
+<script src="/Admin/Toggle.js"></script>
 </body>
 </html>

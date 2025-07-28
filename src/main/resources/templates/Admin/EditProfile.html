@@ -4,23 +4,186 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Edit Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            --clr-primary: #4361ee;
+            --clr-primary-light: #3a86ff;
+            --clr-danger: #ef233c;
+            --clr-danger-light: #ff758f;
+            --clr-success: #2ecc71;
+            --clr-warning: #ff9f1c;
+            --clr-white: #ffffff;
+            --clr-light: #f8f9fa;
+            --clr-gray: #adb5bd;
+            --clr-dark: #212529;
+            --clr-dark-variant: #495057;
+            --clr-background: #f6f6f9;
+            --card-border-radius: 12px;
+            --border-radius-1: 8px;
+            --border-radius-2: 4px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        /* Dark Theme Variables */
+        .dark-theme-variables {
+            --clr-primary: #3a86ff;
+            --clr-primary-light: #4d9eff;
+            --clr-danger: #ff758f;
+            --clr-danger-light: #ff9aae;
+            --clr-success: #4cdf8c;
+            --clr-warning: #ffb347;
+            --clr-white: #212529;
+            --clr-light: #343a40;
+            --clr-gray: #6c757d;
+            --clr-dark: #f8f9fa;
+            --clr-dark-variant: #e9ecef;
+            --clr-background: #121212;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--clr-background);
+            color: var(--clr-dark);
+            transition: var(--transition);
+        }
+
+        /* Sidebar Styles */
+        .sidebar-container {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: var(--clr-white);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .sidebar-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-logo h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--clr-dark);
+        }
+
+        .sidebar-logo .danger {
+            color: var(--clr-danger);
+        }
+
+        .sidebar-close-btn {
+            display: none;
+            cursor: pointer;
+            color: var(--clr-dark);
+        }
+
+        .sidebar-menu {
+            padding: 1rem 0;
+            height: calc(100vh - 5rem);
+            overflow-y: auto;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: var(--clr-dark-variant);
+            text-decoration: none;
+            transition: var(--transition);
+            margin: 0.25rem 0;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+            color: var(--clr-primary);
+        }
+
+        .sidebar-menu a.active {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--clr-primary);
+            border-left: 3px solid var(--clr-primary);
+        }
+
+        .sidebar-menu a span {
+            margin-right: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .sidebar-menu h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .sidebar-menu .notification-badge {
+            background-color: var(--clr-danger);
+            color: var(--clr-white);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 50px;
+            margin-left: auto;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle-btn {
+            display: none;
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            z-index: 999;
+            background: var(--clr-white);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .menu-toggle-btn:hover {
+            background-color: var(--clr-light);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            transition: var(--transition);
+        }
+
+        /* Form Styles */
+        .form-container {
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
         }
 
         form {
-            background-color: white;
+            background-color: var(--clr-white);
             padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--box-shadow);
         }
 
         .profile-image-container {
@@ -35,7 +198,7 @@
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #3498db;
+            border: 3px solid var(--clr-primary);
             margin-bottom: 10px;
         }
 
@@ -45,18 +208,19 @@
         }
 
         .image-upload-label {
-            background-color: #3498db;
-            color: white;
+            background-color: var(--clr-primary);
+            color: var(--clr-white);
             padding: 8px 15px;
             border-radius: 4px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: var(--transition);
         }
 
         .image-upload-label:hover {
-            background-color: #2980b9;
+            background-color: var(--clr-primary-light);
         }
 
         .image-upload input[type="file"] {
@@ -74,30 +238,32 @@
             margin-top: 15px;
             margin-bottom: 5px;
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--clr-dark-variant);
         }
 
         input[type="text"],
         textarea {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--clr-gray);
             border-radius: 4px;
             box-sizing: border-box;
             font-size: 16px;
-            transition: border 0.3s;
+            transition: var(--transition);
+            background-color: var(--clr-white);
+            color: var(--clr-dark);
         }
 
         input[type="text"]:focus,
         textarea:focus {
-            border-color: #3498db;
+            border-color: var(--clr-primary);
             outline: none;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+            box-shadow: 0 0 5px rgba(67, 97, 238, 0.5);
         }
 
         input[readonly] {
-            background-color: #f9f9f9;
-            color: #777;
+            background-color: var(--clr-light);
+            color: var(--clr-gray);
             cursor: not-allowed;
         }
 
@@ -119,30 +285,143 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
-            transition: background-color 0.3s;
+            transition: var(--transition);
         }
 
         .btn-primary {
-            background-color: #3498db;
-            color: white;
+            background-color: var(--clr-primary);
+            color: var(--clr-white);
         }
 
         .btn-primary:hover {
-            background-color: #2980b9;
+            background-color: var(--clr-primary-light);
         }
 
         .btn-secondary {
-            background-color: #95a5a6;
-            color: white;
+            background-color: var(--clr-gray);
+            color: var(--clr-white);
         }
 
         .btn-secondary:hover {
-            background-color: #7f8c8d;
+            background-color: var(--clr-dark-variant);
+        }
+
+        /* Theme Toggler */
+        .theme-toggler {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--clr-primary);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+        }
+
+        .theme-toggler span {
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-toggler span.active {
+            opacity: 1;
+        }
+
+        .dark-theme-variables .theme-toggler {
+            background: var(--clr-primary) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Dark Theme Specific Styles */
+        .dark-theme-variables .sidebar-container {
+            background-color: #1a1a1a;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-theme-variables .sidebar-menu a {
+            color: var(--clr-dark-variant);
+        }
+
+        .dark-theme-variables .sidebar-menu a:hover {
+            background-color: rgba(58, 134, 255, 0.1);
+            color: var(--clr-primary-light);
+        }
+
+        .dark-theme-variables .sidebar-menu a.active {
+            background-color: rgba(58, 134, 255, 0.2);
+            color: var(--clr-primary-light);
+        }
+
+        .dark-theme-variables .menu-toggle-btn {
+            background: #1e1e1e;
+            color: var(--clr-dark-variant);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-theme-variables .menu-toggle-btn:hover {
+            background-color: #2d2d2d;
+        }
+
+        .dark-theme-variables .sidebar-top {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-theme-variables form {
+            background-color: #1e1e1e;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-theme-variables label {
+            color: var(--clr-dark-variant);
+        }
+
+        .dark-theme-variables input[type="text"],
+        .dark-theme-variables textarea {
+            background-color: #2d2d2d;
+            border-color: #444;
+            color: var(--clr-dark-variant);
+        }
+
+        .dark-theme-variables input[readonly] {
+            background-color: #343a40;
+            color: #6c757d;
         }
 
         /* Responsive design */
+        @media (max-width: 1200px) {
+            .sidebar-container {
+                left: -280px;
+            }
+
+            .sidebar-container.active {
+                left: 0;
+            }
+
+            .menu-toggle-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .sidebar-close-btn {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+
         @media (max-width: 600px) {
-            body {
+            .form-container {
                 padding: 10px;
             }
 
@@ -153,48 +432,142 @@
     </style>
 </head>
 <body>
-<form th:action="@{/Admin/Editform}" enctype="multipart/form-data" method="post" th:object="${admin}">
-    <input type="hidden" name="id" th:value="${admin.uniqueId}" readonly>
 
-    <div class="profile-image-container">
-        <img th:if="${admin.image != null}" th:src="@{'/Admin/image/' + ${admin.email}}"
-             alt="Profile Image" class="profile-image" id="profileImage">
-        <img th:unless="${admin.image != null}" src="/path/to/default/image.jpg"
-             alt="Profile Image" class="profile-image" id="profileImage">
-        <div class="image-upload">
-            <label for="image" class="image-upload-label">
-                <i class="fas fa-camera"></i> Change Photo
-            </label>
-            <input type="file" id="image" name="image" accept="image/*" onchange="previewImage(this)">
+<!-- Sidebar Navigation -->
+<aside class="sidebar-container">
+    <div class="sidebar-top">
+        <div class="sidebar-logo">
+            <h2>A <span class="danger">lcura</span></h2>
+        </div>
+        <div class="sidebar-close-btn" id="close_btn">
+            <span class="material-symbols-sharp">close</span>
         </div>
     </div>
 
-    <label>First Name</label>
-    <input type="text" name="firstName" th:value="${admin.firstName}" required>
-
-    <label>Last Name</label>
-    <input type="text" name="lastName" th:value="${admin.lastName}" required>
-
-    <label>Email</label>
-    <input type="text" name="email" th:value="${admin.email}" readonly>
-
-    <label>NIC</label>
-    <input type="text" name="nic" th:value="${admin.nic}" readonly>
-
-    <label>Contact Number</label>
-    <input type="text" name="contactNumber" th:value="${admin.contactNumber}" readonly>
-
-    <label>Created Date</label>
-    <input type="text" name="createdAt" th:value="${#temporals.format(admin.createdAt, 'yyyy-MM-dd HH:mm')}" readonly>
-
-
-    <div class="form-actions">
-        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
-        <button type="submit" class="btn btn-primary">Update Profile</button>
+    <div class="sidebar-menu">
+        <a href="/Admin/Dashboard">
+            <span class="material-symbols-sharp">dashboard</span>
+            <h3>Dashboard</h3>
+        </a>
+        <a href="/Admin/ManageCustomers">
+            <span class="material-symbols-sharp">group</span>
+            <h3>Customers</h3>
+        </a>
+        <a href="/Admin/DiseaseModelDashboard">
+            <span class="material-symbols-sharp">monitor_heart</span>
+            <h3>Disease Model</h3>
+        </a>
+        <a href="/Admin/MedicineModelDashboard">
+            <span class="material-symbols-sharp">medication</span>
+            <h3>Medicine Model</h3>
+        </a>
+        <a th:href="@{/Admin/SOS}">
+            <span class="material-symbols-sharp">emergency</span>
+            <h3>Emergency Alerts</h3>
+            <span class="msg_count notification-badge">0</span>
+        </a>
+        <a th:href="@{/Admin/FaceEnrollment}">
+            <span class="material-symbols-sharp">face</span>
+            <h3>Face Enrollment</h3>
+        </a>
+        <a href="/Admin/Manage_Doctors">
+            <span class="material-symbols-sharp">medical_services</span>
+            <h3>Doctors</h3>
+        </a>
+        <a href="/Admin/Feedbacks">
+            <span class="material-symbols-sharp">feedback</span>
+            <h3>Reports</h3>
+        </a>
+        <a href="/Admin/Manage_Appointments" class="active">
+            <span class="material-symbols-sharp">event_available</span>
+            <h3>Appointments</h3>
+        </a>
+        <a href="/Admin/ManageHospitals">
+            <span class="material-symbols-sharp">local_hospital</span>
+            <h3>Hospitals</h3>
+        </a>
+        <a href="#">
+            <span class="material-symbols-sharp">settings</span>
+            <h3>Settings</h3>
+        </a>
+        <a href="#">
+            <span class="material-symbols-sharp">add_circle</span>
+            <h3>Add Product</h3>
+        </a>
+        <a href="#">
+            <span class="material-symbols-sharp">logout</span>
+            <h3>Logout</h3>
+        </a>
     </div>
-</form>
+</aside>
 
+<!-- Mobile menu toggle button -->
+<button class="menu-toggle-btn" id="menu_toggle">
+    <span class="material-symbols-sharp">menu</span>
+</button>
+
+<div class="theme-toggler">
+    <span class="material-symbols-sharp active">light_mode</span>
+    <span class="material-symbols-sharp">dark_mode</span>
+</div>
+
+<main class="main-content">
+    <div class="form-container">
+        <form th:action="@{/Admin/Editform}" enctype="multipart/form-data" method="post" th:object="${admin}">
+            <input type="hidden" name="id" th:value="${admin.uniqueId}" readonly>
+
+            <div class="profile-image-container">
+                <img th:if="${admin.image != null}" th:src="@{'/Admin/image/' + ${admin.email}}"
+                     alt="Profile Image" class="profile-image" id="profileImage">
+                <img th:unless="${admin.image != null}" src="/path/to/default/image.jpg"
+                     alt="Profile Image" class="profile-image" id="profileImage">
+                <div class="image-upload">
+                    <label for="image" class="image-upload-label">
+                        <i class="fas fa-camera"></i> Change Photo
+                    </label>
+                    <input type="file" id="image" name="image" accept="image/*" onchange="previewImage(this)">
+                </div>
+            </div>
+
+            <label>First Name</label>
+            <input type="text" name="firstName" th:value="${admin.firstName}" required>
+
+            <label>Last Name</label>
+            <input type="text" name="lastName" th:value="${admin.lastName}" required>
+
+            <label>Email</label>
+            <input type="text" name="email" th:value="${admin.email}" readonly>
+
+            <label>NIC</label>
+            <input type="text" name="nic" th:value="${admin.nic}" readonly>
+
+            <label>Contact Number</label>
+            <input type="text" name="contactNumber" th:value="${admin.contactNumber}" readonly>
+
+            <label>Created Date</label>
+            <input type="text" name="createdAt" th:value="${#temporals.format(admin.createdAt, 'yyyy-MM-dd HH:mm')}" readonly>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script src="/Admin/Toggle.js"></script>
 <script>
+    // Mobile menu toggle functionality
+    document.getElementById('menu_toggle').addEventListener('click', function() {
+        document.querySelector('.sidebar-container').classList.toggle('active');
+    });
+
+    document.getElementById('close_btn').addEventListener('click', function() {
+        document.querySelector('.sidebar-container').classList.remove('active');
+    });
+
+
+
     function previewImage(input) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();

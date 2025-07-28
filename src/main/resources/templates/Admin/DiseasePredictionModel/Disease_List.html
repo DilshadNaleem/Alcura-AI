@@ -4,191 +4,346 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diseases List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 </head>
 
 <style>
     :root {
-       --clr-primary: #4361ee;
-       --clr-primary-light: #3a86ff;
-       --clr-danger: #ef233c;
-       --clr-danger-light: #ff758f;
-       --clr-success: #2ecc71;
-       --clr-warning: #ff9f1c;
-       --clr-white: #ffffff;
-       --clr-light: #f8f9fa;
-       --clr-gray: #adb5bd;
-       --clr-dark: #212529;
-       --clr-dark-variant: #495057;
-       --clr-background: #f6f6f9;
-       --card-border-radius: 12px;
-       --border-radius-1: 8px;
-       --border-radius-2: 4px;
-       --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-       --transition: all 0.3s ease;
-   }
+        --clr-primary: #4361ee;
+        --clr-primary-light: #3a86ff;
+        --clr-danger: #ef233c;
+        --clr-danger-light: #ff758f;
+        --clr-success: #2ecc71;
+        --clr-warning: #ff9f1c;
+        --clr-white: #ffffff;
+        --clr-light: #f8f9fa;
+        --clr-gray: #adb5bd;
+        --clr-dark: #212529;
+        --clr-dark-variant: #495057;
+        --clr-background: #f6f6f9;
+        --card-border-radius: 12px;
+        --border-radius-1: 8px;
+        --border-radius-2: 4px;
+        --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
 
-   /* Sidebar Styles */
-   .sidebar-container {
-       width: 280px;
-       height: 100vh;
-       position: fixed;
-       left: 0;
-       top: 0;
-       background: var(--clr-white);
-       box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-       z-index: 1000;
-       transition: var(--transition);
-   }
+    /* Sidebar Navigation */
+    .sidebar-container {
+        width: 280px;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background: var(--clr-white);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        transition: var(--transition);
+    }
 
-   .sidebar-top {
-       display: flex;
-       align-items: center;
-       justify-content: space-between;
-       padding: 1.5rem;
-       border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-   }
+    .sidebar-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
 
-   .sidebar-logo h2 {
-       font-size: 1.5rem;
-       font-weight: 700;
-       margin: 0;
-       color: var(--clr-dark);
-   }
+    .sidebar-logo h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--clr-dark);
+    }
 
-   .sidebar-logo .danger {
-       color: var(--clr-danger);
-   }
+    .sidebar-logo .danger {
+        color: var(--clr-danger);
+    }
 
-   .sidebar-close-btn {
-       display: none;
-       cursor: pointer;
-       color: var(--clr-dark);
-   }
+    .sidebar-close-btn {
+        display: none;
+        cursor: pointer;
+        color: var(--clr-dark);
+    }
 
-   .sidebar-menu {
-       padding: 1rem 0;
-       height: calc(100vh - 5rem);
-       overflow-y: auto;
-   }
+    .sidebar-menu {
+        padding: 1rem 0;
+        height: calc(100vh - 5rem);
+        overflow-y: auto;
+    }
 
-   .sidebar-menu a {
-       display: flex;
-       align-items: center;
-       padding: 0.75rem 1.5rem;
-       color: var(--clr-dark-variant);
-       text-decoration: none;
-       transition: var(--transition);
-       margin: 0.25rem 0;
-       border-left: 3px solid transparent;
-   }
+    .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        color: var(--clr-dark-variant);
+        text-decoration: none;
+        transition: var(--transition);
+        margin: 0.25rem 0;
+        border-left: 3px solid transparent;
+    }
 
-   .sidebar-menu a:hover {
-       background-color: rgba(67, 97, 238, 0.05);
-       color: var(--clr-primary);
-   }
+    .sidebar-menu a:hover {
+        background-color: rgba(67, 97, 238, 0.05);
+        color: var(--clr-primary);
+    }
 
-   .sidebar-menu a.active {
-       background-color: rgba(67, 97, 238, 0.1);
-       color: var(--clr-primary);
-       border-left: 3px solid var(--clr-primary);
-   }
+    .sidebar-menu a.active {
+        background-color: rgba(67, 97, 238, 0.1);
+        color: var(--clr-primary);
+        border-left: 3px solid var(--clr-primary);
+    }
 
-   .sidebar-menu a span {
-       margin-right: 1rem;
-       font-size: 1.25rem;
-   }
+    .sidebar-menu a span {
+        margin-right: 1rem;
+        font-size: 1.25rem;
+    }
 
-   .sidebar-menu h3 {
-       font-size: 1rem;
-       font-weight: 500;
-       margin: 0;
-   }
+    .sidebar-menu h3 {
+        font-size: 1rem;
+        font-weight: 500;
+        margin: 0;
+    }
 
-   .sidebar-menu .notification-badge {
-       background-color: var(--clr-danger);
-       color: var(--clr-white);
-       padding: 0.25rem 0.5rem;
-       font-size: 0.75rem;
-       border-radius: 50px;
-       margin-left: auto;
-   }
+    .sidebar-menu .notification-badge {
+        background-color: var(--clr-danger);
+        color: var(--clr-white);
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        border-radius: 50px;
+        margin-left: auto;
+    }
 
-   .sidebar-menu .logout-btn {
-       position: absolute;
-       bottom: 1rem;
-       width: 100%;
-       color: var(--clr-danger);
-   }
+    .sidebar-menu .logout-btn {
+        position: absolute;
+        bottom: 1rem;
+        width: 100%;
+        color: var(--clr-danger);
+    }
 
-   .sidebar-menu .logout-btn:hover {
-       background-color: rgba(239, 35, 60, 0.05);
-   }
+    .sidebar-menu .logout-btn:hover {
+        background-color: rgba(239, 35, 60, 0.05);
+    }
 
-   /* Mobile Menu Toggle */
-   .menu-toggle-btn {
-       display: none;
-       position: fixed;
-       top: 1.5rem;
-       left: 1.5rem;
-       z-index: 999;
-       background: var(--clr-white);
-       border: none;
-       border-radius: 50%;
-       width: 40px;
-       height: 40px;
-       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-       cursor: pointer;
-       transition: var(--transition);
-   }
+    /* Mobile Menu Toggle */
+    .menu-toggle-btn {
+        display: none;
+        position: fixed;
+        top: 1.5rem;
+        left: 1.5rem;
+        z-index: 999;
+        background: var(--clr-white);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: var(--transition);
+    }
 
-   .menu-toggle-btn:hover {
-       background-color: var(--clr-light);
-   }
+    .menu-toggle-btn:hover {
+        background-color: var(--clr-light);
+    }
 
-   @media screen and (max-width: 1200px) {
-       .sidebar-container {
-           left: -280px;
-       }
+    @media screen and (max-width: 1200px) {
+        .sidebar-container {
+            left: -280px;
+        }
 
-       .sidebar-container.active {
-           left: 0;
-       }
+        .sidebar-container.active {
+            left: 0;
+        }
 
-       .menu-toggle-btn {
-           display: flex;
-           align-items: center;
-           justify-content: center;
-       }
+        .menu-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-       .sidebar-close-btn {
-           display: block;
-       }
-   }
+        .sidebar-close-btn {
+            display: block;
+        }
+    }
 
-   /* Main Content Styles (for demo purposes) */
-   .main-content {
-       margin-left: 280px;
-       padding: 2rem;
-       transition: var(--transition);
-   }
+    /* Main Content Styles */
+    .main-content {
+        margin-left: 280px;
+        padding: 2rem;
+        transition: var(--transition);
+        min-height: 100vh;
+        background-color: #f8f9fa;
+    }
 
-   @media screen and (max-width: 1200px) {
-       .main-content {
-           margin-left: 0;
-           padding: 1rem;
-       }
+    @media screen and (max-width: 1200px) {
+        .main-content {
+            margin-left: 0;
+            padding: 1rem;
+        }
+    }
 
+    /* Table styles */
+    .table {
+        background-color: white;
+        border-radius: var(--border-radius-1);
+        overflow: hidden;
+        box-shadow: var(--box-shadow);
+    }
 
-   }
+    .table th {
+        background-color: var(--clr-primary);
+        color: white;
+    }
+
+    .alert {
+        border-radius: var(--border-radius-1);
+    }
+
+    /* ====================== */
+    /* ENHANCED DARK THEME CSS */
+    /* ====================== */
+    .dark-theme-variables {
+        --clr-primary: #3a86ff;
+        --clr-primary-light: #4d9eff;
+        --clr-danger: #ff758f;
+        --clr-danger-light: #ff9aae;
+        --clr-success: #4cdf8c;
+        --clr-warning: #ffb347;
+        --clr-white: #121212;
+        --clr-light: #1e1e1e;
+        --clr-gray: #6c757d;
+        --clr-dark: #f8f9fa;
+        --clr-dark-variant: #e9ecef;
+        --clr-background: #121212;
+        --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Body and text elements */
+    .dark-theme-variables {
+        background-color: var(--clr-background);
+        color: var(--clr-dark-variant);
+    }
+
+    .dark-theme-variables h1,
+    .dark-theme-variables h2,
+    .dark-theme-variables h3,
+    .dark-theme-variables h4,
+    .dark-theme-variables h5,
+    .dark-theme-variables h6,
+    .dark-theme-variables p,
+    .dark-theme-variables li,
+    .dark-theme-variables .alert,
+    .dark-theme-variables .alert-heading {
+        color: var(--clr-dark-variant);
+    }
+
+    /* Table styling - Updated for black table with white cells */
+    .dark-theme-variables .table {
+        background-color: #000000; /* Pure black table background */
+        color: white; /* Default text color for table */
+        border-color: #444;
+    }
+
+    .dark-theme-variables .table th {
+        background-color: var(--clr-primary);
+        color: white;
+        border-color: #444;
+    }
+
+    .dark-theme-variables .table td {
+        background-color: #000000; /* Black background for cells */
+        color: white; /* White text in cells */
+        border-color: #444;
+    }
+
+    .dark-theme-variables .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0, 0, 0, 0.8); /* Slightly lighter black for odd rows */
+    }
+
+    .dark-theme-variables .table-striped tbody tr:nth-of-type(even) {
+        background-color: #000000; /* Pure black for even rows */
+    }
+
+    .dark-theme-variables .table-hover tbody tr:hover {
+        background-color: rgba(30, 30, 30, 0.9); /* Dark gray on hover */
+        color: white;
+    }
+
+    /* Alert boxes */
+    .dark-theme-variables .alert {
+        background-color: var(--clr-light);
+        color: var(--clr-dark-variant);
+        border-color: #444;
+    }
+
+    .dark-theme-variables .alert-danger {
+        background-color: rgba(239, 35, 60, 0.2);
+        border-color: rgba(239, 35, 60, 0.3);
+    }
+
+    .dark-theme-variables .alert-warning {
+        background-color: rgba(255, 159, 28, 0.2);
+        border-color: rgba(255, 159, 28, 0.3);
+    }
+
+    /* Code elements */
+    .dark-theme-variables code {
+        background-color: rgba(0, 0, 0, 0.3);
+        color: #f8f9fa;
+    }
+
+    /* Main content area */
+    .dark-theme-variables .main-content {
+        background-color: var(--clr-background);
+    }
+
+    /* Links */
+    .dark-theme-variables a {
+        color: var(--clr-primary-light);
+    }
+
+    .dark-theme-variables a:hover {
+        color: var(--clr-primary);
+    }
+
+    /* Theme toggler */
+    .theme-toggler {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--clr-primary);
+        color: white;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+    }
+
+    .theme-toggler span {
+        position: absolute;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .theme-toggler span.active {
+        opacity: 1;
+    }
 </style>
 <body>
+
 <!-- Sidebar Navigation -->
 <aside class="sidebar-container">
     <div class="sidebar-top">
         <div class="sidebar-logo">
-            <h2>H <span class="danger">epatoPath</span></h2>
+            <h2>A <span class="danger">lcura</span></h2>
         </div>
         <div class="sidebar-close-btn" id="close_btn">
             <span class="material-symbols-sharp">close</span>
@@ -197,125 +352,172 @@
 
     <div class="sidebar-menu">
         <a href="/Admin/Dashboard">
-            <span class="material-symbols-sharp">grid_view</span>
+            <span class="material-symbols-sharp">dashboard</span>
             <h3>Dashboard</h3>
         </a>
 
         <a href="/Admin/DiseaseModelDashboard">
-            <span class="material-symbols-sharp">insights</span>
+            <span class="material-symbols-sharp">monitor_heart</span>
             <h3>Disease Model</h3>
         </a>
 
-        <a href="/Admin/CirrhosisModelDashboard">
-            <span class="material-symbols-sharp">insights</span>
-            <h3>Cirrhosis Model</h3>
+        <a href="/Admin/MedicineModelDashboard">
+            <span class="material-symbols-sharp">medication</span>
+            <h3>Medicine Model</h3>
         </a>
 
-        <a href="/Admin/SOS" class="active">
-            <span class="material-symbols-sharp">mail_outline</span>
-            <h3>Messages</h3>
+        <a href="/Admin/AddDisease">
+            <span class="material-symbols-sharp">add_circle</span>
+            <h3>Add Disease</h3>
         </a>
 
-        <a href="/Admin/reports">
-            <span class="material-symbols-sharp">report_gmailerrorred</span>
-            <h3>Reports</h3>
-        </a>
-        <a href="/Admin/settings">
-            <span class="material-symbols-sharp">settings</span>
-            <h3>Settings</h3>
+        <a href="/Admin/diseases">
+            <span class="material-symbols-sharp">manage_accounts</span>
+            <h3>Manage Diseases</h3>
         </a>
 
-        <a href="/logout" class="logout-btn">
+        <a href="/Admin/PredictDisease">
+            <span class="material-symbols-sharp">clinical_notes</span>
+            <h3>Predict Disease</h3>
+        </a>
+
+        <a href="/train">
+            <span class="material-symbols-sharp">model_training</span>
+            <h3>Train Disease Model</h3>
+        </a>
+
+        <a href="/Admin/ViewAllDisease">
+            <span class="material-symbols-sharp">visibility</span>
+            <h3>View Diseases</h3>
+        </a>
+
+        <a href="/Admin/ViewAllValidations">
+            <span class="material-symbols-sharp">checklist</span>
+            <h3>View All Validations</h3>
+        </a>
+
+        <a  href="/Admin/SOSView">
+            <span class="material-symbols-sharp">emergency</span>
+            <h3>Emergency Alerts</h3>
+            <span class="msg_count notification-badge">0</span>
+        </a>
+
+        <a href="/Admin/Signing" class="logout-btn">
             <span class="material-symbols-sharp">logout</span>
             <h3>Logout</h3>
         </a>
     </div>
 </aside>
 
-
 <!-- Mobile menu toggle button -->
 <button class="menu-toggle-btn" id="menu_toggle">
     <span class="material-symbols-sharp">menu</span>
 </button>
 
-<main class="main-content">
-<div class="container mt-5">
-    <h1 class="mb-4">List of Diseases</h1>
-
-    <!-- Error Message Section -->
-    <div th:if="${error != null}" class="alert alert-danger">
-        <h4 class="alert-heading">Error!</h4>
-        <p th:text="${error}">Error message</p>
-        <hr>
-        <p class="mb-0">Please check:
-        <ul>
-            <li>Is your API server running on port 5000?</li>
-            <li>Does the endpoint <code>http://localhost:5000/api/diseases</code> return valid JSON?</li>
-            <li>Check your Spring Boot application logs for more details</li>
-        </ul>
-        </p>
-    </div>
-
-    <!-- Success Content -->
-    <div th:if="${diseases != null and !diseases.empty}">
-        <table class="table table-striped">
-            <thead class="table-dark">
-            <tr>
-                <th>#</th>
-                <th>Disease Name</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="disease, iterStat : ${diseases}">
-                <td th:text="${iterStat.count}">1</td>
-                <td th:text="${disease}">Disease Name</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div th:if="${diseases == null or diseases.empty}" class="alert alert-warning">
-        No diseases found in the database.
-    </div>
+<div class="theme-toggler">
+    <span class="material-symbols-sharp active">light_mode</span>
+    <span class="material-symbols-sharp">dark_mode</span>
 </div>
+
+<main class="main-content" id="mainContent">
+    <div class="container mt-5">
+        <h1 class="mb-4">List of Diseases</h1>
+
+        <!-- Error Message Section -->
+        <div th:if="${error != null}" class="alert alert-danger">
+            <h4 class="alert-heading">Error!</h4>
+            <p th:text="${error}">Error message</p>
+            <hr>
+            <p class="mb-0">Please check:
+            <ul>
+                <li>Is your API server running on port 5000?</li>
+                <li>Does the endpoint <code>http://localhost:5000/api/diseases</code> return valid JSON?</li>
+                <li>Check your Spring Boot application logs for more details</li>
+            </ul>
+            </p>
+        </div>
+
+        <!-- Success Content -->
+        <div th:if="${diseases != null and !diseases.empty}">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Disease Name</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="disease, iterStat : ${diseases}">
+                    <td th:text="${iterStat.count}">1</td>
+                    <td th:text="${disease}">Disease Name</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${diseases == null or diseases.empty}" class="alert alert-warning">
+            No diseases found in the database.
+        </div>
+    </div>
 </main>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/Admin/Toggle.js"></script>
+<script src="/Admin/SOSSocket.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Mobile menu toggle functionality
+        const menuToggle = document.getElementById('menu_toggle');
+        const sidebar = document.querySelector('.sidebar-container');
+        const closeBtn = document.getElementById('close_btn');
 
-           const sideMenu = document.querySelector('.sidebar-container');
-           const menuBtn = document.getElementById('menu_toggle');
-           const closeBtn = document.getElementById('close_btn');
+        if (menuToggle && sidebar) {
+            // Toggle sidebar when menu button is clicked
+            menuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                sidebar.classList.toggle('active');
+            });
 
-           // Toggle sidebar on menu button click
-           menuBtn.addEventListener('click', () => {
-               sideMenu.classList.add('active');
-           });
+            // Close sidebar when close button is clicked
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    sidebar.classList.remove('active');
+                });
+            }
 
-           // Close sidebar on close button click
-           closeBtn.addEventListener('click', () => {
-               sideMenu.classList.remove('active');
-           });
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 1200 &&
+                    !sidebar.contains(event.target) &&
+                    event.target !== menuToggle &&
+                    !menuToggle.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                }
+            });
 
-           // Set active link based on current page
-           const currentPath = window.location.pathname;
-           const navLinks = document.querySelectorAll('.sidebar-menu a');
+            // Close sidebar when window is resized above 1200px
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 1200) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
 
-           navLinks.forEach(link => {
-               if (link.getAttribute('href') === currentPath) {
-                   link.classList.add('active');
-               }
-           });
+        // Set active nav link based on current URL
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.sidebar-menu a');
 
-           // Close sidebar when clicking outside (optional)
-           document.addEventListener('click', (event) => {
-               if (!sideMenu.contains(event.target) &&
-                   event.target !== menuBtn &&
-                   sideMenu.classList.contains('active')) {
-                   sideMenu.classList.remove('active');
-               }
-           });
-       });
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    });
 </script>
+
 </body>
 </html>

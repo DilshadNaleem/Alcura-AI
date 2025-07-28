@@ -114,7 +114,7 @@
             <div id="hospital-image-container">
                 <img id="hospital-image"
                      alt="Hospital Image"
-                     onerror="this.onerror=null;this.src='https://via.placeholder.com/300x200?text=Image+Not+Available'">
+                     onerror="">
             </div>
             <div id="hospital-info">Loading hospital details...</div>
 
@@ -199,13 +199,6 @@
             };
                 // Assuming hospitalData is already defined as shown in your code
 console.log("Hospital ID:", hospitalData.id);
-console.log("Hospital Name:", hospitalData.name);
-console.log("Contact Email:", hospitalData.contactEmail);
-console.log("Latitude:", hospitalData.latitude);
-console.log("Longitude:", hospitalData.longitude);
-console.log("Address:", hospitalData.address);
-console.log("Phone Number:", hospitalData.phoneNumber);
-console.log("Description:", hospitalData.description);
             console.log("Loaded hospital data:", hospitalData);
 
             // Load hospital image via JavaScript
@@ -220,8 +213,8 @@ console.log("Description:", hospitalData.description);
                 // For debugging
                 imgElement.onload = () => console.log("Hospital image loaded successfully");
                 imgElement.onerror = () => {
-                    console.log("Failed to load hospital image, using fallback");
-                    imgElement.src = 'https://via.placeholder.com/300x200?text=Image+Not+Available';
+                    console.log("e");
+                    imgElement.src = '';
                 };
             }
 

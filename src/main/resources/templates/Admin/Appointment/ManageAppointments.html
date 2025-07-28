@@ -9,33 +9,306 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/Admin/AdminNav.css">
-
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <style>
-
-
+        /* Navigation Bar Styles */
         :root {
-            --clr-danger: #ff7782;
-            --clr-primary: #7380ec;
-            --clr-light: rgba(132, 139, 200, 0.18);
-            --clr-info-dark: #7d8da1;
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --secondary: #3f37c9;
-            --accent: #4895ef;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --success: #4cc9f0;
-            --warning: #f8961e;
-            --danger: #f72585;
-            --border-radius: 12px;
-            --clr-info-dark: #7d8da1;
-            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --clr-white: #fff;
-            --clr-dark-variant: #677483;
-            --clr-color-background: #f6f6f9;
+          --clr-primary: #7380ec;
+          --clr-danger: #ff7782;
+          --clr-success: #41f1b6;
+          --clr-white: #fff;
+          --clr-info-dark: #7d8da1;
+          --clr-info-light: #dce1eb;
+          --clr-dark: #363949;
+          --clr-warnig: #ff4edc;
+          --clr-light: rgba(132, 139, 200, 0.18);
+          --clr-primary-variant: #111e88;
+          --clr-dark-variant: #677483;
+          --clr-color-background: #f6f6f9;
+
+          --card-border-radius: 2rem;
+          --border-radius-1: 0.4rem;
+          --border-radius-2: 0.8rem;
+          --border-radius-3: 1.2rem;
+
+          --card-padding: 1.8rem;
+          --padding-1: 1.2rem;
+          --box-shadow: 0 2rem 3rem var(--clr-light);
+          --primary: #4361ee;
+          --primary-dark: #3a56d4;
+          --secondary: #3f37c9;
+          --accent: #4895ef;
+          --light: #f8f9fa;
+          --dark: #212529;
+          --gray: #6c757d;
+          --success: #4cc9f0;
+          --warning: #f8961e;
+          --danger: #f72585;
+          --border-radius: 12px;
+          --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+          --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Dark theme variables */
+        .dark-theme-variables {
+          --clr-color-background: #181a1e;
+          --clr-white: #202528;
+          --clr-light: rgba(0, 0, 0, 0.4);
+          --clr-dark: #edeffd;
+          --clr-dark-variant: #677483;
+          --box-shadow: 0 2rem 3rem var(--clr-light);
+        }
+
+        /* Sidebar Navigation */
+        aside {
+          height: 100vh;
+          position: sticky;
+          top: 0;
+          background: var(--clr-white);
+          box-shadow: var(--box-shadow);
+          width: 280px;
+          transition: all 0.3s ease;
+          z-index: 100;
+        }
+
+        aside .top {
+          background: var(--clr-white);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-top: 1.4rem;
+          padding: 0 1rem;
+        }
+
+        aside .logo {
+          display: flex;
+          gap: 1rem;
+          align-items: center;
+        }
+
+        aside .logo h2 {
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: var(--clr-dark);
+        }
+
+        aside .logo .danger {
+          color: var(--clr-danger);
+        }
+
+        aside .close {
+          display: flex;
+          align-items: center;
+        }
+
+        aside .close span {
+          font-size: 1.5rem;
+          cursor: pointer;
+          color: var(--clr-dark);
+        }
+
+        /* Sidebar Menu */
+        aside .sidebar {
+          background: var(--clr-white);
+          display: flex;
+          flex-direction: column;
+          height: 86vh;
+          position: relative;
+          top: 1rem;
+          padding: 0 1rem;
+          overflow: hidden;
+        }
+
+        aside .sidebar a {
+          display: flex;
+          color: var(--clr-info-dark);
+          margin-left: 2rem;
+          gap: 1rem;
+          align-items: center;
+          height: 3.3rem;
+          transition: all 0.1s ease;
+          border-radius: var(--border-radius-1);
+          padding: 0 1rem;
+          text-decoration: none;
+        }
+
+        aside .sidebar a span {
+          font-size: 1.6rem;
+          transition: all 0.3s ease-in-out;
+          color: var(--clr-info-dark);
+        }
+
+        aside .sidebar a h3 {
+          font-weight: 500;
+          font-size: 0.9rem;
+          color: var(--clr-info-dark);
+        }
+
+        aside .sidebar a:last-child {
+          position: absolute;
+          bottom: 1rem;
+          width: calc(100% - 2rem);
+        }
+
+        aside .sidebar a.active {
+          background-color: var(--clr-light);
+          color: var(--clr-primary);
+          margin-left: 0;
+          border-left: 5px solid var(--clr-primary);
+          margin-left: calc(1rem - 3px);
+        }
+
+        aside .sidebar a.active span,
+        aside .sidebar a.active h3 {
+          color: var(--clr-primary);
+        }
+
+        aside .sidebar a:hover span {
+          margin-left: 0.5rem;
+        }
+
+        aside .sidebar a .msg_count {
+          background-color: var(--clr-danger);
+          color: var(--clr-white);
+          padding: 2px 5px;
+          font-size: 11px;
+          border-radius: var(--border-radius-1);
+          margin-left: auto;
+        }
+
+        /* Mobile Menu Toggle */
+        #menu_bar {
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          cursor: pointer;
+          display: none;
+          color: var(--clr-dark);
+          padding: 0.5rem;
+        }
+
+        /* Responsive Styles for Sidebar */
+        @media screen and (max-width: 1200px) and (min-width: 769px) {
+          aside {
+            width: 80px; /* collapse width */
+          }
+          aside .sidebar a h3 {
+            display: none; /* hide label text */
+          }
+          .msg_count {
+            display: none;
+          }
+          aside .sidebar a {
+            width: 5.6rem;
+            justify-content: flex-start;
+            margin-left: 0;
+            padding: 0;
+          }
+
+          aside .logo h2 {
+            display: none;
+          }
+          aside .sidebar a:last-child {
+            position: relative;
+            margin-top: 1.8rem;
+            width: 5.6rem;
+          }
+
+          aside .sidebar a span {
+            margin-left: 0;
+          }
+        }
+
+        @media screen and (max-width: 768px) {
+          #close_btn {
+            display: flex !important; /* Force show on mobile */
+          }
+
+          aside {
+            position: fixed;
+            width: 18rem;
+            z-index: 1000;
+            height: 100vh;
+            left: -100%;
+            transition: all 0.3s ease;
+          }
+
+          aside.active {
+            left: 0;
+          }
+
+          aside .logo h2 {
+            display: inline;
+          }
+
+          aside .sidebar h3 {
+            display: inline;
+          }
+
+          aside .sidebar a {
+            width: 100%;
+            height: 3.4rem;
+            justify-content: flex-start;
+            padding: 0 1rem;
+            margin-left: 0;
+          }
+
+          aside .sidebar a:last-child {
+            position: absolute;
+            bottom: 1rem;
+            width: calc(100% - 2rem);
+          }
+
+          aside .top div.close span {
+            display: inline;
+            position: absolute;
+            right: 1rem;
+            font-size: 1.8rem;
+            cursor: pointer;
+          }
+
+          #menu_bar {
+            display: block;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 100;
+          }
+        }
+
+        #close_btn {
+          display: none;
+        }
+
+        /* Main Content Styles */
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        .right {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            height: 100vh;
+            overflow: hidden;
+            background-color: var(--clr-color-background);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            background: var(--clr-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            padding: 1rem;
+            margin: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Dark theme variables */
@@ -59,7 +332,7 @@
 
         body.dark-theme-variables .container {
             background: #2d2d2d;
-            color: var(--dark);
+            color: #f8f9fa;
         }
 
         body.dark-theme-variables .card {
@@ -70,111 +343,55 @@
         body.dark-theme-variables .card-header {
             background-color: #495057;
             border-bottom-color: #6c757d;
+            color: #f8f9fa;
+        }
+
+        body.dark-theme-variables .sidebar-top {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-theme-variables .sidebar-logo h2 {
             color: var(--dark);
         }
 
-        body.dark-theme-variables .card-footer {
-            background-color: #495057;
-            border-top-color: #6c757d;
-            color: var(--gray);
-        }
-
-        body.dark-theme-variables .table {
-            background-color: #343a40 !important;
-            color: var(--dark) !important;
-        }
-
-        body.dark-theme-variables .table th,
-        body.dark-theme-variables .table td {
-            background-color: #343a40 !important;
-            color: var(--dark) !important;
-            border-color: #495057 !important;
-        }
-
-        body.dark-theme-variables .table-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(255, 255, 255, 0.05) !important;
-        }
-
-        body {
-            overflow-x: hidden;
-        }
-        body.dark-theme-variables .modal-content {
-            background-color: #343a40;
+        body.dark-theme-variables .sidebar-close-btn {
             color: var(--dark);
         }
 
-        body.dark-theme-variables .modal-header,
-        body.dark-theme-variables .modal-footer {
-            border-color: #495057;
+        body.dark-theme-variables .menu-toggle-btn {
             background-color: #2d2d2d;
-        }
-
-        body.dark-theme-variables .modal-title {
-            color: var(--dark) !important;
-        }
-
-        body.dark-theme-variables .text-muted {
-            color: var(--gray) !important;
-        }
-
-        body.dark-theme-variables .input-group-text {
-            background-color: #495057;
-            border-color: #6c757d;
             color: var(--dark);
         }
 
-        body.dark-theme-variables .form-control {
-            background-color: #495057;
-            border-color: #6c757d;
-            color: var(--dark);
+        /* Theme toggle button */
+        .theme-toggler {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--clr-primary);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
         }
 
-        body.dark-theme-variables .form-control::placeholder {
-            color: var(--gray);
+        .theme-toggler span {
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        body.dark-theme-variables .btn-outline-secondary {
-            background-color: transparent;
-            border-color: #6c757d;
-            color: var(--dark);
+        .theme-toggler span.active {
+            opacity: 1;
         }
 
-        body.dark-theme-variables .btn-outline-secondary:hover {
-            background-color: #495057;
-            color: var(--dark);
-        }
-
-        body.dark-theme-variables .empty-state {
-            color: var(--gray);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            color: var(--dark);
-            background-color: #f5f7fa;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-            transition: var(--transition);
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-        }
-
+        /* Appointment Management Specific Styles */
         .mt-4 {
             margin-top: 1.5rem;
         }
@@ -196,7 +413,7 @@
         }
 
         .card {
-            background-color: white;
+            background-color: var(--clr-white);
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             margin-bottom: 20px;
@@ -256,7 +473,7 @@
         }
 
         .danger {
-            color: var(--clr-danger); /* This is #ff7782 from your variables */
+            color: var(--clr-danger);
         }
 
         .btn-info {
@@ -305,7 +522,7 @@
 
         .table th {
             text-align: left;
-            background-color: #f8f9fa;
+            background-color: var(--light);
         }
 
         .input-group {
@@ -315,23 +532,26 @@
 
         .input-group-text {
             padding: 8px 12px;
-            background-color: #e9ecef;
-            border: 1px solid #ced4da;
+            background-color: var(--light);
+            border: 1px solid var(--gray);
             border-radius: 4px 0 0 4px;
         }
 
         .form-control {
             padding: 8px 12px;
-            border: 1px solid #ced4da;
+            border: 1px solid var(--gray);
             border-left: none;
             border-right: none;
             flex: 1;
+            background-color: var(--clr-white);
+            color: var(--dark);
         }
 
         .btn-outline-secondary {
             background-color: transparent;
-            border: 1px solid #ced4da;
+            border: 1px solid var(--gray);
             border-radius: 0 4px 4px 0;
+            color: var(--dark);
         }
 
         .appointment-container {
@@ -409,7 +629,7 @@
 
         .info-label {
             font-weight: 600;
-            color: #6c757d;
+            color: var(--gray);
             margin-bottom: 5px;
         }
 
@@ -425,14 +645,14 @@
         .empty-state {
             text-align: center;
             padding: 40px;
-            color: #6c757d;
+            color: var(--gray);
             width: 100%;
         }
 
         .empty-state i {
             font-size: 50px;
             margin-bottom: 20px;
-            color: #dee2e6;
+            color: var(--light);
         }
 
         .hidden {
@@ -466,7 +686,7 @@
         }
 
         .modal-content {
-            background-color: white;
+            background-color: var(--clr-white);
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             width: 90%;
@@ -539,8 +759,10 @@
         .reschedule-form-group textarea {
             width: 100%;
             padding: 8px 12px;
-            border: 1px solid #ced4da;
+            border: 1px solid var(--gray);
             border-radius: 4px;
+            background-color: var(--clr-white);
+            color: var(--dark);
         }
 
         .reschedule-form-group textarea {
@@ -553,32 +775,20 @@
             margin-top: 20px;
         }
 
-        /* Theme toggle button */
-        .theme-toggler {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--primary);
-            color: white;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
+        body.dark-theme-variables .card-body div,
+        body.dark-theme-variables .info-label,
+        body.dark-theme-variables .detail-value,
+        body.dark-theme-variables .detail-label,
+        body.dark-theme-variables .text-muted {
+            color: var(--gray) !important;
         }
 
-        .theme-toggler span {
-            position: absolute;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        body.dark-theme-variables .card-body .info-label {
+            color: var(--gray) !important;
         }
 
-        .theme-toggler span.active {
-            opacity: 1;
+        body.dark-theme-variables h5 {
+            color: white !important;
         }
 
         @media (max-width: 576px) {
@@ -604,214 +814,200 @@
                 width: 100%;
             }
         }
-
-
-body.dark-theme-variables .card-body div,
-body.dark-theme-variables .info-label,
-body.dark-theme-variables .detail-value,
-body.dark-theme-variables .detail-label,
-
-body.dark-theme-variables .text-muted {
-    color: var(--gray) !important;
-}
-
-body.dark-theme-variables .card-body .info-label {
-    color: var(--gray) !important;
-}
-
-body.dark-theme-variables h5 {
-    color: white !important;
-}
-
     </style>
 </head>
+
 <body>
+
 <div class="main-container">
-<!-- Sidebar Navigation -->
-<aside>
-    <div class="top">
-        <div class="logo">
-            <h2>A <span class="danger">lcura</span></h2>
+    <!-- Sidebar Navigation -->
+    <aside>
+        <div class="top">
+            <div class="logo">
+                <h2>A <span class="danger">lcura</span></h2>
+            </div>
+            <div class="close" id="close_btn">
+                <span class="material-symbols-sharp">close</span>
+            </div>
         </div>
-        <div class="close" id="close_btn">
-            <span class="material-symbols-sharp">close</span>
-        </div>
-    </div>
 
-    <div class="sidebar">
-        <a href="/Admin/Dashboard">
-            <span class="material-symbols-sharp">dashboard</span>
-            <h3>Dashboard</h3>
-        </a>
-        <a href="/Admin/ManageCustomers">
-            <span class="material-symbols-sharp">group</span>
-            <h3>Customers</h3>
-        </a>
-        <a href="/Admin/DiseaseModelDashboard">
-            <span class="material-symbols-sharp">monitor_heart</span>
-            <h3>Disease Model</h3>
-        </a>
-        <a href="/Admin/MedicineModelDashboard">
-            <span class="material-symbols-sharp">medication</span>
-            <h3>Medicine Model</h3>
-        </a>
-        <a th:href="@{/Admin/SOS}">
-            <span class="material-symbols-sharp">emergency</span>
-            <h3>Emergency Alerts</h3>
-            <span class="msg_count notification-badge">0</span>
-        </a>
-        <a th:href="@{/Admin/FaceEnrollment}">
-            <span class="material-symbols-sharp">face</span>
-            <h3>Face Enrollment</h3>
-        </a>
-        <a href="/Admin/Manage_Doctors">
-            <span class="material-symbols-sharp">medical_services</span>
-            <h3>Doctors</h3>
-        </a>
-        <a href="/Admin/Feedbacks">
-            <span class="material-symbols-sharp">feedback</span>
-            <h3>Reports</h3>
-        </a>
-        <a href="/Admin/Manage_Appointments"  class="active">
-            <span class="material-symbols-sharp">event_available</span>
-            <h3>Appointments</h3>
-        </a>
-        <a href="/Admin/ManageHospitals">
-            <span class="material-symbols-sharp">local_hospital</span>
-            <h3>Hospitals</h3>
-        </a>
-        <a href="#">
-            <span class="material-symbols-sharp">settings</span>
-            <h3>Settings</h3>
-        </a>
-        <a href="#">
-            <span class="material-symbols-sharp">add_circle</span>
-            <h3>Add Product</h3>
-        </a>
-        <a href="#">
-            <span class="material-symbols-sharp">logout</span>
-            <h3>Logout</h3>
-        </a>
-    </div>
-</aside>
-
-<div class="right">
-    <div class="top">
-        <button id="menu_bar" aria-label="Toggle menu">
-            <span class="material-symbols-sharp">menu</span>
-        </button>
-    </div>
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-calendar-check"></i> Appointment Management</h1>
-        <div>
-            <a href="#" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Add New
+        <div class="sidebar">
+            <a href="/Admin/Dashboard">
+                <span class="material-symbols-sharp">dashboard</span>
+                <h3>Dashboard</h3>
+            </a>
+            <a href="/Admin/ManageCustomers">
+                <span class="material-symbols-sharp">group</span>
+                <h3>Customers</h3>
+            </a>
+            <a href="/Admin/DiseaseModelDashboard">
+                <span class="material-symbols-sharp">monitor_heart</span>
+                <h3>Disease Model</h3>
+            </a>
+            <a href="/Admin/MedicineModelDashboard">
+                <span class="material-symbols-sharp">medication</span>
+                <h3>Medicine Model</h3>
+            </a>
+            <a th:href="@{/Admin/SOSView}">
+                <span class="material-symbols-sharp">emergency</span>
+                <h3>Emergency Alerts</h3>
+                <span class="msg_count notification-badge">0</span>
+            </a>
+            <a th:href="@{/Admin/FaceEnrollment}">
+                <span class="material-symbols-sharp">face</span>
+                <h3>Face Enrollment</h3>
+            </a>
+            <a href="/Admin/Manage_Doctors">
+                <span class="material-symbols-sharp">medical_services</span>
+                <h3>Doctors</h3>
+            </a>
+            <a href="/Admin/Feedbacks">
+                <span class="material-symbols-sharp">feedback</span>
+                <h3>Reports</h3>
+            </a>
+            <a href="/Admin/Manage_Appointments" class="active">
+                <span class="material-symbols-sharp">event_available</span>
+                <h3>Appointments</h3>
+            </a>
+            <a href="/Admin/ManageHospitals">
+                <span class="material-symbols-sharp">local_hospital</span>
+                <h3>Hospitals</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">settings</span>
+                <h3>Settings</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">add_circle</span>
+                <h3>Add Product</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">logout</span>
+                <h3>Logout</h3>
             </a>
         </div>
-    </div>
+    </aside>
 
-    <!-- Search Section -->
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="bi bi-search"></i></span>
-                        <input type="text" id="searchInput" class="form-control" placeholder="Search appointments...">
-                        <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
-                    </div>
+    <div class="right">
+        <div class="top">
+            <button id="menu_bar" aria-label="Toggle menu">
+                <span class="material-symbols-sharp">menu</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1><i class="bi bi-calendar-check"></i> Appointment Management</h1>
+                <div>
+                    <a href="#" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Add New
+                    </a>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Status Filter Section -->
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <h5 class="mb-3">Filter by Status</h5>
-            <div class="d-flex flex-wrap gap-2">
-                <button class="btn btn-sm btn-outline-primary filter-btn active" data-status="all">All</button>
-                <button class="btn btn-sm btn-outline-secondary filter-btn" data-status="pending">Pending</button>
-                <button class="btn btn-sm btn-outline-warning filter-btn" data-status="rescheduled_request">Reschedule Request</button>
-                <button class="btn btn-sm btn-outline-info filter-btn" data-status="rescheduled">Rescheduled</button>
-                <button class="btn btn-sm btn-outline-success filter-btn" data-status="completed">Completed</button>
-                <button class="btn btn-sm btn-outline-danger filter-btn" data-status="canceled">Canceled</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Appointment Cards -->
-    <div class="appointment-container" id="appointmentContainer">
-        <div th:each="app, stat : ${app}" class="appointment-col" th:data-status="${#strings.toLowerCase(#strings.replace(app.status, ' ', '_'))}">
-            <div class="card appointment-card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span th:text="${app.doctor_name}"></span>
-                    <span class="status-badge" th:classappend="'status-' + ${#strings.toLowerCase(#strings.replace(app.status, ' ', '_'))}">
-                        <span th:text="${app.status}"></span>
-                    </span>
-                </div>
+            <!-- Search Section -->
+            <div class="card shadow mb-4">
                 <div class="card-body">
-                    <div class="mb-3">
-                        <div class="info-label">Appointment ID</div>
-                        <div th:text="${app.unique_id}" class="info-value"></div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <div class="info-label">Date</div>
-                            <div th:text="${app.appointment_date}" class="info-value"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="info-label">Time</div>
-                            <div th:text="${app.appointment_time}" class="info-value" ></div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input type="text" id="searchInput" class="form-control" placeholder="Search appointments...">
+                                <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="mb-3">
-                        <div class="info-label">Patient Email</div>
-                        <div th:text="${app.customer_email}" class="info-value"></div>
-                    </div>
-
-                    <div class="mb-3" th:if="${app.special_reasons}">
-                        <div class="info-label">Special Reasons</div>
-                        <div th:text="${app.special_reasons} ?: 'None'" class="info-value"></div>
-                    </div>
-
-                    <div class="mb-3" th:if="${app.status == 'Canceled'}">
-                        <div class="info-label">Cancel Reason</div>
-                        <div th:text="${app.cancel_reason} ?: 'N/A'" class="info-value"></div>
-                    </div>
-
-                    <div class="mb-3" th:if="${app.status == 'Rescheduled' or app.status == 'Reschedule Request'}">
-                        <div class="info-label">Reschedule Reason</div>
-                        <div th:text="${app.reschedule_reason} ?: 'No reason provided'" class="info-value"></div>
-                    </div>
-
-                    <div class="d-flex flex-wrap mt-3">
-                        <button class="btn btn-sm btn-info action-btn view-btn" th:attr="data-id=${app.unique_id}">
-                            <i class="bi bi-eye"></i> View
-                        </button>
-                        <button th:if="${app.status == 'Rescheduled Request'}"
-                                class="btn btn-sm btn-warning action-btn reschedule-btn"
-                                th:attr="data-id=${app.unique_id}">
-                            <i class="bi bi-calendar-event"></i> Handle Reschedule
-                        </button>
-                    </div>
-                </div>
-                <div class="card-footer text-muted">
-                    <small>Created on: <span th:text="${#temporals.format(app.created_at, 'yyyy-MM-dd HH:mm')}"></span></small>
                 </div>
             </div>
-        </div>
 
-        <!-- Empty state (shown when no appointments match search) -->
-        <div class="col-12 empty-state-container" style="display: none;">
-            <div class="card empty-state">
-                <i class="bi bi-calendar-x"></i>
-                <h3>No appointments found</h3>
-                <p>Try adjusting your search criteria</p>
-                <button class="btn btn-primary" id="resetFilters">Reset Search</button>
+            <!-- Status Filter Section -->
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h5 class="mb-3">Filter by Status</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-sm btn-outline-primary filter-btn active" data-status="all">All</button>
+                        <button class="btn btn-sm btn-outline-secondary filter-btn" data-status="pending">Pending</button>
+                        <button class="btn btn-sm btn-outline-warning filter-btn" data-status="rescheduled_request">Reschedule Request</button>
+                        <button class="btn btn-sm btn-outline-info filter-btn" data-status="rescheduled">Rescheduled</button>
+                        <button class="btn btn-sm btn-outline-success filter-btn" data-status="completed">Completed</button>
+                        <button class="btn btn-sm btn-outline-danger filter-btn" data-status="canceled">Canceled</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appointment Cards -->
+            <div class="appointment-container" id="appointmentContainer">
+                <div th:each="app, stat : ${app}" class="appointment-col" th:data-status="${#strings.toLowerCase(#strings.replace(app.status, ' ', '_'))}">
+                    <div class="card appointment-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span th:text="${app.doctor_name}"></span>
+                            <span class="status-badge" th:classappend="'status-' + ${#strings.toLowerCase(#strings.replace(app.status, ' ', '_'))}">
+                                <span th:text="${app.status}"></span>
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="info-label">Appointment ID</div>
+                                <div th:text="${app.unique_id}" class="info-value"></div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="info-label">Date</div>
+                                    <div th:text="${app.appointment_date}" class="info-value"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="info-label">Time</div>
+                                    <div th:text="${app.appointment_time}" class="info-value" ></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="info-label">Patient Email</div>
+                                <div th:text="${app.customer_email}" class="info-value"></div>
+                            </div>
+
+                            <div class="mb-3" th:if="${app.special_reasons}">
+                                <div class="info-label">Special Reasons</div>
+                                <div th:text="${app.special_reasons} ?: 'None'" class="info-value"></div>
+                            </div>
+
+                            <div class="mb-3" th:if="${app.status == 'Canceled'}">
+                                <div class="info-label">Cancel Reason</div>
+                                <div th:text="${app.cancel_reason} ?: 'N/A'" class="info-value"></div>
+                            </div>
+
+                            <div class="mb-3" th:if="${app.status == 'Rescheduled' or app.status == 'Reschedule Request'}">
+                                <div class="info-label">Reschedule Reason</div>
+                                <div th:text="${app.reschedule_reason} ?: 'No reason provided'" class="info-value"></div>
+                            </div>
+
+                            <div class="d-flex flex-wrap mt-3">
+                                <button class="btn btn-sm btn-info action-btn view-btn" th:attr="data-id=${app.unique_id}">
+                                    <i class="bi bi-eye"></i> View
+                                </button>
+                                <button th:if="${app.status == 'Rescheduled Request'}"
+                                        class="btn btn-sm btn-warning action-btn reschedule-btn"
+                                        th:attr="data-id=${app.unique_id}">
+                                    <i class="bi bi-calendar-event"></i> Handle Reschedule
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <small>Created on: <span th:text="${#temporals.format(app.created_at, 'yyyy-MM-dd HH:mm')}"></span></small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty state (shown when no appointments match search) -->
+                <div class="col-12 empty-state-container" style="display: none;">
+                    <div class="card empty-state">
+                        <i class="bi bi-calendar-x"></i>
+                        <h3>No appointments found</h3>
+                        <p>Try adjusting your search criteria</p>
+                        <button class="btn btn-primary" id="resetFilters">Reset Search</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -882,13 +1078,125 @@ body.dark-theme-variables h5 {
     <span class="material-symbols-sharp active">light_mode</span>
     <span class="material-symbols-sharp">dark_mode</span>
 </div>
-</div>
-</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="/Admin/SOSSocket.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="/Admin/AdminNav.js"></script>
 <script>
+    // Theme toggler functionality
+    const themeToggler = document.querySelector('.theme-toggler');
 
+    // Function to apply dark mode styles to all elements
+    function applyDarkModeStyles() {
+        // Apply to container
+        document.querySelectorAll('.container').forEach(container => {
+            container.style.backgroundColor = '#2d2d2d';
+            container.style.color = '#f8f9fa';
+        });
+
+        // Apply to inputs and selects
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.style.backgroundColor = '#495057';
+            input.style.color = '#f8f9fa';
+            input.style.borderColor = '#6c757d';
+        });
+
+        // Apply to other elements as needed
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.backgroundColor = '#343a40';
+            card.style.borderColor = '#495057';
+        });
+
+        document.querySelectorAll('.card-header').forEach(header => {
+            header.style.backgroundColor = '#495057';
+            header.style.borderBottomColor = '#6c757d';
+            header.style.color = '#f8f9fa';
+        });
+    }
+
+    // Function to apply light mode styles to all elements
+    function applyLightModeStyles() {
+        // Revert container
+        document.querySelectorAll('.container').forEach(container => {
+            container.style.backgroundColor = '';
+            container.style.color = '';
+        });
+
+        // Revert inputs and selects
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.style.backgroundColor = '';
+            input.style.color = '';
+            input.style.borderColor = '';
+        });
+
+        // Revert other elements
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.backgroundColor = '';
+            card.style.borderColor = '';
+        });
+
+        document.querySelectorAll('.card-header').forEach(header => {
+            header.style.backgroundColor = '';
+            header.style.borderBottomColor = '';
+            header.style.color = '';
+        });
+    }
+
+    // Theme toggle event listener
+    if (themeToggler) {
+        themeToggler.addEventListener('click', function() {
+            document.body.classList.toggle('dark-theme-variables');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-theme-variables'));
+
+            // Toggle active icons
+            const icons = this.querySelectorAll('span');
+            icons.forEach(icon => icon.classList.toggle('active'));
+
+            // Apply appropriate styles
+            if (document.body.classList.contains('dark-theme-variables')) {
+                applyDarkModeStyles();
+            } else {
+                applyLightModeStyles();
+            }
+        });
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check for saved theme preference
+        const darkMode = localStorage.getItem('darkMode') === 'true';
+        const themeToggler = document.querySelector('.theme-toggler');
+
+        if (darkMode) {
+            document.body.classList.add('dark-theme-variables');
+            if (themeToggler) {
+                themeToggler.querySelector('span:nth-child(1)').classList.remove('active');
+                themeToggler.querySelector('span:nth-child(2)').classList.add('active');
+            }
+
+            // Apply dark mode styles immediately
+            applyDarkModeStyles();
+        }
+
+        // Sidebar toggle functionality for mobile
+        const menuBtn = document.getElementById('menu_bar');
+        const closeBtn = document.getElementById('close_btn');
+        const sidebar = document.querySelector('aside');
+
+        if (menuBtn && closeBtn && sidebar) {
+            menuBtn.addEventListener('click', () => {
+                sidebar.classList.add('active');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+            });
+        }
 
         // Search functionality
         $('#searchButton').click(function() {
@@ -962,25 +1270,22 @@ body.dark-theme-variables h5 {
         $(document).on('click', '.view-btn', function() {
             const appointmentCard = $(this).closest('.appointment-card');
 
+            const doctorName = appointmentCard.find('.card-header span:first').text();
+            const status = appointmentCard.find('.status-badge span').text();
+            const appointmentId = appointmentCard.find('.card-body > div:first .info-value').text();
+            const appointmentDate = appointmentCard.find('.row.mb-3 .col-md-6:first .info-value').text();
+            const appointmentTime = appointmentCard.find('.row.mb-3 .col-md-6:last .info-value').text();
+            const patientEmail = appointmentCard.find('.card-body > div:nth-child(3) .info-value').text();
 
-        const doctorName = appointmentCard.find('.card-header span:first').text();
-const status = appointmentCard.find('.status-badge span').text();
-const appointmentId = appointmentCard.find('.card-body > div:first .info-value').text();
-const appointmentDate = appointmentCard.find('.row.mb-3 .col-md-6:first .info-value').text();
-const appointmentTime = appointmentCard.find('.row.mb-3 .col-md-6:last .info-value').text();
-const patientEmail = appointmentCard.find('.card-body > div:nth-child(3) .info-value').text();
+            // Check for optional fields
+            let specialReasons = appointmentCard.find('.card-body > div:nth-child(4) .info-value').text();
+            specialReasons = specialReasons || 'None';
 
-// Check for optional fields
-let specialReasons = appointmentCard.find('.card-body > div:nth-child(4) .info-value').text();
-specialReasons = specialReasons || 'None';
+            let cancelReason = appointmentCard.find('.card-body > div:nth-child(5) .info-value').text();
+            cancelReason = cancelReason || 'No reason provided';
 
-let cancelReason = appointmentCard.find('.card-body > div:nth-child(5) .info-value').text();
-cancelReason = cancelReason || 'No reason provided';
-
-let rescheduleReason = appointmentCard.find('.card-body > div:nth-child(6) .info-value').text();
-rescheduleReason = rescheduleReason || 'No reason provided';
-
-
+            let rescheduleReason = appointmentCard.find('.card-body > div:nth-child(6) .info-value').text();
+            rescheduleReason = rescheduleReason || 'No reason provided';
 
             // Create the modal content
             const modalContent = `
@@ -1029,8 +1334,6 @@ rescheduleReason = rescheduleReason || 'No reason provided';
             // Insert content into modal and show it
             $('#modalBody').html(modalContent);
             $('#appointmentModal').addClass('active');
-
-
         });
 
         // Reschedule button functionality
@@ -1112,6 +1415,7 @@ rescheduleReason = rescheduleReason || 'No reason provided';
                 $('body').css('overflow', 'auto');
             }
         });
+    });
 </script>
 
 </body>

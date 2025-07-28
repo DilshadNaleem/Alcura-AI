@@ -204,43 +204,42 @@ aside .sidebar a .msg_count {
     display: none;
 }
 
-/* Responsive Styles */
-@media screen and (max-width: 1200px) and (min-width: 769px) {
-    aside {
-        width: 80px;
-    }
 
-    aside .sidebar h3 {
-        display: none;
-    }
+ /* Responsive Styles */
+        @media screen and (max-width: 1200px) and (min-width: 769px) {
+          aside .sidebar h3 {
+            display: none;
+          }
+aside {
+    width: 80px; /* collapse width */
+  }
+     aside .sidebar a h3 {
+    display: none; /* hide label text */
+  }
+            .msg_count {
+                display: none;
+            }
+          aside .sidebar a {
+            width: 5.6rem;
+            justify-content: flex-start;
+            margin-left: 0;
+            padding: 0;
+          }
 
-    aside .sidebar a {
-        width: 5.6rem;
-        justify-content: flex-start;
-        margin-left: 0;
-        padding: 0;
-    }
+          aside .logo h2
+          {
+            display: none;
+          }
+          aside .sidebar a:last-child {
+            position: relative;
+            margin-top: 1.8rem;
+            width: 5.6rem;
+          }
 
-    aside .logo h2 {
-        display: none;
-    }
-
-    aside .sidebar a:last-child {
-        position: relative;
-        margin-top: 1.8rem;
-        width: 5.6rem;
-    }
-
-    .msg_count {
-        display: none;
-    }
-
-    .right {
-        margin-left: 80px;
-        width: calc(100vw - 80px);
-    }
-}
-
+          aside .sidebar a span {
+            margin-left: 0;
+          }
+        }
 
 
 @media screen and (max-width: 768px) {

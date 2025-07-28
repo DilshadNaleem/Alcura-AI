@@ -3,17 +3,462 @@
 <head>
     <meta charset="UTF-8">
     <title>Disease Classification Training</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/Admin/AdminNav.css">
     <style>
-        .chart-container { margin-top: 30px; margin-bottom: 30px; }
-        .metrics-table { margin-top: 20px; margin-bottom: 30px; }
-        .progress-container { margin: 30px 0; padding: 20px; background-color: #f8f9fa; border-radius: 5px; }
-        .hidden { display: none; }
-        .metric-badge { font-size: 1rem; padding: 0.5em 0.75em; }
-        .final-metrics { margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; }
+
+        .theme-toggler {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: var(  --clr-primary-navtheme);
+          color: white;
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+          z-index: 9999;
+      }
+
+      .theme-toggler span {
+          position: absolute;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+      }
+
+      .theme-toggler span.active {
+          opacity: 1;
+      }
+
+        .dark-theme-variables .theme-toggler {
+       background: var(--clr-primary) !important;
+       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+   }
+
+
+   .dark-theme-variables .final-metrics {
+   color: var(--clr-light);
+   background-color: #1e1e1e;
+   color:var(--clr-dark);
+   }
+
+        :root {
+         --clr-primary-navtheme: #4361ee;
+         --clr-primary-theme: #7380ec;
+           --clr-primary: #4361ee;
+           --clr-primary-light: #3a86ff;
+           --clr-danger: #ef233c;
+           --clr-danger-light: #ff758f;
+           --clr-success: #2ecc71;
+           --clr-warning: #ff9f1c;
+           --clr-white: #ffffff;
+           --clr-light: #f8f9fa;
+           --clr-gray: #adb5bd;
+           --clr-dark: #212529;
+           --clr-dark-variant: #495057;
+           --clr-background: #f6f6f9;
+           --card-border-radius: 12px;
+           --border-radius-1: 8px;
+           --border-radius-2: 4px;
+           --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+           --transition: all 0.3s ease;
+       }
+
+       /* Sidebar Styles */
+       .sidebar-container {
+           width: 280px;
+           height: 100vh;
+           position: fixed;
+           left: 0;
+           top: 0;
+           background: var(--clr-white);
+           box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+           z-index: 1000;
+           transition: var(--transition);
+       }
+
+       .sidebar-top {
+           display: flex;
+           align-items: center;
+           justify-content: space-between;
+           padding: 1.5rem;
+           border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+       }
+
+       .sidebar-logo h2 {
+           font-size: 1.5rem;
+           font-weight: 700;
+           margin: 0;
+           color: var(--clr-dark);
+       }
+
+       .sidebar-logo .danger {
+           color: var(--clr-danger);
+       }
+
+       .sidebar-close-btn {
+           display: none;
+           cursor: pointer;
+           color: var(--clr-dark);
+       }
+
+       .sidebar-menu {
+           padding: 1rem 0;
+           height: calc(100vh - 5rem);
+           overflow-y: auto;
+       }
+
+       .sidebar-menu a {
+           display: flex;
+           align-items: center;
+           padding: 0.75rem 1.5rem;
+           color: var(--clr-dark-variant);
+           text-decoration: none;
+           transition: var(--transition);
+           margin: 0.25rem 0;
+           border-left: 3px solid transparent;
+       }
+
+       .sidebar-menu a:hover {
+           background-color: rgba(67, 97, 238, 0.05);
+           color: var(--clr-primary);
+       }
+
+       .sidebar-menu a.active {
+           background-color: rgba(67, 97, 238, 0.1);
+           color: var(--clr-primary);
+           border-left: 3px solid var(--clr-primary);
+       }
+
+       .sidebar-menu a span {
+           margin-right: 1rem;
+           font-size: 1.25rem;
+       }
+
+       .sidebar-menu h3 {
+           font-size: 1rem;
+           font-weight: 500;
+           margin: 0;
+       }
+
+       .sidebar-menu .notification-badge {
+           background-color: var(--clr-danger);
+           color: var(--clr-white);
+           padding: 0.25rem 0.5rem;
+           font-size: 0.75rem;
+           border-radius: 50px;
+           margin-left: auto;
+       }
+
+       .sidebar-menu .logout-btn {
+           position: absolute;
+           bottom: 1rem;
+           width: 100%;
+           color: var(--clr-danger);
+       }
+
+       .sidebar-menu .logout-btn:hover {
+           background-color: rgba(239, 35, 60, 0.05);
+       }
+
+       /* Mobile Menu Toggle */
+       .menu-toggle-btn {
+           display: none;
+           position: fixed;
+           top: 1.5rem;
+           left: 1.5rem;
+           z-index: 999;
+           background: var(--clr-white);
+           border: none;
+           border-radius: 50%;
+           width: 40px;
+           height: 40px;
+           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+           cursor: pointer;
+           transition: var(--transition);
+       }
+
+       .menu-toggle-btn:hover {
+           background-color: var(--clr-light);
+       }
+
+       @media screen and (max-width: 1200px) {
+           .sidebar-container {
+               left: -280px;
+           }
+
+           .sidebar-container.active {
+               left: 0;
+           }
+
+           .menu-toggle-btn {
+               display: flex;
+               align-items: center;
+               justify-content: center;
+           }
+
+           .sidebar-close-btn {
+               display: block;
+           }
+       }
+
+       /* Main Content Styles (for demo purposes) */
+       .main-content {
+           margin-left: 280px;
+           padding: 2rem;
+           transition: var(--transition);
+       }
+
+       @media screen and (max-width: 1200px) {
+           .main-content {
+               margin-left: 0;
+               padding: 1rem;
+           }
+       }
+/* Dark Theme Variables */
+.dark-theme-variables {
+  --clr-primary-theme:#4316ee;
+   --clr-primary: #3a86ff;
+   --clr-primary-light: #4d9eff;
+   --clr-danger: #ff758f;
+   --clr-danger-light: #ff9aae;
+   --clr-success: #4cdf8c;
+   --clr-warning: #ffb347;
+   --clr-white: #212529;
+   --clr-light: #343a40;
+   --clr-gray: #6c757d;
+   --clr-dark: #f8f9fa;
+   --clr-dark-variant: #e9ecef;
+   --clr-background: #121212;
+   --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark Theme Specific Styles */
+.dark-theme-variables {
+   background-color: var(--clr-background);
+   color: var(--clr-dark);
+}
+
+.dark-theme-variables .disease-card {
+   background-color: #1e1e1e;
+   border-color: #333;
+}
+
+.dark-theme-variables .disease-name {
+   color: var(--clr-primary-light);
+}
+
+.dark-theme-variables .search-container {
+   background-color: #2d2d2d;
+}
+
+.dark-theme-variables .sidebar-container {
+   background-color: #1a1a1a;
+   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme-variables .sidebar-logo h2 {
+   color: var(--clr-dark);
+}
+
+.dark-theme-variables .sidebar-menu a {
+   color: var(--clr-dark-variant);
+}
+
+.dark-theme-variables .sidebar-menu a:hover {
+   background-color: rgba(58, 134, 255, 0.1);
+   color: var(--clr-primary-light);
+}
+
+.dark-theme-variables .sidebar-menu a.active {
+   background-color: rgba(58, 134, 255, 0.2);
+   color: var(--clr-primary-light);
+}
+
+.dark-theme-variables .menu-toggle-btn {
+   background: #1e1e1e;
+   color: var(--clr-dark-variant);
+   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme-variables .menu-toggle-btn:hover {
+   background-color: #2d2d2d;
+}
+
+.dark-theme-variables .sidebar-top {
+   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme-variables .alert-success {
+   color: #b8f2d6;
+   background-color: #1a3a2a;
+   border-color: #2a5a3a;
+}
+
+.dark-theme-variables .alert-error {
+   color: #f8b8c0;
+   background-color: #3a1a1a;
+   border-color: #5a2a2a;
+}
+
+.dark-theme-variables .search-input {
+   background-color: #2d2d2d;
+   border-color: #444;
+   color: var(--clr-dark-variant);
+}
+
+.dark-theme-variables .search-button {
+   background-color: var(--clr-primary);
+}
+
+.dark-theme-variables .search-button:hover {
+   background-color: var(--clr-primary-light);
+}
+
+.dark-theme-variables .view-all-link {
+   color: var(--clr-primary-light);
+}
+
+.dark-theme-variables .delete-btn {
+   background-color: var(--clr-danger);
+}
+
+.dark-theme-variables .delete-btn:hover {
+   background-color: var(--clr-danger-light);
+}
+
+.dark-theme-variables .edit-btn {
+   background-color: var(--clr-warning);
+   color: #121212;
+}
+
+.dark-theme-variables .edit-btn:hover {
+   background-color: #ffb347;
+}
+
+.dark-theme-variables .view-images-btn {
+   background-color: var(--clr-success);
+}
+
+.dark-theme-variables .view-images-btn:hover {
+   background-color: #4cdf8c;
+}
+
+.dark-theme-variables .swal2-popup {
+   background-color: #2d2d2d !important;
+   color: var(--clr-dark-variant) !important;
+}
+
+.dark-theme-variables .swal2-title,
+.dark-theme-variables .swal2-content {
+   color: var(--clr-dark-variant) !important;
+}
+
+
+ .chart-container { margin-top: 30px; margin-bottom: 30px; }
+       .metrics-table { margin-top: 20px; margin-bottom: 30px; }
+       .progress-container { margin: 30px 0; padding: 20px; background-color: #f8f9fa; border-radius: 5px; }
+       .hidden { display: none; }
+       .metric-badge { font-size: 1rem; padding: 0.5em 0.75em; }
+
+    .final-metrics {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: var(--clr-light); /* Use your light theme variable */
+    border-radius: 5px;
+}
     </style>
 </head>
 <body>
+
+
+<!-- Sidebar Navigation -->
+<aside class="sidebar-container">
+    <div class="sidebar-top">
+        <div class="sidebar-logo">
+            <h2>A <span class="danger">lcura</span></h2>
+        </div>
+        <div class="sidebar-close-btn" id="close_btn">
+            <span class="material-symbols-sharp">close</span>
+        </div>
+    </div>
+
+    <div class="sidebar-menu">
+        <a href="/Admin/Dashboard">
+            <span class="material-symbols-sharp">dashboard</span>
+            <h3>Dashboard</h3>
+        </a>
+
+        <a href="/Admin/DiseaseModelDashboard">
+            <span class="material-symbols-sharp">monitor_heart</span>
+            <h3>Disease Model</h3>
+        </a>
+
+        <a href="/Admin/MedicineModelDashboard">
+            <span class="material-symbols-sharp">medication</span>
+            <h3>Medicine Model</h3>
+        </a>
+
+        <a href="/Admin/AddDisease">
+            <span class="material-symbols-sharp">add_circle</span>
+            <h3>Add Disease</h3>
+        </a>
+
+        <a href="/Admin/diseases">
+            <span class="material-symbols-sharp">manage_accounts</span>
+            <h3>Manage Diseases</h3>
+        </a>
+
+        <a href="/Admin/PredictDisease">
+            <span class="material-symbols-sharp">clinical_notes</span>
+            <h3>Predict Disease</h3>
+        </a>
+
+        <a href="/train">
+            <span class="material-symbols-sharp">model_training</span>
+            <h3>Train Disease Model</h3>
+        </a>
+
+        <a href="/Admin/ViewAllDisease">
+            <span class="material-symbols-sharp">visibility</span>
+            <h3>View Diseases</h3>
+        </a>
+
+        <a href="/Admin/ViewAllValidations">
+            <span class="material-symbols-sharp">checklist</span>
+            <h3>View All Validations</h3>
+        </a>
+
+        <a  href="/Admin/SOSView">
+            <span class="material-symbols-sharp">emergency</span>
+            <h3>Emergency Alerts</h3>
+            <span class="msg_count notification-badge">0</span>
+        </a>
+
+        <a href="/Admin/Signing" class="logout-btn">
+            <span class="material-symbols-sharp">logout</span>
+            <h3>Logout</h3>
+        </a>
+    </div>
+</aside>
+
+<div class="theme-toggler">
+    <span class="material-symbols-sharp active">light_mode</span>
+    <span class="material-symbols-sharp">dark_mode</span>
+</div>
+
+<!-- Mobile menu toggle button -->
+<button class="menu-toggle-btn" id="menu_toggle">
+    <span class="material-symbols-sharp">menu</span>
+</button>
+
+
 <div class="container mt-4">
     <div class="row">
         <div class="col-12">
@@ -150,11 +595,19 @@
 </div>
 
 <!-- JavaScript Libraries -->
+<script src="/Admin/SOSSocket.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="/Admin/MResponsive.js"></script>
+<script src="/Admin/Toggle.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+
+
+
     document.addEventListener('DOMContentLoaded', function() {
         // Elements
         const startBtn = document.getElementById('startBtn');

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -75,6 +76,7 @@ public class SOSController {
         notification.put("userLat", request.getLatitude());
         notification.put("userLng", request.getLongitude());
         notification.put("hospital", nearest.getName());
+        notification.put("hospitalId", nearest.getId().toString());
         notification.put("hospitalLat", nearest.getLatitude());
         notification.put("hospitalLng", nearest.getLongitude());
         notification.put("contact", nearest.getContactEmail());
@@ -108,34 +110,56 @@ public class SOSController {
         return ResponseEntity.ok(activeSessions);
     }
 
-    @GetMapping("/hospital/image/{identifier}")
-    public ResponseEntity<byte[]> getHospitalImage(@PathVariable String identifier) {
-        logger.debug("IMAGE ENDPOINT HIT - Identifier: {}", identifier);
 
-        Hospital hospital;
+
+    @GetMapping("/hospital/image/{name}")
+    public ResponseEntity<byte[]> getHospitalImage(@PathVariable String name) {
+        logger.debug("Attempting to retrieve image for hospital: {}", name);
+
         try {
-            // First try to parse as Long ID
-            Long hospitalId = Long.parseLong(identifier);
-            hospital = hospitalRepo.findById(hospitalId)
-                    .orElseThrow(() -> {
-                        logger.error("HOSPITAL NOT FOUND BY ID: {}", hospitalId);
-                        return new HospitalNotFoundException("Hospital not found");
-                    });
-        } catch (NumberFormatException e) {
-            // If not a number, try to find by name
-            hospital = hospitalRepo.findByName(identifier)
-                    .orElseThrow(() -> {
-                        logger.error("HOSPITAL NOT FOUND BY NAME: {}", identifier);
-                        return new HospitalNotFoundException("Hospital not found");
-                    });
-        }
+            Optional<Hospital> hospital = hospitalRepo.findByName(name);
 
+            if (hospital.isEmpty()) {
+                logger.error("Hospital not found in database for name: {}", name);
+                return ResponseEntity.notFound().build();
+            }
+
+            Hospital foundHospital = hospital.get();
+            byte[] imageData = foundHospital.getImage();
+
+            if (imageData == null) {
+                logger.warn("Hospital '{}' exists but has no image data (image is null)", name);
+                return ResponseEntity.notFound().build();
+            }
+
+            if (imageData.length == 0) {
+                logger.warn("Hospital '{}' has empty image data (0 bytes)", name);
+                return ResponseEntity.notFound().build();
+            }
+
+            logger.debug("Successfully retrieved image for hospital '{}' - Type: JPEG, Size: {} bytes",
+                    name, imageData.length);
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(imageData);
+
+        } catch (Exception e) {
+            logger.error("Unexpected error while retrieving image for hospital '{}': {}", name, e.getMessage(), e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+
+
+    private ResponseEntity<byte[]> handleFoundHospitalImage(Hospital hospital, String identifier) {
         if (hospital.getImage() == null) {
             logger.warn("NO IMAGE DATA FOR HOSPITAL: {}", identifier);
             return ResponseEntity.notFound().build();
         }
 
-        logger.debug("Returning image data - Size: {} bytes", hospital.getImage().length);
+        logger.debug("Returning image data for hospital {} - Size: {} bytes",
+                identifier, hospital.getImage().length);
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(hospital.getImage());

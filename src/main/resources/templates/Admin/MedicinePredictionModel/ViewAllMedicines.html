@@ -5,118 +5,270 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Manage Diseases</title>
+    <title>Manage Medicines</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="/Admin/Modal/Nav.css">
     <style>
-        .disease-card {
-           border: 1px solid #ddd;
-           border-radius: 5px;
-           padding: 15px;
-           margin-bottom: 20px;
-           background-color: #f9f9f9;
-       }
-       .disease-name {
-           color: #2c3e50;
-           margin-top: 0;
-       }
-       .search-container {
-           margin-bottom: 20px;
-           padding: 15px;
-           background-color: #e9ecef;
-           border-radius: 5px;
-       }
-       .search-form {
-           display: flex;
-           gap: 10px;
-       }
-       .search-input {
-           flex-grow: 1;
-           padding: 8px;
-           border: 1px solid #ced4da;
-           border-radius: 4px;
-       }
-       .search-button {
-           padding: 8px 15px;
-           background-color: #007bff;
-           color: white;
-           border: none;
-           border-radius: 4px;
-           cursor: pointer;
-       }
-       .search-button:hover {
-           background-color: #0056b3;
-       }
-       .view-all-link {
-           display: inline-block;
-           margin-top: 10px;
-           color: #007bff;
-           text-decoration: none;
-       }
-       .delete-btn {
-           padding: 8px 15px;
-           background-color: #dc3545;
-           color: white;
-           border: none;
-           border-radius: 4px;
-           cursor: pointer;
-           margin-top: 10px;
-       }
-       .delete-btn:hover {
-           background-color: #c82333;
-       }
-       .edit-btn {
-           padding: 8px 15px;
-           background-color: #ffc107;
-           color: #212529;
-           border: none;
-           border-radius: 4px;
-           cursor: pointer;
-           margin-top: 10px;
-       }
-       .edit-btn:hover {
-           background-color: #e0a800;
-       }
-       .view-images-btn {
-           padding: 8px 15px;
-           background-color: #28a745;
-           color: white;
-           border: none;
-           border-radius: 4px;
-           cursor: pointer;
-           margin-top: 10px;
-       }
-       .view-images-btn:hover {
-           background-color: #218838;
-       }
-       /* SweetAlert customization */
-       .swal2-popup {
-           font-size: 1.6rem !important;
-           border-radius: 10px !important;
-       }
-       .alert-success {
-           color: #155724;
-           background-color: #d4edda;
-           border-color: #c3e6cb;
-           padding: 10px;
-           margin-bottom: 15px;
-           border-radius: 4px;
-       }
-       .alert-error {
-           color: #721c24;
-           background-color: #f8d7da;
-           border-color: #f5c6cb;
-           padding: 10px;
-           margin-bottom: 15px;
-           border-radius: 4px;
-       }
-       .button-group {
-           display: flex;
-           gap: 10px;
-           margin-top: 15px;
-       }
+:root {
+--clr-primary-navtheme: #4361ee;
+}
+        .theme-toggler {
+         position: fixed;
+         bottom: 20px;
+         right: 20px;
+         background: var(  --clr-primary-navtheme);
+         color: white;
+         width: 44px;
+         height: 44px;
+         border-radius: 50%;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         cursor: pointer;
+         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+         z-index: 9999;
+     }
+
+     .theme-toggler span {
+         position: absolute;
+         opacity: 0;
+         transition: opacity 0.3s ease;
+     }
+
+     .theme-toggler span.active {
+         opacity: 1;
+     }
+
+       .dark-theme-variables .theme-toggler {
+      background: var(--clr-primary) !important;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  }
+       .disease-card {
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          padding: 15px;
+          margin-bottom: 20px;
+          background-color: #f9f9f9;
+      }
+      .disease-name {
+          color: #2c3e50;
+          margin-top: 0;
+      }
+      .search-container {
+          margin-bottom: 20px;
+          padding: 15px;
+          background-color: #e9ecef;
+          border-radius: 5px;
+      }
+      .search-form {
+          display: flex;
+          gap: 10px;
+      }
+      .search-input {
+          flex-grow: 1;
+          padding: 8px;
+          border: 1px solid #ced4da;
+          border-radius: 4px;
+      }
+      .search-button {
+          padding: 8px 15px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+      }
+      .search-button:hover {
+          background-color: #0056b3;
+      }
+      .view-all-link {
+          display: inline-block;
+          margin-top: 10px;
+          color: #007bff;
+          text-decoration: none;
+      }
+      .delete-btn {
+          padding: 8px 15px;
+          background-color: #dc3545;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          margin-top: 10px;
+      }
+      .delete-btn:hover {
+          background-color: #c82333;
+      }
+      .edit-btn {
+          padding: 8px 15px;
+          background-color: #ffc107;
+          color: #212529;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          margin-top: 10px;
+      }
+      .edit-btn:hover {
+          background-color: #e0a800;
+      }
+      .view-images-btn {
+          padding: 8px 15px;
+          background-color: #28a745;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          margin-top: 10px;
+      }
+      .view-images-btn:hover {
+          background-color: #218838;
+      }
+      /* SweetAlert customization */
+      .swal2-popup {
+          font-size: 1.6rem !important;
+          border-radius: 10px !important;
+      }
+      .alert-success {
+          color: #155724;
+          background-color: #d4edda;
+          border-color: #c3e6cb;
+          padding: 10px;
+          margin-bottom: 15px;
+          border-radius: 4px;
+      }
+      .alert-error {
+          color: #721c24;
+          background-color: #f8d7da;
+          border-color: #f5c6cb;
+          padding: 10px;
+          margin-bottom: 15px;
+          border-radius: 4px;
+      }
+      .button-group {
+          display: flex;
+          gap: 10px;
+          margin-top: 15px;
+      }
+
+        .dark-theme-variables .search-container {
+   background-color: #2d2d2d;
+}
+
+.dark-theme-variables .sidebar-container {
+   background-color: #1a1a1a;
+   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+}
+          .sidebar-menu .notification-badge {
+      background-color: var(--clr-danger);
+      color: var(--clr-white);
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      border-radius: 50px;
+      margin-left: auto;
+  }
+
+
+.dark-theme-variables .swal2-popup {
+   background-color: #2d2d2d !important;
+   color: var(--clr-dark-variant) !important;
+}
+
+.dark-theme-variables .swal2-title,
+.dark-theme-variables .swal2-content {
+   color: var(--clr-dark-variant) !important;
+}
     </style>
 </head>
 <body>
+
+<div class="theme-toggler">
+    <span class="material-symbols-sharp active">light_mode</span>
+    <span class="material-symbols-sharp">dark_mode</span>
+</div>
+
+
+
+<!-- Sidebar Navigation -->
+<aside class="sidebar-container">
+    <div class="sidebar-top">
+        <div class="sidebar-logo">
+            <h2>A <span class="danger">lcura</span></h2>
+        </div>
+        <div class="sidebar-close-btn" id="close_btn">
+            <span class="material-symbols-sharp">close</span>
+        </div>
+    </div>
+
+    <div class="sidebar-menu">
+        <a href="/Admin/Dashboard">
+            <span class="material-symbols-sharp">dashboard</span>
+            <h3>Dashboard</h3>
+        </a>
+
+        <a href="/Admin/DiseaseModelDashboard">
+            <span class="material-symbols-sharp">monitor_heart</span>
+            <h3>Disease Model</h3>
+        </a>
+
+        <a href="/Admin/MedicineModelDashboard">
+            <span class="material-symbols-sharp">medication</span>
+            <h3>Medicine Model</h3>
+        </a>
+
+        <a href="/Admin/AddMedicine"  >
+            <span class="material-symbols-sharp">add_circle</span>
+            <h3>Add Medicine</h3>
+        </a>
+
+        <a href="/Admin/medicineDescription">
+            <span class="material-symbols-sharp">manage_accounts</span>
+            <h3>Manage Medicine</h3>
+        </a>
+
+        <a href="/Admin/MedicinePrediction">
+            <span class="material-symbols-sharp">clinical_notes</span>
+            <h3>Predict Mediicne</h3>
+        </a>
+
+        <a href="/Admin/Training">
+            <span class="material-symbols-sharp">model_training</span>
+            <h3>Train Mediicne Model</h3>
+        </a>
+
+        <a href="/Admin/ViewAllMedicine">
+            <span class="material-symbols-sharp">visibility</span>
+            <h3>View Medicines</h3>
+        </a>
+
+        <a href="/Admin/ViewAllMedicineValidations">
+            <span class="material-symbols-sharp">checklist</span>
+            <h3>View All Validations</h3>
+        </a>
+
+        <a  href="/Admin/SOSView">
+            <span class="material-symbols-sharp">emergency</span>
+            <h3>Emergency Alerts</h3>
+            <span class="msg_count notification-badge">0</span>
+        </a>
+
+        <a href="/Admin/Signing" class="logout-btn">
+            <span class="material-symbols-sharp">logout</span>
+            <h3>Logout</h3>
+        </a>
+    </div>
+</aside>
+
+
+
+<!-- Mobile menu toggle button -->
+<button class="menu-toggle-btn" id="menu_toggle">
+    <span class="material-symbols-sharp">menu</span>
+</button>
+
+<main class="main-content">
     <h1>Medicine Information</h1>
 
     <div th:if ="${success}" class="alert-success" th:text = "${success}"></div>
@@ -174,7 +326,9 @@
         </div>
     </div>
 </div>
-
+</main>
+<script src="/Admin/MResponsive.js"></script>
+<script src="/Admin/Theme.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function confirmDelete(medicineName) {
@@ -243,5 +397,8 @@
         });
     }
     </script>
+<script src="/Admin/SOSSocket.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </body>
 </html>
