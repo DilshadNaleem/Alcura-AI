@@ -2,15 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>All Diseases</title>
-    <!-- SweetAlert2 CSS -->
-
+    <title>Add Images</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
-
     <style>
+
 
         .theme-toggler {
           position: fixed;
@@ -482,13 +479,184 @@
 .dark-theme-variables .add-images-btn:hover {
     background-color: #4e555b;
 }
+
+        :root {
+            --clr-primary: #4361ee;
+            --clr-danger: #ef233c;
+            --clr-success: #2ecc71;
+            --clr-warning: #ff9f1c;
+            --clr-white: #ffffff;
+            --clr-dark: #212529;
+            --clr-background: #f6f6f9;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--clr-background);
+            color: var(--clr-dark);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--clr-white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+        }
+
+        h1 {
+            color: var(--clr-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .file-upload input[type="file"] {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .image-type-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .image-type-option {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .image-type-option:hover {
+            border-color: var(--clr-primary);
+        }
+
+        .image-type-option.selected {
+            border-color: var(--clr-primary);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .image-type-option input {
+            display: none;
+        }
+
+        .submit-btn {
+            background-color: var(--clr-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #3a56e8;
+        }
+
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .preview-item {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: var(--clr-danger);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Dark theme styles */
+        .dark-theme-variables {
+            --clr-primary: #3a86ff;
+            --clr-white: #212529;
+            --clr-dark: #f8f9fa;
+            --clr-background: #121212;
+        }
+
+        .dark-theme-variables body {
+            background-color: var(--clr-background);
+            color: var(--clr-dark);
+        }
+
+        .dark-theme-variables .container {
+            background-color: #1e1e1e;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-theme-variables .image-type-option {
+            border-color: #444;
+            background-color: #2d2d2d;
+        }
+
+        .dark-theme-variables .image-type-option.selected {
+            background-color: rgba(58, 134, 255, 0.2);
+        }
+
+        .dark-theme-variables .file-upload input[type="file"] {
+            background-color: #2d2d2d;
+            border-color: #444;
+            color: var(--clr-dark);
+        }
     </style>
 </head>
 <body>
 
+
 <div class="theme-toggler">
-    <span class="material-symbols-sharp active">light_mode</span>
-    <span class="material-symbols-sharp">dark_mode</span>
+<span class="material-symbols-sharp active">light_mode</span>
+<span class="material-symbols-sharp">dark_mode</span>
 </div>
 
 <!-- Sidebar Navigation -->
@@ -570,166 +738,196 @@
 
 
 <main class="main-content">
-    <br>
-<h1>Disease Information</h1>
 
-<!-- Alert Messages (fallback if JavaScript is disabled) -->
-<div th:if="${success}" class="alert-success" th:text="${success}"></div>
-<div th:if="${error}" class="alert-error" th:text="${error}"></div>
+<div class="container">
+    <input type="hidden" id="flashSuccess" th:value="${success}">
+    <input type="hidden" id="flashError" th:value="${error}">
 
-<div class="search-container">
-    <form th:action="@{/Admin/diseases/search}" method="get" class="search-form">
-        <input type="text" name="diseaseName" class="search-input" placeholder="Enter disease name..." required>
-        <button type="submit" class="search-button">Search</button>
-    </form>
-    <a th:href="@{/Admin/diseases}" class="view-all-link">View All Diseases</a>
-</div>
+    <h1>Add Images for <span th:text="${diseaseName}"></span></h1>
 
-<div th:unless="${error}">
-    <div th:each="disease : ${diseases}" class="disease-card">
-        <h2 class="disease-name" th:text="${disease.disease}"></h2>
-        <p><strong>Scientific Name:</strong> <span th:text="${disease.scientificName}"></span></p>
-        <p><strong>Description:</strong> <span th:text="${disease.description}"></span></p>
-        <p><strong>Symptoms:</strong> <span th:text="${disease.symptoms}"></span></p>
-        <p><strong>Causes:</strong> <span th:text="${disease.cause}"></span></p>
-        <p><strong>Treatment:</strong> <span th:text="${disease.treatment}"></span></p>
-        <p><strong>Medications:</strong> <span th:text="${disease.medications}"></span></p>
-        <p><strong>Prevention:</strong> <span th:text="${disease.prevention}"></span></p>
-        <p><strong>Contagious:</strong> <span th:text="${disease.contagious}"></span></p>
-        <p><strong>Source of Information:</strong> <span th:text="${disease.sourceOfInformation}"></span></p>
-        <p><strong>Common Age group:</strong> <span th:text="${disease.commonAgeGroup}"></span></p>
-        <p><strong>Duration:</strong> <span th:text="${disease.duration}"></span></p>
-        <p><strong>First Aid Advice:</strong> <span th:text="${disease.firstAidAdvice}"></span></p>
-        <p><strong>Risk Factors:</strong> <span th:text="${disease.riskFactors}"></span></p>
-        <p><strong>Severity:</strong> <span th:text="${disease.severity}"></span></p>
-        <p><strong>Side Effects:</strong> <span th:text="${disease.sideEffects}"></span></p>
+    <form th:action="@{/Admin/UploadImages}" method="post" enctype="multipart/form-data" id="uploadForm">
+        <input type="hidden" name="diseaseName" th:value="${diseaseName}">
 
-        <div class="button-group">
-            <form th:action="@{/Admin/DeleteDisease}" method="post" th:id="'deleteForm-' + ${disease.disease}">
-                <input type="hidden" name="_method" value="DELETE" />
-                <input type="hidden" name="diseaseName" th:value="${disease.disease}" />
-                <button type="button" class="delete-btn"
-                        th:attr="data-disease-name=${disease.disease}"
-                        onclick="confirmDelete(this.getAttribute('data-disease-name'))">
-                    Delete Disease
-                </button>
-            </form>
-
-            <form th:action="@{/Admin/Edit}">
-                <input type="hidden" name="diseaseName" th:value="${disease.disease}">
-                <button type="submit" class="edit-btn">Edit</button>
-            </form>
-
-            <form th:action="@{/Admin/ViewImages}" method="get" th:id="'viewImagesForm-' + ${disease.disease}">
-                <input type="hidden" name="diseaseName" th:value="${disease.disease}">
-                <input type="hidden" name="imageType" th:id="'imageTypeInput-' + ${disease.disease}" value="">
-                <button type="button" class="view-images-btn"
-                        th:attr="onclick='showImageTypePopup(\'' + ${disease.disease} + '\')'">View Images</button>
-            </form>
-
-            <form th:action = @{/Admin/DiseaseAddImages} method="get">
-                <input type="hidden" name="diseaseName" th:value="${disease.disease}">
-                <button type="submit" class="add-images-btn">Add Images</button>
-            </form>
+        <div class="form-group">
+            <label>Select Image Type</label>
+            <div class="image-type-selector">
+                <label class="image-type-option selected" onclick="selectImageType(this, 'train')">
+                    <input type="radio" name="imageType" value="train" checked>
+                    Training Images
+                </label>
+                <label class="image-type-option" onclick="selectImageType(this, 'validation')">
+                    <input type="radio" name="imageType" value="validation">
+                    Validation Images
+                </label>
+            </div>
         </div>
-    </div>
+
+        <div class="form-group">
+            <label>Upload Images (Multiple Select)</label>
+            <div class="file-upload">
+                <input type="file" name="images" id="imageUpload" multiple accept="image/*" onchange="previewImages()">
+                <div class="preview-container" id="imagePreview"></div>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Upload Images</button>
+    </form>
 </div>
 </main>
-<!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/Admin/MResponsive.js"></script>
-<script src="/Admin/Theme.js"></script>
-<script th:inline="javascript">
-
-    /* Show success/error messages as SweetAlert popups */
-    document.addEventListener('DOMContentLoaded', function() {
-        const successMessage = /*[[${success}]]*/ null;
-        if (successMessage) {
-            Swal.fire({
-                title: 'Success!',
-                text: successMessage,
-                icon: 'success',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'OK',
-                timer: 3000,
-                timerProgressBar: true,
-                backdrop: 'rgba(0,0,0,0.4)'
-            });
-        }
-
-        const errorMessage = /*[[${error}]]*/ null;
-        if (errorMessage) {
-            Swal.fire({
-                title: 'Error!',
-                text: errorMessage,
-                icon: 'error',
-                confirmButtonColor: '#d33',
-                confirmButtonText: 'OK',
-                backdrop: 'rgba(0,0,0,0.4)'
-            });
-        }
-    });
-
-    function confirmDelete(diseaseName) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'You are about to delete "' + diseaseName + '"',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            confirmButtonText: 'Delete'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch('/Admin/DeleteDisease?diseaseName=' + encodeURIComponent(diseaseName), {
-                    method: 'DELETE'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        Swal.fire('Deleted!', data.message, 'success')
-                            .then(() => window.location.reload());
-                    } else {
-                        Swal.fire('Error!', data.message, 'error');
-                    }
-                })
-                .catch(error => {
-                    Swal.fire('Error!', 'Delete failed', 'error');
-                });
-            }
+<script>
+    function selectImageType(element, type) {
+        document.querySelectorAll('.image-type-option').forEach(opt => {
+            opt.classList.remove('selected');
         });
+        element.classList.add('selected');
+        document.querySelector(`input[value="${type}"]`).checked = true;
     }
 
-    function showImageTypePopup(diseaseName) {
+// Global variable to track selected files
+let selectedFiles = [];
+
+function previewImages() {
+    const previewContainer = document.getElementById('imagePreview');
+    previewContainer.innerHTML = '';
+    const fileInput = document.getElementById('imageUpload');
+
+    // Update our selectedFiles array
+    selectedFiles = Array.from(fileInput.files);
+
+    if (selectedFiles.length > 0) {
+        selectedFiles.forEach((file, index) => {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const previewItem = document.createElement('div');
+                previewItem.className = 'preview-item';
+                previewItem.dataset.index = index; // Store the index
+
+                const img = document.createElement('img');
+                img.src = e.target.result;
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.innerHTML = '×';
+                removeBtn.onclick = function() {
+                    // Remove the file from our array
+                    selectedFiles.splice(index, 1);
+
+                    // Update the file input (this is tricky since FileList is read-only)
+                    const dataTransfer = new DataTransfer();
+                    selectedFiles.forEach(file => dataTransfer.items.add(file));
+                    fileInput.files = dataTransfer.files;
+
+                    // Re-render previews
+                    previewImages();
+                };
+
+                previewItem.appendChild(img);
+                previewItem.appendChild(removeBtn);
+                previewContainer.appendChild(previewItem);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+}
+
+// Update the form submission to use our selectedFiles
+document.getElementById('uploadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    if (selectedFiles.length === 0) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Please select at least one image to upload',
+            icon: 'error'
+        });
+        return;
+    }
+
+    // Create FormData and append files
+    const formData = new FormData(this);
+    formData.delete('images'); // Remove the original files
+
+    // Append our selectedFiles
+    selectedFiles.forEach(file => {
+        formData.append('images', file);
+    });
+
     Swal.fire({
-        title: 'Select Image Type',
-        text: 'Choose which images to view for ' + diseaseName,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
-        html:
-            '<div style="text-align: left; margin: 20px 0;">' +
-            '<label style="display: block; margin: 10px 0; cursor: pointer;">' +
-            '<input type="radio" name="imageType" value="Train" checked> Training Images' +
-            '</label>' +
-            '<label style="display: block; margin: 10px 0; cursor: pointer;">' +
-            '<input type="radio" name="imageType" value="Validation"> Validation Images' +
-            '</label>' +
-            '<label style="display: block; margin: 10px 0; cursor: pointer;">' +
-            '<input type="radio" name="imageType" value="All"> All Images' +
-            '</label>' +
-            '</div>',
-        preConfirm: () => {
-            const selectedValue = document.querySelector('input[name="imageType"]:checked').value;
-            const form = document.getElementById('viewImagesForm-' + diseaseName);
-            const imageTypeInput = document.getElementById('imageTypeInput-' + diseaseName);
-            // Convert to lowercase before submitting
-            imageTypeInput.value = selectedValue.toLowerCase();
-            form.submit();
+        title: 'Uploading...',
+        html: `Uploading ${selectedFiles.length} image(s)`,
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
         }
     });
-}
+
+    fetch(this.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => Promise.reject(err));
+        }
+        return response.json();
+    })
+    .then(data => {
+        Swal.close();
+        if (data.success || data.message) {
+            Swal.fire({
+                title: 'Success!',
+                text: data.message || 'Images uploaded successfully',
+                icon: 'success'
+            }).then(() => {
+                // Reset everything
+                document.getElementById('imageUpload').value = '';
+                selectedFiles = [];
+                document.getElementById('imagePreview').innerHTML = '';
+            });
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: data.error || 'Unknown error occurred',
+                icon: 'error'
+            });
+        }
+    })
+    .catch(error => {
+        Swal.close();
+        Swal.fire({
+            title: 'Error!',
+            text: error.message || 'An error occurred during upload',
+            icon: 'error'
+        });
+    });
+});
+
+    // Check for flash messages on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const successMsg = document.getElementById('flashSuccess')?.value;
+        const errorMsg = document.getElementById('flashError')?.value;
+
+        if (successMsg) {
+            Swal.fire({
+                title: 'Success!',
+                text: successMsg,
+                icon: 'success'
+            });
+        }
+
+        if (errorMsg) {
+            Swal.fire({
+                title: 'Error!',
+                text: errorMsg,
+                icon: 'error'
+            });
+        }
+    });
 </script>
+<script src="/Admin/MResponsive.js"></script>
+<script src="/Admin/Theme.js"></script>
 <script src="/Admin/SOSSocket.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>

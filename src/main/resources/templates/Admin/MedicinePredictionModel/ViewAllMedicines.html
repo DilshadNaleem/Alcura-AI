@@ -180,6 +180,26 @@
 .dark-theme-variables .swal2-content {
    color: var(--clr-dark-variant) !important;
 }
+          .add-images-btn {
+    padding: 8px 15px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.add-images-btn:hover {
+    background-color: #5a6268;
+}
+
+/* Dark theme specific */
+.dark-theme-variables .add-images-btn {
+    background-color: #5a6268;
+}
+.dark-theme-variables .add-images-btn:hover {
+    background-color: #4e555b;
+}
     </style>
 </head>
 <body>
@@ -322,6 +342,11 @@
                 <button type="button" class="view-images-btn"
                     th:attr = "onclick= 'showImageTypePopup(\'' + ${m.ClassName} + '\')'"> View Images
                 </button>
+            </form>
+
+            <form th:action = @{/Admin/MedicineAddImages} method="get">
+                <input type="hidden" name="medicineName" th:value="${m.ClassName}">
+                <button type="submit" class="add-images-btn">Add Images</button>
             </form>
         </div>
     </div>
