@@ -22,7 +22,7 @@ public class DoctorSearchController {
     }
 
     // Handler to show all or searched doctors
-    @GetMapping("/Customer/SearchDoctor/")  // Note the trailing slash to match your HTML form action
+    @GetMapping("/Customer/SearchDoctor/")
     public String searchDoctor(
             @RequestParam(value = "doctorName", required = false) String doctorName,
             Model model) {

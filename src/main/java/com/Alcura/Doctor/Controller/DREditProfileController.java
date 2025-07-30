@@ -49,7 +49,7 @@ public class DREditProfileController {
         }
 
         model.addAttribute("doctor", doctor);
-        return "/Doctor/EditProfile.html";
+        return "/Doctor/EditProfile";
     }
 
     @PostMapping("/Editform")
@@ -58,6 +58,7 @@ public class DREditProfileController {
                              @RequestParam("specialist") String specialist,
                              @RequestParam("contactNumber") String contact,
                              @RequestParam("specialist_info") String specialist_info,
+                             @RequestParam("Special_Notes") String SpecialNotes,
                              @RequestParam("Qualification") String qualification,
                              @RequestParam("government_Hospitals") String government_Hos,
                              @RequestParam(value = "image", required = false) MultipartFile imageFile,
@@ -86,6 +87,7 @@ public class DREditProfileController {
             existingDoctor.setLastName(lastName);
             existingDoctor.setSpecialist(specialist);
             existingDoctor.setContactNumber(contact);
+            existingDoctor.setSpecial_note(SpecialNotes);
             existingDoctor.setSpecialist_info(specialist_info);
             existingDoctor.setQualification(qualification);
             existingDoctor.setGovernment_Hospitals(government_Hos);

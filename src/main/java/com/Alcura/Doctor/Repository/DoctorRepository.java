@@ -37,5 +37,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer>
     List<Doctor> findRecentDoctors();
     List<Doctor> findByEmail(String email);
     Doctor findByuniqueId(String uniqueId);
+    @Query("SELECT d FROM Doctor d WHERE d.uniqueId = :uniqueId AND SIZE(d.availabilities) > 0")
+    Optional<Doctor> findByUniqueIdforAvailabeStatus(String uniqueId);
 }
 

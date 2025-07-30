@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Availability</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .day-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .time-inputs {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .time-input {
+            display: flex;
+            flex-direction: column;
+        }
+        select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .unavailable-checkbox {
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .date-label {
+            font-size: 14px;
+            color: #666;
+            margin-left: 5px;
+        }
+        .week-range {
+            font-size: 16px;
+            color: #444;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        #loadDefaults {
+            background-color: #2196F3;
+        }
+        #loadDefaults:hover {
+            background-color: #0b7dda;
+        }
+        select:invalid {
+            border-color: red;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Set Your Weekly Availability</h1>
+<div class="week-range" id="weekRange"></div>
+
+<div class="button-container">
+    <button id="loadDefaults">Load Default Times</button>
+</div>
+
+<form id="availabilityForm" action="/Doctor/SaveAvailability" method="post">
+    <input type="hidden" name="uniqueId" id="doctorUniqueId" value="">
+
+    <!-- Monday -->
+    <div class="day-section">
+        <h2>Monday <span class="date-label" id="mondayDate"></span></h2>
+        <div class="time-inputs">
+            <div class="time-input">
+                <label>Start Time:</label>
+                <select name="mondayStart" class="time-select" data-day="monday" required>
+                    <option value="">Select Time</option>
+                </select>
+                <div class="error" id="mondayStartError"></div>
+            </div>
+            <div class="time-input">
+                <label>End Time:</label>
+                <select name="mondayEnd" class="time-select" data-day="monday" required>
+                    <option value="">Select Time</option>
+                </select>
+                <div class="error" id="mondayEndError"></div>
+            </div>
+        </div>
+        <label class="unavailable-checkbox">
+            <input type="checkbox" name="mondayUnavailable" class="unavailable" data-day="monday"> Unavailable this day
+        </label>
+    </div>
+
+    <!-- Tuesday -->
+    <div class="day-section">
+        <h2>Tuesday <span class="date-label" id="tuesdayDate"></span></h2>
+        <div class="time-inputs">
+            <div class="time-input">
+                <label>Start Time:</label>
+                <select name="tuesdayStart" class="time-select" data-day="tuesday" required>
+                    <option value="">Select Time</option>
+                </select>
+                <div class="error" id="tuesdayStartError"></div>
+            </div>
+            <div class="time-input">
+                <label>End Time:</label>
+                <select name="tuesdayEnd" class="time-select" data-day="tuesday" required>
+                    <option value="">Select Time</option>
+                </select>
+                <div class="error" id="tuesdayEndError"></div>
+            </div>
+        </div>
+        <label class="unavailable-checkbox">
+            <input type="checkbox" name="tuesdayUnavailable" class="unavailable" data-day="tuesday"> Unavailable this day
+        </label>
+    </div>
+
+    <!-- Wednesday -->
+    <div class="day-section">
+        <h2>Wednesday <span class="date-label" id="wednesdayDate"></span></h2>
+        <div class="time-inputs">
+            <div class="time-input">
+                <label>Start Time:</label>
+                <select name="wednesdayStart" class="time-select" data-day="wednesday" required>
+                    <option value="">Select Time</option>
+                </select>
+                <div class="error" id="wednesdayStartError"></div>
+            </div>
+            <div class="time-input">
+                <label>End Time:</label>
+                <select name="wednesdayEnd" class="time-select" data-day="wednesday" required>
+                    <option value="">Select Time</option>
+                </select>
+                <div class="error" id="wednesdayEndError"></div>
+            </div>
+        </div>
+        <label class="unavailable-checkbox">
+            <input type="checkbox" name="wednesdayUnavailable" class="unavailable" data-day="wednesday"> Unavailable this day
+        </label>
+    </div>
+
+    <!-- Thursday -->
+    <div class="day-section">
+        <h2>Thursday <span class="date-label" id="thursdayDate"></span></h2>
+        <div class="time-inputs">
+            <div class="time-input">
+                <label>Start Time:</label>
+                <select name="thursdayStart" class="time-select" data-day="thursday" required>
+                    <option value="">Select Time</option>
+                </select>
+                <div class="error" id="thursdayStartError"></div>
+            </div>
+            <div class="time-input">
+                <label>End Time:</label>
+                <select name="thursdayEnd" class="time-select" data-day="thursday" required>
+                    <option value="">Select Time</option>
+                </select>
+                <div class="error" id="thursdayEndError"></div>
+            </div>
+        </div>
+        <label class="unavailable-checkbox">
+            <input type="checkbox" name="thursdayUnavailable" class="unavailable" data-day="thursday"> Unavailable this day
+        </label>
+    </div>
+
+    <!-- Friday -->
+    <div class="day-section">
+        <h2>Friday <span class="date-label" id="fridayDate"></span></h2>
+        <div class="time-inputs">
+            <div class="time-input">
+                <label>Start Time:</label>
+                <select name="fridayStart" class="time-select" data-day="friday" required>
+                    <option value="">Select Time</option>
+                </select>
+                <div class="error" id="fridayStartError"></div>
+            </div>
+            <div class="time-input">
+                <label>End Time:</label>
+                <select name="fridayEnd" class="time-select" data-day="friday" required>
+                    <option value="">Select Time</option>
+                </select>
+                <div class="error" id="fridayEndError"></div>
+            </div>
+        </div>
+        <label class="unavailable-checkbox">
+            <input type="checkbox" name="fridayUnavailable" class="unavailable" data-day="friday"> Unavailable this day
+        </label>
+    </div>
+
+    <!-- Saturday -->
+    <div class="day-section">
+        <h2>Saturday <span class="date-label" id="saturdayDate"></span></h2>
+        <div class="time-inputs">
+            <div class="time-input">
+                <label>Start Time:</label>
+                <select name="saturdayStart" class="time-select" data-day="saturday" required>
+                    <option value="">Select Time</option>
+                </select>
+                <div class="error" id="saturdayStartError"></div>
+            </div>
+            <div class="time-input">
+                <label>End Time:</label>
+                <select name="saturdayEnd" class="time-select" data-day="saturday" required>
+                    <option value="">Select Time</option>
+                </select>
+                <div class="error" id="saturdayEndError"></div>
+            </div>
+        </div>
+        <label class="unavailable-checkbox">
+            <input type="checkbox" name="saturdayUnavailable" class="unavailable" data-day="saturday"> Unavailable this day
+        </label>
+    </div>
+
+    <!-- Sunday -->
+    <div class="day-section">
+        <h2>Sunday <span class="date-label" id="sundayDate"></span></h2>
+        <div class="time-inputs">
+            <div class="time-input">
+                <label>Start Time:</label>
+                <select name="sundayStart" class="time-select" data-day="sunday" required>
+                    <option value="">Select Time</option>
+                </select>
+                <div class="error" id="sundayStartError"></div>
+            </div>
+            <div class="time-input">
+                <label>End Time:</label>
+                <select name="sundayEnd" class="time-select" data-day="sunday" required>
+                    <option value="">Select Time</option>
+                </select>
+                <div class="error" id="sundayEndError"></div>
+            </div>
+        </div>
+        <label class="unavailable-checkbox">
+            <input type="checkbox" name="sundayUnavailable" class="unavailable" data-day="sunday"> Unavailable this day
+        </label>
+    </div>
+
+    <div class="day-section">
+        <label>
+            <input type="checkbox" name="available" id="globalAvailable" checked> Available for appointments
+        </label>
+    </div>
+
+    <button type="submit">Save Availability</button>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Function to show SweetAlert notifications
+    function showAlert(type, message) {
+        if (type === 'success') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: message
+            });
+        }
+    }
+
+    // Check for success/error messages in URL parameters
+    function checkForMessages() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const successMessage = urlParams.get('success');
+        const errorMessage = urlParams.get('error');
+
+        if (successMessage) {
+            showAlert('success', successMessage);
+        }
+        if (errorMessage) {
+            showAlert('error', errorMessage);
+        }
+    }
+
+    // Generate time slots (15-minute intervals from 8:00 AM to 8:00 PM)
+    function generateTimeSlots() {
+        const slots = [];
+        for (let hour = 8; hour <= 20; hour++) {
+            for (let minute = 0; minute < 60; minute += 15) {
+                const time = new Date();
+                time.setHours(hour, minute, 0, 0);
+
+                // Format as 12-hour with AM/PM
+                let hours = hour % 12;
+                hours = hours ? hours : 12; // Convert 0 to 12
+                const ampm = hour >= 12 ? 'PM' : 'AM';
+                const displayTime = `${hours}:${minute.toString().padStart(2, '0')} ${ampm}`;
+
+                // Value in 24-hour format (HH:MM)
+                const value = time.toTimeString().substring(0, 5);
+
+                slots.push({ display: displayTime, value: value });
+            }
+        }
+        return slots;
+    }
+
+    // Set the dates for NEXT week (Monday to Sunday)
+    function getNextWeekDates() {
+        const today = new Date();
+        const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+
+        // Calculate next Monday
+        let nextMonday = new Date(today);
+        nextMonday.setDate(today.getDate() + (7 - dayOfWeek + 1) % 7);
+
+        // Set dates for each day of next week
+        const dates = {};
+        const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(nextMonday);
+            date.setDate(nextMonday.getDate() + i);
+            dates[days[date.getDay()]] = date;
+        }
+
+        return dates;
+    }
+
+    // Load existing availability from server
+    async function loadExistingAvailability() {
+        try {
+            const response = await fetch('/Doctor/GetAvailability');
+            if (!response.ok) throw new Error('Failed to fetch availability');
+
+            const availabilityData = await response.json();
+            const dates = getNextWeekDates();
+
+            if (availabilityData && availabilityData.length > 0) {
+                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+                days.forEach(day => {
+                    const dateStr = dates[day].toISOString().split('T')[0];
+                    const dayData = availabilityData.find(a => a.dayOfWeek === day.toUpperCase() && a.validFrom === dateStr);
+
+                    const startSelect = document.querySelector(`select[name="${day}Start"]`);
+                    const endSelect = document.querySelector(`select[name="${day}End"]`);
+                    const unavailableCheckbox = document.querySelector(`input[name="${day}Unavailable"]`);
+
+                    if (dayData) {
+                        if (dayData.available) {
+                            startSelect.value = dayData.startTime;
+                            endSelect.value = dayData.endTime;
+                            unavailableCheckbox.checked = false;
+                        } else {
+                            unavailableCheckbox.checked = true;
+                            startSelect.disabled = true;
+                            endSelect.disabled = true;
+                        }
+                    }
+                });
+
+                // Set global availability
+                const hasAvailableDays = availabilityData.some(a => a.available);
+                document.getElementById('globalAvailable').checked = hasAvailableDays;
+            }
+        } catch (error) {
+            console.error('Error loading existing availability:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check for messages first
+        checkForMessages();
+
+        // Set doctor unique ID (you would get this from your session)
+        document.getElementById('doctorUniqueId').value = 'DOCTOR_UNIQUE_ID';
+
+        // Generate time slots and populate dropdowns
+        const timeSlots = generateTimeSlots();
+        const timeSelects = document.querySelectorAll('.time-select');
+        timeSelects.forEach(select => {
+            timeSlots.forEach(slot => {
+                const option = document.createElement('option');
+                option.value = slot.value;
+                option.textContent = slot.display;
+                select.appendChild(option);
+            });
+        });
+
+        // Set the dates for each day
+        const dates = getNextWeekDates();
+        for (const day in dates) {
+            const dateElement = document.getElementById(`${day}Date`);
+            if (dateElement) {
+                const options = { month: 'short', day: 'numeric' };
+                dateElement.textContent = dates[day].toLocaleDateString('en-US', options);
+            }
+        }
+
+        // Display the week range at the top
+        const weekRangeElement = document.getElementById('weekRange');
+        const startDate = dates['monday'];
+        const endDate = dates['sunday'];
+        const rangeOptions = { month: 'long', day: 'numeric' };
+        weekRangeElement.textContent = `Next Week: ${startDate.toLocaleDateString('en-US', rangeOptions)} - ${endDate.toLocaleDateString('en-US', rangeOptions)}`;
+
+        // Load existing availability
+        loadExistingAvailability();
+
+        // Handle unavailable checkboxes
+        const unavailableCheckboxes = document.querySelectorAll('.unavailable');
+        unavailableCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const day = this.getAttribute('data-day');
+                const startSelect = document.querySelector(`select[name="${day}Start"]`);
+                const endSelect = document.querySelector(`select[name="${day}End"]`);
+
+                if (this.checked) {
+                    startSelect.disabled = true;
+                    endSelect.disabled = true;
+                    startSelect.value = '';
+                    endSelect.value = '';
+                    document.getElementById(`${day}StartError`).textContent = '';
+                    document.getElementById(`${day}EndError`).textContent = '';
+                } else {
+                    startSelect.disabled = false;
+                    endSelect.disabled = false;
+                }
+            });
+        });
+
+        // Global availability toggle
+        const globalAvailable = document.getElementById('globalAvailable');
+        globalAvailable.addEventListener('change', function() {
+            const allSelects = document.querySelectorAll('.time-select');
+            const allCheckboxes = document.querySelectorAll('.unavailable');
+            const allErrorElements = document.querySelectorAll('.error');
+
+            if (!this.checked) {
+                allSelects.forEach(select => {
+                    select.disabled = true;
+                    select.value = '';
+                });
+                allCheckboxes.forEach(checkbox => {
+                    checkbox.disabled = true;
+                    checkbox.checked = true;
+                });
+                allErrorElements.forEach(error => {
+                    error.textContent = '';
+                });
+            } else {
+                allSelects.forEach(select => {
+                    select.disabled = false;
+                });
+                allCheckboxes.forEach(checkbox => {
+                    checkbox.disabled = false;
+                    checkbox.checked = false;
+                });
+            }
+        });
+
+        // Load Default Times button functionality
+        document.getElementById('loadDefaults').addEventListener('click', function() {
+            // Set all days except Sunday to 8:00 AM - 8:00 PM
+            const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+            weekdays.forEach(day => {
+                const startSelect = document.querySelector(`select[name="${day}Start"]`);
+                const endSelect = document.querySelector(`select[name="${day}End"]`);
+                const unavailableCheckbox = document.querySelector(`input[name="${day}Unavailable"]`);
+
+                // Set times
+                startSelect.value = '08:00';
+                endSelect.value = '20:00';
+
+                // Ensure the day is marked as available
+                unavailableCheckbox.checked = false;
+                startSelect.disabled = false;
+                endSelect.disabled = false;
+
+                // Clear any errors
+                document.getElementById(`${day}StartError`).textContent = '';
+                document.getElementById(`${day}EndError`).textContent = '';
+            });
+
+            // Set Sunday as unavailable
+            const sundayUnavailable = document.querySelector(`input[name="sundayUnavailable"]`);
+            const sundayStart = document.querySelector(`select[name="sundayStart"]`);
+            const sundayEnd = document.querySelector(`select[name="sundayEnd"]`);
+
+            sundayUnavailable.checked = true;
+            sundayStart.disabled = true;
+            sundayEnd.disabled = true;
+            sundayStart.value = '';
+            sundayEnd.value = '';
+
+            // Clear Sunday errors
+            document.getElementById('sundayStartError').textContent = '';
+            document.getElementById('sundayEndError').textContent = '';
+
+            // Ensure global availability is checked
+            globalAvailable.checked = true;
+
+            Swal.fire({
+                title: 'Default Times Loaded',
+                text: 'Weekdays set to 8:00 AM - 8:00 PM, Sunday marked as unavailable',
+                icon: 'success',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        });
+
+        // Convert time string to minutes for comparison
+        function timeToMinutes(timeStr) {
+            if (!timeStr) return 0;
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        // Validate time slots for a specific day
+        function validateDay(day) {
+            const unavailableCheckbox = document.querySelector(`input[name="${day}Unavailable"]`);
+            const startSelect = document.querySelector(`select[name="${day}Start"]`);
+            const endSelect = document.querySelector(`select[name="${day}End"]`);
+            const startError = document.getElementById(`${day}StartError`);
+            const endError = document.getElementById(`${day}EndError`);
+
+            // Reset errors
+            startError.textContent = '';
+            endError.textContent = '';
+
+            // Skip validation if day is unavailable or globally unavailable
+            if (unavailableCheckbox.checked || !globalAvailable.checked) {
+                return true;
+            }
+
+            // Check if times are selected
+            if (!startSelect.value || !endSelect.value) {
+                if (!startSelect.value) {
+                    startError.textContent = 'Start time is required';
+                }
+                if (!endSelect.value) {
+                    endError.textContent = 'End time is required';
+                }
+                return false;
+            }
+
+            // Convert times to minutes
+            const startMinutes = timeToMinutes(startSelect.value);
+            const endMinutes = timeToMinutes(endSelect.value);
+
+            // Check if end time is after start time
+            if (endMinutes <= startMinutes) {
+                endError.textContent = 'End time must be after start time';
+                return false;
+            }
+
+            // Check if duration is at least 2 hours (120 minutes)
+            const duration = endMinutes - startMinutes;
+            if (duration < 120) {
+                endError.textContent = 'Time slot must be at least 2 hours';
+                return false;
+            }
+
+            return true;
+        }
+
+        // Real-time validation when times are changed
+        const timeSelectsAll = document.querySelectorAll('.time-select');
+        timeSelectsAll.forEach(select => {
+            select.addEventListener('change', function() {
+                const day = this.getAttribute('data-day');
+                validateDay(day);
+            });
+        });
+
+        // Form submission validation
+        document.getElementById('availabilityForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Check global availability first
+            if (!document.getElementById('globalAvailable').checked) {
+                this.submit();
+                return;
+            }
+
+            let isValid = true;
+            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+            // Validate each day
+            days.forEach(day => {
+                if (!validateDay(day)) {
+                    isValid = false;
+                }
+            });
+
+            // Check if at least one day is available
+            if (isValid) {
+                const hasAvailableDay = days.some(day => {
+                    return !document.querySelector(`input[name="${day}Unavailable"]`).checked;
+                });
+
+                if (!hasAvailableDay) {
+                    Swal.fire({
+                        title: 'Validation Error',
+                        text: 'Please make at least one day available or uncheck "Available for appointments"',
+                        icon: 'error'
+                    });
+                    return;
+                }
+
+                this.submit();
+            } else {
+                Swal.fire({
+                    title: 'Validation Error',
+                    text: 'Please correct the errors in the form before submitting.',
+                    icon: 'error'
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

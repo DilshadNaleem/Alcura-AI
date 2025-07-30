@@ -6,6 +6,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "doctor")
@@ -77,9 +79,12 @@ public class Doctor {
     @Column(name = "first_login", nullable = false)
     private boolean firstLogin = true;
 
-    @Column(name = "doctor_availability", nullable = false)
+    @Column(name = "doctor_availability")
     private LocalTime doctor_availablility;
 
+
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DoctorAvailability> availabilities = new ArrayList<>();
     // Getters and Setters
 
 

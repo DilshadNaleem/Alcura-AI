@@ -242,13 +242,19 @@
         </div>
 
         <div class="sidebar">
-            <a href="/Doctor/FaceEnrollment">
+            <a href="/Doctor/Dashboard"  class="active">
                 <span class="material-symbols-sharp">grid_view</span>
                 <h3>Dashboard</h3>
             </a>
-            <a href="/Doctor/Edit" class="active">
+
+            <a href="/Doctor/FaceEnrollment">
+                <span class="material-symbols-sharp">face</span>
+                <h3>Face Enrollment</h3>
+            </a>
+
+            <a href="/Doctor/SetAvailability" >
                 <span class="material-symbols-sharp">person_outline</span>
-                <h3>Customers</h3>
+                <h3>Manage Availability</h3>
             </a>
             <a href="">
                 <span class="material-symbols-sharp">insights</span>
@@ -393,6 +399,8 @@
                 <span class="material-symbols-sharp active" id="light-mode">light_mode</span>
                 <span class="material-symbols-sharp" id="dark-mode">dark_mode</span>
             </div>
+
+            <a href="/Doctor/Edit" >
             <div class="profile">
                 <div class="info">
                     <p><b th:text="${adminName + ' ' + adminLastName}"></b></p>
@@ -403,6 +411,7 @@
                     <img th:src="@{/Doctor/Image}" alt="Admin profile photo"/>
                 </div>
             </div>
+            </a>
         </div>
 
         <!-- Recent Updates Section -->
