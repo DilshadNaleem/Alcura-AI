@@ -22,10 +22,10 @@
         /* ===== FORM CONTAINER ===== */
         .form-container {
             background-color: var(--clr-white);
-            padding: 2rem;
+            padding: 2rem 3rem;
             border-radius: 10px;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-            width: 700px;
+            width: 900px;
             margin: 2rem auto;
             transition: all 0.3s ease;
         }
@@ -39,10 +39,10 @@
 
         /* ===== FORM TITLE ===== */
         .form-title {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 600;
             color: var(--clr-primary);
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             text-align: center;
         }
 
@@ -51,18 +51,18 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
             position: relative;
             width: 100%;
         }
 
         .profile-image {
-            width: 120px;
-            height: 120px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             object-fit: cover;
             border: 4px solid var(--clr-primary);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
             transition: all 0.3s ease;
         }
@@ -80,9 +80,9 @@
         .image-upload-label {
             background-color: var(--clr-primary);
             color: white;
-            padding: 0.6rem 1.2rem;
+            padding: 0.8rem 1.5rem;
             border-radius: 30px;
-            font-size: 0.9rem;
+            font-size: 1rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -109,16 +109,16 @@
 
         /* ===== FORM INPUTS ===== */
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
             width: 100%;
-            max-width: 500px;
+            max-width: 700px;
         }
 
         label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 1rem;
             color: var(--clr-dark);
         }
 
@@ -126,11 +126,11 @@
         textarea,
         select {
             width: 100%;
-            height: 42px;
-            padding: 0.7rem 1rem;
+            height: 50px;
+            padding: 0.8rem 1.2rem;
             border: 1px solid #d1d5db;
             border-radius: 8px;
-            font-size: 0.95rem;
+            font-size: 1rem;
             transition: all 0.3s ease;
             background-color: var(--clr-white);
             color: var(--clr-dark);
@@ -140,10 +140,11 @@
         }
 
         textarea {
-            min-height: 100px;
+            min-height: 120px;
             height: auto;
             resize: vertical;
             line-height: 1.6;
+            padding: 1rem;
         }
 
         input[type="text"]:focus,
@@ -160,11 +161,17 @@
             cursor: not-allowed;
         }
 
+        /* Placeholder styling */
+        ::placeholder {
+            color: #9ca3af;
+            opacity: 1;
+        }
+
         /* ===== MAP CONTAINER ===== */
         #map-container {
             width: 100%;
-            max-width: 500px;
-            margin: 2rem 0;
+            max-width: 700px;
+            margin: 2.5rem 0;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -173,7 +180,7 @@
         }
 
         #map {
-            height: 400px;
+            height: 500px;
             width: 100%;
             z-index: 1;
         }
@@ -181,27 +188,27 @@
         /* Search container */
         #search-container {
             position: relative;
-            padding: 10px;
+            padding: 15px;
             background: #f8f9fa;
             border-bottom: 1px solid #e5e7eb;
         }
 
         #search {
             width: 100%;
-            padding: 8px 12px;
+            padding: 12px 15px;
             border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 1rem;
         }
 
         #suggestions {
             position: absolute;
-            width: calc(100% - 20px);
-            left: 10px;
+            width: calc(100% - 30px);
+            left: 15px;
             background-color: white;
             border: 1px solid #e5e7eb;
             border-top: none;
-            border-radius: 0 0 4px 4px;
+            border-radius: 0 0 6px 6px;
             z-index: 1000;
             display: none;
             max-height: 300px;
@@ -209,10 +216,11 @@
         }
 
         .suggestion-item {
-            padding: 10px;
+            padding: 12px 15px;
             cursor: pointer;
             color: #333;
             border-bottom: 1px solid #e5e7eb;
+            font-size: 0.95rem;
         }
 
         .suggestion-item:hover {
@@ -226,25 +234,26 @@
         /* Map controls */
         .map-controls {
             position: absolute;
-            top: 70px;
-            right: 10px;
+            top: 80px;
+            right: 15px;
             z-index: 1000;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
         }
 
         .map-btn {
-            width: 32px;
-            height: 32px;
+            width: 38px;
+            height: 38px;
             background: white;
             border: 1px solid #e5e7eb;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 1rem;
         }
 
         .map-btn:hover {
@@ -259,40 +268,42 @@
             transform: translate(-50%, -50%);
             background: rgba(0, 0, 0, 0.7);
             color: white;
-            padding: 10px 20px;
-            border-radius: 4px;
+            padding: 12px 24px;
+            border-radius: 6px;
             z-index: 1000;
             display: none;
+            font-size: 1rem;
         }
 
         .error-message {
             position: absolute;
-            top: 10px;
+            top: 15px;
             left: 50%;
             transform: translateX(-50%);
             background: #dc2626;
             color: white;
-            padding: 10px 20px;
-            border-radius: 4px;
+            padding: 12px 24px;
+            border-radius: 6px;
             z-index: 1000;
             display: none;
+            font-size: 1rem;
         }
 
         /* ===== FORM ACTIONS ===== */
         .form-actions {
-            margin-top: 2.5rem;
+            margin-top: 3rem;
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            gap: 1.5rem;
             width: 100%;
-            max-width: 500px;
+            max-width: 700px;
         }
 
         .btn {
-            padding: 0.7rem 1.5rem;
+            padding: 0.9rem 1.8rem;
             border: none;
             border-radius: 8px;
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 500;
             cursor: pointer;
             display: inline-flex;
@@ -300,7 +311,7 @@
             gap: 0.5rem;
             transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            height: 42px;
+            height: 50px;
             box-sizing: border-box;
         }
 
@@ -414,25 +425,40 @@
         }
 
         /* ===== RESPONSIVE ADJUSTMENTS ===== */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
             .form-container {
                 width: 90%;
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                width: 95%;
                 padding: 1.5rem;
             }
 
             .form-title {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
+            }
+
+            #map {
+                height: 400px;
             }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 576px) {
             .form-container {
-                width: 95%;
-                padding: 1rem;
+                padding: 1.2rem;
+            }
+
+            .form-title {
+                font-size: 1.6rem;
             }
 
             .form-actions {
                 flex-direction: column;
+                gap: 1rem;
             }
 
             .btn {
@@ -440,12 +466,13 @@
             }
 
             #map {
-                height: 300px;
+                height: 350px;
             }
         }
     </style>
 </head>
 <body>
+
 <div class="main-container">
     <!-- Sidebar Navigation -->
     <aside>
@@ -530,57 +557,58 @@
 
         <div class="form-container">
             <div class="form-content">
-                <h1 class="form-title">Edit Hospital</h1>
+                <h1 class="form-title">Edit Hospital Details</h1>
 
                 <form th:action="@{/Admin/EditHospital}" enctype="multipart/form-data" method="post" th:object="${admin}">
                     <input type="hidden" name="id" th:value="${hospital.uniqueId}" readonly>
 
                     <div class="profile-image-container">
                         <img th:if="${hospital.image != null}" th:src="@{'/Admin/ViewHospitalImage/' + ${hospital.uniqueId}}"
-                             alt="Profile Image" class="profile-image" id="profileImage">
+                             alt="Hospital Image" class="profile-image" id="profileImage">
                         <img th:unless="${hospital.image != null}" src="/path/to/default/image.jpg"
-                             alt="Profile Image" class="profile-image" id="profileImage">
+                             alt="Hospital Image" class="profile-image" id="profileImage">
                         <div class="image-upload">
                             <label for="image" class="image-upload-label">
-                                <i class="fas fa-camera"></i> Change Photo
+                                <i class="fas fa-camera"></i> Change Hospital Photo
                             </label>
                             <input type="file" id="image" name="image" accept="image/*" onchange="previewImage(this)">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Unique ID</label>
-                        <input type="text" name="uniqueId" th:value="${hospital.uniqueId}" readonly>
+                        <label>Hospital Unique ID</label>
+                        <input type="text" name="uniqueId" th:value="${hospital.uniqueId}" readonly placeholder="Hospital ID">
                     </div>
 
                     <div class="form-group">
                         <label>Hospital Name</label>
-                        <input type="text" id="name" name="fullname" th:value="${hospital.name}" required>
+                        <input type="text" id="name" name="fullname" th:value="${hospital.name}" required placeholder="Enter hospital name">
                     </div>
 
                     <div class="form-group">
-                        <label>Address</label>
-                        <input type="text" id="address" name="address" th:value="${hospital.Address}" required>
+                        <label>Hospital Address</label>
+                        <input type="text" id="address" name="address" th:value="${hospital.Address}" required placeholder="Enter hospital address">
                     </div>
 
                     <div class="form-group">
-                        <label>Email</label>
-                        <input type="text" name="email" id="email" th:value="${hospital.contactEmail}">
+                        <label>Contact Email</label>
+                        <input type="text" name="email" id="email" th:value="${hospital.contactEmail}" placeholder="Enter contact email">
                     </div>
 
                     <div class="form-group">
-                        <label>Description</label>
-                        <input type="text" name="description" th:value="${hospital.Description}">
+                        <label>Hospital Description</label>
+                        <textarea name="description" placeholder="Enter hospital description (facilities, specialties, etc.)" th:text="${hospital.Description}"></textarea>
                     </div>
 
                     <!-- === MAP SECTION === -->
                     <div class="form-group">
+                        <label>Hospital Location</label>
                         <div id="map-container">
                             <div class="loading" id="loading">Searching locations...</div>
                             <div class="error-message" id="error-message"></div>
 
                             <div id="search-container">
-                                <input type="text" id="search" placeholder="Search for a location in Sri Lanka...">
+                                <input type="text" id="search" placeholder="Search for hospital location in Sri Lanka...">
                                 <div id="suggestions"></div>
                             </div>
 
@@ -605,28 +633,34 @@
 
                     <div class="form-group">
                         <label>Latitude</label>
-                        <input type="text" id="latitude" name="latitude" th:value="${hospital.latitude}" readonly>
+                        <input type="text" id="latitude" name="latitude" th:value="${hospital.latitude}" readonly placeholder="Latitude coordinates">
                     </div>
 
                     <div class="form-group">
                         <label>Longitude</label>
-                        <input type="text" id="longitude" name="longitude" th:value="${hospital.longitude}" readonly>
+                        <input type="text" id="longitude" name="longitude" th:value="${hospital.longitude}" readonly placeholder="Longitude coordinates">
                     </div>
 
                     <div class="form-group">
                         <label>Contact Number</label>
-                        <input type="text" name="contactNumber" th:value="${hospital.phoneNumber}">
+                        <input type="text" name="contactNumber" th:value="${hospital.phoneNumber}" placeholder="Enter contact phone number">
                     </div>
 
                     <div class="form-group">
                         <label>Created Date</label>
-                        <input type="text" name="createdAt" th:value="${#temporals.format(hospital.createdAt, 'yyyy-MM-dd HH:mm')}" readonly>
+                        <input type="text" name="createdAt" th:value="${#temporals.format(hospital.createdAt, 'yyyy-MM-dd HH:mm')}" readonly placeholder="Creation date">
                     </div>
 
                     <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
-                        <button type="button" class="btn btn-warning" id="reset-button">Reset</button>
-                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="button" class="btn btn-warning" id="reset-button">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Update Hospital
+                        </button>
                     </div>
                 </form>
             </div>

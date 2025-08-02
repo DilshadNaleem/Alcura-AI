@@ -18,7 +18,7 @@ public class Appoinment
     @Column(name = "id")
     private int id;
 
-    @Column(name = "unique_id")
+    @Column(name = "unique_id", unique = true)
     private String unique_id;
 
     @JoinColumn(name = "doctor_id")
@@ -49,9 +49,42 @@ public class Appoinment
     @Column(name = "reschedule_reason")
     private String reschedule_reason;
 
+    @Column(name = "admin_notes")
+    private String adminNotes;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime created_at;
+
+    @Column(name = "appointment_price")
+    private Float appointmentPrice;
+
+    @Column(name = "appointment_id")
+    private String appointmentId;
+
+    public String getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(String appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public Float getAppointmentPrice() {
+        return appointmentPrice;
+    }
+
+    public void setAppointmentPrice(Float appointmentPrice) {
+        this.appointmentPrice = appointmentPrice;
+    }
+
+    public String getAdminNotes() {
+        return adminNotes;
+    }
+
+    public void setAdminNotes(String adminNotes) {
+        this.adminNotes = adminNotes;
+    }
 
     public int getId() {
         return id;

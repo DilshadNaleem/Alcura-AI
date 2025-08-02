@@ -1,6 +1,8 @@
 package com.Alcura.Customer.Service;
 
 import com.Alcura.Customer.Model.Appoinment;
+import com.Alcura.Customer.Model.Payment;
+import com.Alcura.Customer.Repository.PaymentRepo;
 import com.Alcura.Customer.Service.Interfaces.AppoinmentService;
 import com.Alcura.Customer.Service.Interfaces.AppointmentEmailService;
 import com.Alcura.Customer.Repository.AppointmentRepo;
@@ -14,16 +16,19 @@ public class AppointmentServiceImpl implements AppoinmentService {
     private final AppointmentId appointmentId;
     private final AppointmentEmailService appointmentEmailService;
     private final AppointmentRepo appointmentRepo;
+    private final PaymentRepo repo;
     private static final Logger logger = LoggerFactory.getLogger(AppointmentServiceImpl.class);
 
 
     public AppointmentServiceImpl(AppointmentRepo appointmentRepo,
                                   AppointmentId appointmentId,
-                                  AppointmentEmailService appointmentEmailService)
+                                  AppointmentEmailService appointmentEmailService,
+                                  PaymentRepo repo)
     {
         this.appointmentEmailService = appointmentEmailService;
         this.appointmentId = appointmentId;
         this.appointmentRepo = appointmentRepo;
+        this.repo = repo;
     }
     @Override
     public Appoinment createAppointment(
@@ -32,7 +37,9 @@ public class AppointmentServiceImpl implements AppoinmentService {
             String time,
             LocalDate date,
             String specialReason,
-            String customerEmail
+            String customerEmail,
+            Float AppointmentPrice,
+            String paymentMethod
     )
 
     {
@@ -46,6 +53,9 @@ public class AppointmentServiceImpl implements AppoinmentService {
         appointment.setSpecial_reasons(specialReason);
         appointment.setStatus("Pending");
         appointment.setCustomer_email(customerEmail);
+        appointment.setAppointmentPrice(AppointmentPrice);
+
+
 
         logger.debug("Appointment object created with details - Doctor: {}, Date: {}, Reason: {}",
                 doctorName, date, specialReason);
@@ -65,7 +75,7 @@ public class AppointmentServiceImpl implements AppoinmentService {
             Appoinment savedAppointment = appointmentRepo.save(appointment);
             logger.info("Appointment successfully saved with ID: {}", savedAppointment.getUnique_id());
 
-            appointmentEmailService.sendAppointmentConfirmaation(customerEmail, date,doctorName, uniqueId,time);
+            appointmentEmailService.sendAppointmentConfirmaation(customerEmail, date,doctorName, uniqueId,time,AppointmentPrice,paymentMethod);
             logger.info("Confirmation email sent to: {}", customerEmail);
 
             return savedAppointment;

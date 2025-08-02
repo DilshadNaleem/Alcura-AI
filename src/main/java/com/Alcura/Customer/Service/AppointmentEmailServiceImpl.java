@@ -28,7 +28,8 @@ public class AppointmentEmailServiceImpl implements AppointmentEmailService {
 
     @Override
     public void sendAppointmentConfirmaation(String toEmail, LocalDate appointmentDate,
-                                             String doctorName, String appointmentId, String time) {
+                                             String doctorName, String appointmentId, String time,
+                                             Float AppointmentPrice,String paymentMethod) {
         try {
             // Validate email
             validateEmail(toEmail);
@@ -47,14 +48,18 @@ public class AppointmentEmailServiceImpl implements AppointmentEmailService {
                             "Doctor: %s\n" +
                             "Date: %s\n" +
                             "at: %s\n" +
-                            "Appointment ID: %s\n\n" +
+                            "Appointment ID: %s\n" +
+                            "Price: Rs. %s\n" +
+                            "Payment Method: %s\n\n" +
                             "Thank you for choosing our service.\n\n" +
                             "Best regards,\n" +
                             "Alcura Team",
                     doctorName,
                     formattedDate,
                     time,
-                    appointmentId
+                    appointmentId,
+                    AppointmentPrice,
+                    paymentMethod
             );
 
             message.setText(emailContent);

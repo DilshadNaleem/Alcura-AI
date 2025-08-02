@@ -1,481 +1,791 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sri Lankan Hospital Location Picker</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/Admin/AdminNav.css">
   <style>
-    body {
-        font-family: Arial, sans-serif;
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-    h1 {
-        color: #1E8449;
-        text-align: center;
-    }
-    #map-container {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-    #search-container {
-        position: relative;
-        display: flex;
-        gap: 10px;
-    }
-    #location-input {
-        flex-grow: 1;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-    button {
-        padding: 8px 15px;
-        background-color: #1E8449;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    button:hover {
-        background-color: #186A3B;
-    }
-    #map {
-        height: 500px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-    #coordinates {
-        margin-top: 10px;
-        padding: 10px;
-        background-color: #f5f5f5;
-        border-radius: 4px;
-    }
-    .coordinates-label {
-        font-weight: bold;
-        color: #1E8449;
-    }
-    #suggestions {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: white;
-        border: 1px solid #ddd;
-        border-top: none;
-        border-radius: 0 0 4px 4px;
-        z-index: 1000;
-        max-height: 200px;
-        overflow-y: auto;
-        display: none;
-    }
-    .suggestion-item {
-        padding: 8px;
-        cursor: pointer;
-    }
-    .suggestion-item:hover {
-        background-color: #f0f0f0;
-    }
-    .suggestion-highlight {
-        font-weight: bold;
-        color: #1E8449;
-    }
-    .form-group {
-        margin-bottom: 15px;
-    }
-    label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-        color: #1E8449;
-    }
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    textarea {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-    textarea {
-        min-height: 100px;
-    }
-    #image-preview {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 10px;
-    }
-    .preview-image {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-    .remove-image {
-        position: absolute;
-        top: -5px;
-        right: -5px;
-        background: red;
-        color: white;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        text-align: center;
-        line-height: 20px;
-        cursor: pointer;
-    }
-    .image-container {
-        position: relative;
-    }
-    #submit-btn {
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: #1E8449;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    #submit-btn:hover {
-        background-color: #186A3B;
-    }
+
+    /* Main container styles */
+.hospital-form-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Map container styles */
+#map-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+#search-container {
+  position: relative;
+  display: flex;
+  gap: 10px;
+}
+
+#location-input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+#search-button {
+  padding: 10px 20px;
+  background-color: #1E8449;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#search-button:hover {
+  background-color: #186A3B;
+}
+
+#map {
+  height: 500px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+}
+
+#coordinates {
+  margin-top: 10px;
+  padding: 12px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.coordinates-label {
+  font-weight: bold;
+  color: #1E8449;
+  margin-right: 8px;
+}
+
+/* Suggestions dropdown */
+#suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+}
+
+.suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.suggestion-item:hover {
+  background-color: #f0f0f0;
+}
+
+.suggestion-highlight {
+  font-weight: bold;
+  color: #1E8449;
+}
+
+/* Form styles */
+#hospital-form {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #1E8449;
+  font-size: 15px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Image preview styles */
+#image-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.image-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.remove-image {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Submit button */
+#submit-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background-color: #1E8449;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+#submit-btn:hover {
+  background-color: #186A3B;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hospital-form-container {
+    padding: 15px;
+  }
+
+  #map {
+    height: 400px;
+  }
+
+  #hospital-form {
+    padding: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .image-container {
+    width: 100px;
+    height: 100px;
+  }
+}
+.main-class {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hospital-form-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #1E8449;
+}
+
+    /* Dark Theme Variables */
+.dark-theme-variables {
+  --color-background: #181a1e;
+  --color-white: #202528;
+  --color-dark: #edeffd;
+  --color-dark-variant: #a3bdcc;
+  --color-light: rgba(0, 0, 0, 0.4);
+  --box-shadow: 0 2rem 3rem var(--color-light);
+}
+
+.dark-theme-variables .main-class,
+.dark-theme-variables .hospital-form-container {
+  background-color: var(--color-white);
+  color: var(--color-dark);
+}
+
+.dark-theme-variables h1 {
+  color: #4ade80;
+}
+
+.dark-theme-variables #hospital-form {
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow);
+}
+
+.dark-theme-variables .form-group label {
+  color: #4ade80;
+}
+
+.dark-theme-variables .form-group input[type="text"],
+.dark-theme-variables .form-group input[type="email"],
+.dark-theme-variables .form-group input[type="tel"],
+.dark-theme-variables .form-group textarea {
+  background-color: var(--color-background);
+  color: var(--color-dark);
+  border-color: var(--color-light);
+}
+
+.dark-theme-variables #coordinates {
+  background-color: var(--color-background);
+  color: var(--color-dark);
+}
+
+.dark-theme-variables .coordinates-label {
+  color: #4ade80;
+}
+
+.dark-theme-variables #suggestions {
+  background-color: var(--color-background);
+  border-color: var(--color-light);
+}
+
+.dark-theme-variables .suggestion-item {
+  color: var(--color-dark);
+}
+
+.dark-theme-variables .suggestion-item:hover {
+  background-color: var(--color-white);
+}
+
+.dark-theme-variables #image-preview {
+  background-color: var(--color-background);
+}
+
+.dark-theme-variables .preview-image {
+  border-color: var(--color-light);
+}
+
+/* Map specific dark theme adjustments */
+.dark-theme-variables .leaflet-container {
+  background-color: var(--color-background);
+}
+
+.dark-theme-variables .leaflet-control {
+  background-color: var(--color-white);
+  color: var(--color-dark);
+}
+
+.dark-theme-variables .leaflet-bar a {
+  background-color: var(--color-white);
+  color: var(--color-dark);
+  border-bottom-color: var(--color-light);
+}
+
+.dark-theme-variables .leaflet-bar a:hover {
+  background-color: var(--color-background);
+}
+
+    /* Add this to your existing CSS */
+.dark-theme-variables .right {
+  background: var(--color-background);
+  color: var(--color-dark);
+}
+
+.dark-theme-variables .right .top {
+  background: var(--color-white);
+  color: var(--color-dark);
+}
+
+.dark-theme-variables .right .top button {
+  color: var(--color-dark);
+}
+
+/* Update your existing dark theme variables to include these */
+.dark-theme-variables {
+  --color-background: #181a1e;
+  --color-white: #202528;
+  --color-dark: #edeffd;
+  --color-dark-variant: #a3bdcc;
+  --color-light: rgba(0, 0, 0, 0.4);
+  --box-shadow: 0 2rem 3rem var(--color-light);
+}
+
+/* Make sure the theme toggler is also styled for dark mode */
+.dark-theme-variables .theme-toggler span:first-child {
+  background: var(--color-light);
+  color: var(--color-dark);
+}
+
+.dark-theme-variables .theme-toggler span:last-child {
+  background: #4ade80;
+  color: white;
+}
   </style>
 </head>
 <body>
-<h1>Sri Lankan Hospital Location Picker</h1>
 
-<div id="map-container">
-  <div id="search-container">
-    <input type="text" id="location-input" placeholder="Search for a hospital in Sri Lanka" autocomplete="off">
-    <button id="search-button">Search</button>
-    <div id="suggestions"></div>
-  </div>
 
-  <div id="map"></div>
-  <div id="coordinates">
-    <span class="coordinates-label">Selected Coordinates:</span>
-    <span id="lat-lng-display">Click on the map to select a location</span>
+<div class="main-container">
+  <!-- Sidebar Navigation -->
+  <aside>
+    <div class="top">
+      <div class="logo">
+        <h2>A <span class="danger">lcura</span></h2>
+      </div>
+      <div class="close" id="close_btn">
+        <span class="material-symbols-sharp">close</span>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <a href="/Admin/Dashboard">
+        <span class="material-symbols-sharp">dashboard</span>
+        <h3>Dashboard</h3>
+      </a>
+      <a href="/Admin/ManageCustomers">
+        <span class="material-symbols-sharp">group</span>
+        <h3>Customers</h3>
+      </a>
+      <a href="/Admin/DiseaseModelDashboard">
+        <span class="material-symbols-sharp">monitor_heart</span>
+        <h3>Disease Model</h3>
+      </a>
+      <a href="/Admin/MedicineModelDashboard">
+        <span class="material-symbols-sharp">medication</span>
+        <h3>Medicine Model</h3>
+      </a>
+      <a th:href="@{/Admin/SOS}">
+        <span class="material-symbols-sharp">emergency</span>
+        <h3>Emergency Alerts</h3>
+        <span class="msg_count notification-badge">0</span>
+      </a>
+      <a th:href="@{/Admin/FaceEnrollment}">
+        <span class="material-symbols-sharp">face</span>
+        <h3>Face Enrollment</h3>
+      </a>
+      <a href="/Admin/Manage_Doctors">
+        <span class="material-symbols-sharp">medical_services</span>
+        <h3>Doctors</h3>
+      </a>
+      <a href="/Admin/Feedbacks">
+        <span class="material-symbols-sharp">feedback</span>
+        <h3>Reports</h3>
+      </a>
+      <a href="/Admin/Manage_Appointments">
+        <span class="material-symbols-sharp">event_available</span>
+        <h3>Appointments</h3>
+      </a>
+      <a href="/Admin/ManageHospitals" class="active">
+        <span class="material-symbols-sharp">local_hospital</span>
+        <h3>Hospitals</h3>
+      </a>
+      <a href="#">
+        <span class="material-symbols-sharp">settings</span>
+        <h3>Settings</h3>
+      </a>
+      <a href="#">
+        <span class="material-symbols-sharp">add_circle</span>
+        <h3>Add Product</h3>
+      </a>
+      <a href="#">
+        <span class="material-symbols-sharp">logout</span>
+        <h3>Logout</h3>
+      </a>
+    </div>
+  </aside>
+
+  <div class="right">
+    <div class="top">
+      <button id="menu_bar" aria-label="Toggle menu">
+        <span class="material-symbols-sharp">menu</span>
+      </button>
+    </div>
+
+    <!-- Theme toggle button -->
+    <div class="theme-toggler">
+      <span class="material-symbols-sharp active">light_mode</span>
+      <span class="material-symbols-sharp">dark_mode</span>
+    </div>
+
+    <div class="main-class">
+    <h1>Sri Lankan Hospital Location Picker</h1>
+<div class="hospital-form-container">
+    <div id="map-container">
+      <div id="search-container">
+        <input type="text" id="location-input" placeholder="Search for a hospital in Sri Lanka" autocomplete="off">
+        <button id="search-button">Search</button>
+        <div id="suggestions"></div>
+      </div>
+
+      <div id="map"></div>
+      <div id="coordinates">
+        <span class="coordinates-label">Selected Coordinates:</span>
+        <span id="lat-lng-display">Click on the map to select a location</span>
+      </div>
+    </div>
+
+    <form id="hospital-form" action="/Admin/AddHospital" method="post" enctype="multipart/form-data">
+      <input type="hidden" id="latitude" name="latitude">
+      <input type="hidden" id="longitude" name="longitude">
+
+      <div class="form-group">
+        <label for="hospital-name">Hospital Name</label>
+        <input type="text" id="hospital-name" name="hospitalName" required>
+      </div>
+
+      <div class="form-group">
+        <label for="hospital-address">Address</label>
+        <textarea id="hospital-address" name="address" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="hospital-email">Email</label>
+        <input type="email" id="hospital-email" name="email">
+      </div>
+
+      <div class="form-group">
+        <label for="hospital-phone">Phone Number</label>
+        <input type="tel" id="hospital-phone" name="phone">
+      </div>
+
+      <div class="form-group">
+        <label for="hospital-description">Description</label>
+        <textarea id="hospital-description" name="description"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="hospital-images">Upload Images</label>
+        <input type="file" id="hospital-images" name="images" accept="image/*" multiple>
+        <div id="image-preview"></div>
+      </div>
+
+      <button type="submit" id="submit-btn">Add Hospital</button>
+    </form>
+</div>
+    </div>
   </div>
 </div>
-
-<form id="hospital-form" action="/Admin/AddHospital" method="post" enctype="multipart/form-data">
-  <input type="hidden" id="latitude" name="latitude">
-  <input type="hidden" id="longitude" name="longitude">
-
-  <div class="form-group">
-    <label for="hospital-name">Hospital Name</label>
-    <input type="text" id="hospital-name" name="hospitalName" required>
-  </div>
-
-  <div class="form-group">
-    <label for="hospital-address">Address</label>
-    <textarea id="hospital-address" name="address" required></textarea>
-  </div>
-
-  <div class="form-group">
-    <label for="hospital-email">Email</label>
-    <input type="email" id="hospital-email" name="email">
-  </div>
-
-  <div class="form-group">
-    <label for="hospital-phone">Phone Number</label>
-    <input type="tel" id="hospital-phone" name="phone">
-  </div>
-
-  <div class="form-group">
-    <label for="hospital-description">Description</label>
-    <textarea id="hospital-description" name="description"></textarea>
-  </div>
-
-  <div class="form-group">
-    <label for="hospital-images">Upload Images</label>
-    <input type="file" id="hospital-images" name="images" accept="image/*">
-    <div id="image-preview"></div>
-  </div>
-
-  <button type="submit" id="submit-btn">Add Hospital</button>
-</form>
-
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="/Admin/AdminNav.js"></script>
 <script>
-  // Initialize the map centered on Sri Lanka
   const map = L.map('map').setView([7.8731, 80.7718], 8);
 
-  // Add OpenStreetMap tiles
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
+// Add OpenStreetMap tiles
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
 
-  // Add a marker that can be dragged
-  let marker = null;
-  let debounceTimer;
+// Add a marker that can be dragged
+let marker = null;
+let debounceTimer;
 
-  // Function to update coordinates display and hidden fields
-  function updateCoordinates(lat, lng) {
-      document.getElementById('lat-lng-display').textContent = `Latitude: ${lat.toFixed(6)}, Longitude: ${lng.toFixed(6)}`;
-      document.getElementById('latitude').value = lat.toFixed(6);
-      document.getElementById('longitude').value = lng.toFixed(6);
-  }
+// Function to update coordinates display and hidden fields
+function updateCoordinates(lat, lng) {
+    document.getElementById('lat-lng-display').textContent = `Latitude: ${lat.toFixed(6)}, Longitude: ${lng.toFixed(6)}`;
+    document.getElementById('latitude').value = lat.toFixed(6);
+    document.getElementById('longitude').value = lng.toFixed(6);
+}
 
-  // Handle map clicks
-  map.on('click', function(e) {
-      const { lat, lng } = e.latlng;
+// Handle map clicks
+map.on('click', function(e) {
+    const { lat, lng } = e.latlng;
 
-      // Remove existing marker if any
-      if (marker) {
-          map.removeLayer(marker);
-      }
+    // Remove existing marker if any
+    if (marker) {
+        map.removeLayer(marker);
+    }
 
-      // Add new marker
-      marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+    // Add new marker
+    marker = L.marker([lat, lng], { draggable: true }).addTo(map);
 
-      // Update coordinates display
-      updateCoordinates(lat, lng);
+    // Update coordinates display
+    updateCoordinates(lat, lng);
 
-      // Handle marker drag
-      marker.on('dragend', function(e) {
-          const newLatLng = marker.getLatLng();
-          updateCoordinates(newLatLng.lat, newLatLng.lng);
-      });
-  });
+    // Handle marker drag
+    marker.on('dragend', function(e) {
+        const newLatLng = marker.getLatLng();
+        updateCoordinates(newLatLng.lat, newLatLng.lng);
+    });
+});
 
-  // Function to display search suggestions
-  function showSuggestions(suggestions) {
-      const suggestionsContainer = document.getElementById('suggestions');
-      suggestionsContainer.innerHTML = '';
+// Function to display search suggestions
+function showSuggestions(suggestions) {
+    const suggestionsContainer = document.getElementById('suggestions');
+    suggestionsContainer.innerHTML = '';
 
-      if (suggestions.length === 0) {
-          suggestionsContainer.style.display = 'none';
-          return;
-      }
+    if (suggestions.length === 0) {
+        suggestionsContainer.style.display = 'none';
+        return;
+    }
 
-      // Filter for hospitals in Sri Lanka
-      const hospitalSuggestions = suggestions.filter(item =>
-          item.type === 'hospital' ||
-          item.class === 'amenity' ||
-          item.display_name.toLowerCase().includes('hospital') ||
-          item.display_name.toLowerCase().includes('clinic')
-      );
+    // Filter for hospitals in Sri Lanka
+    const hospitalSuggestions = suggestions.filter(item =>
+        item.type === 'hospital' ||
+        item.class === 'amenity' ||
+        item.display_name.toLowerCase().includes('hospital') ||
+        item.display_name.toLowerCase().includes('clinic')
+    );
 
-      if (hospitalSuggestions.length === 0) {
-          suggestionsContainer.style.display = 'none';
-          return;
-      }
+    if (hospitalSuggestions.length === 0) {
+        suggestionsContainer.style.display = 'none';
+        return;
+    }
 
-      hospitalSuggestions.forEach(suggestion => {
-          const div = document.createElement('div');
-          div.className = 'suggestion-item';
-          div.textContent = suggestion.display_name;
+    hospitalSuggestions.forEach(suggestion => {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item';
+        div.textContent = suggestion.display_name;
 
-          // Highlight the part that matches the search query
-          const query = document.getElementById('location-input').value.toLowerCase();
-          const index = suggestion.display_name.toLowerCase().indexOf(query);
-          if (index >= 0) {
-              const before = suggestion.display_name.substring(0, index);
-              const match = suggestion.display_name.substring(index, index + query.length);
-              const after = suggestion.display_name.substring(index + query.length);
+        // Highlight the part that matches the search query
+        const query = document.getElementById('location-input').value.toLowerCase();
+        const index = suggestion.display_name.toLowerCase().indexOf(query);
+        if (index >= 0) {
+            const before = suggestion.display_name.substring(0, index);
+            const match = suggestion.display_name.substring(index, index + query.length);
+            const after = suggestion.display_name.substring(index + query.length);
 
-              div.innerHTML = `${before}<span class="suggestion-highlight">${match}</span>${after}`;
-          }
+            div.innerHTML = `${before}<span class="suggestion-highlight">${match}</span>${after}`;
+        }
 
-          div.addEventListener('click', function() {
-              document.getElementById('location-input').value = suggestion.display_name;
-              suggestionsContainer.style.display = 'none';
-              goToLocation(suggestion.lat, suggestion.lon, suggestion.display_name);
+        div.addEventListener('click', function() {
+            document.getElementById('location-input').value = suggestion.display_name;
+            suggestionsContainer.style.display = 'none';
+            goToLocation(suggestion.lat, suggestion.lon, suggestion.display_name);
 
-              // Try to extract hospital information
-              extractHospitalInfo(suggestion);
-          });
+            // Try to extract hospital information
+            extractHospitalInfo(suggestion);
+        });
 
-          suggestionsContainer.appendChild(div);
-      });
+        suggestionsContainer.appendChild(div);
+    });
 
-      suggestionsContainer.style.display = 'block';
-  }
+    suggestionsContainer.style.display = 'block';
+}
 
-  // Function to extract hospital information from the suggestion
-  function extractHospitalInfo(suggestion) {
-      // Set the hospital name
-      const hospitalName = suggestion.display_name.split(',')[0];
-      document.getElementById('hospital-name').value = hospitalName;
+// Function to extract hospital information from the suggestion
+function extractHospitalInfo(suggestion) {
+    // Set the hospital name
+    const hospitalName = suggestion.display_name.split(',')[0];
+    document.getElementById('hospital-name').value = hospitalName;
 
-      // Set the address
-      document.getElementById('hospital-address').value = suggestion.display_name;
+    // Set the address
+    document.getElementById('hospital-address').value = suggestion.display_name;
 
-      // Try to get more details using Nominatim's details API
-      if (suggestion.osm_id) {
-          const osmType = suggestion.osm_type.charAt(0); // 'n' for node, 'w' for way, 'r' for relation
-          fetch(`https://nominatim.openstreetmap.org/details?osmtype=${osmType}&osmid=${suggestion.osm_id}&format=json`)
-              .then(response => response.json())
-              .then(data => {
-                  // Try to find email and phone from tags
-                  if (data.tags) {
-                      if (data.tags.email) {
-                          document.getElementById('hospital-email').value = data.tags.email;
-                      }
-                      if (data.tags.phone) {
-                          document.getElementById('hospital-phone').value = data.tags.phone;
-                      }
-                  }
-              })
-              .catch(error => {
-                  console.error('Error fetching hospital details:', error);
-              });
-      }
-  }
+    // Try to get more details using Nominatim's details API
+    if (suggestion.osm_id) {
+        const osmType = suggestion.osm_type.charAt(0); // 'n' for node, 'w' for way, 'r' for relation
+        fetch(`https://nominatim.openstreetmap.org/details?osmtype=${osmType}&osmid=${suggestion.osm_id}&format=json`)
+            .then(response => response.json())
+            .then(data => {
+                // Try to find email and phone from tags
+                if (data.tags) {
+                    if (data.tags.email) {
+                        document.getElementById('hospital-email').value = data.tags.email;
+                    }
+                    if (data.tags.phone) {
+                        document.getElementById('hospital-phone').value = data.tags.phone;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching hospital details:', error);
+            });
+    }
+}
 
-  // Function to handle going to a location
-  function goToLocation(lat, lon, displayName) {
-      // Remove existing marker if any
-      if (marker) {
-          map.removeLayer(marker);
-      }
+// Function to handle going to a location
+function goToLocation(lat, lon, displayName) {
+    // Remove existing marker if any
+    if (marker) {
+        map.removeLayer(marker);
+    }
 
-      // Add new marker and center map
-      marker = L.marker([lat, lon], { draggable: true }).addTo(map);
-      map.setView([lat, lon], 16);
+    // Add new marker and center map
+    marker = L.marker([lat, lon], { draggable: true }).addTo(map);
+    map.setView([lat, lon], 16);
 
-      // Update coordinates display
-      updateCoordinates(parseFloat(lat), parseFloat(lon));
+    // Update coordinates display
+    updateCoordinates(parseFloat(lat), parseFloat(lon));
 
-      // Handle marker drag
-      marker.on('dragend', function(e) {
-          const newLatLng = marker.getLatLng();
-          updateCoordinates(newLatLng.lat, newLatLng.lng);
-      });
-  }
+    // Handle marker drag
+    marker.on('dragend', function(e) {
+        const newLatLng = marker.getLatLng();
+        updateCoordinates(newLatLng.lat, newLatLng.lng);
+    });
+}
 
-  // Function to fetch search suggestions
-  function fetchSuggestions(query) {
-      if (query.length < 3) {
-          document.getElementById('suggestions').style.display = 'none';
-          return;
-      }
+// Function to fetch search suggestions
+function fetchSuggestions(query) {
+    if (query.length < 3) {
+        document.getElementById('suggestions').style.display = 'none';
+        return;
+    }
 
-      // Use OpenStreetMap Nominatim API for search suggestions
-      fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Sri Lanka')}&format=json&limit=10`)
-          .then(response => response.json())
-          .then(data => {
-              showSuggestions(data);
-          })
-          .catch(error => {
-              console.error('Error fetching suggestions:', error);
-              document.getElementById('suggestions').style.display = 'none';
-          });
-  }
+    // Use OpenStreetMap Nominatim API for search suggestions
+    fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Sri Lanka')}&format=json&limit=10`)
+        .then(response => response.json())
+        .then(data => {
+            showSuggestions(data);
+        })
+        .catch(error => {
+            console.error('Error fetching suggestions:', error);
+            document.getElementById('suggestions').style.display = 'none';
+        });
+}
 
-  // Handle location search input
-  document.getElementById('location-input').addEventListener('input', function(e) {
-      clearTimeout(debounceTimer);
-      const query = e.target.value.trim();
+// Handle location search input
+document.getElementById('location-input').addEventListener('input', function(e) {
+    clearTimeout(debounceTimer);
+    const query = e.target.value.trim();
 
-      if (query) {
-          debounceTimer = setTimeout(() => {
-              fetchSuggestions(query);
-          }, 300);
-      } else {
-          document.getElementById('suggestions').style.display = 'none';
-      }
-  });
+    if (query) {
+        debounceTimer = setTimeout(() => {
+            fetchSuggestions(query);
+        }, 300);
+    } else {
+        document.getElementById('suggestions').style.display = 'none';
+    }
+});
 
-  // Handle location search button click
-  document.getElementById('search-button').addEventListener('click', function() {
-      const location = document.getElementById('location-input').value.trim();
-      document.getElementById('suggestions').style.display = 'none';
+// Handle location search button click
+document.getElementById('search-button').addEventListener('click', function() {
+    const location = document.getElementById('location-input').value.trim();
+    document.getElementById('suggestions').style.display = 'none';
 
-      if (!location) return;
+    if (!location) return;
 
-      // Use OpenStreetMap Nominatim API for geocoding
-      fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location + ', Sri Lanka')}&format=json&limit=1`)
-          .then(response => response.json())
-          .then(data => {
-              if (data.length > 0) {
-                  goToLocation(parseFloat(data[0].lat), parseFloat(data[0].lon), data[0].display_name);
-                  extractHospitalInfo(data[0]);
-              } else {
-                  alert('Hospital not found in Sri Lanka. Please try a different name.');
-              }
-          })
-          .catch(error => {
-              console.error('Error searching location:', error);
-              alert('Error searching for location. Please try again.');
-          });
-  });
+    // Use OpenStreetMap Nominatim API for geocoding
+    fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location + ', Sri Lanka')}&format=json&limit=1`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0) {
+                goToLocation(parseFloat(data[0].lat), parseFloat(data[0].lon), data[0].display_name);
+                extractHospitalInfo(data[0]);
+            } else {
+                alert('Hospital not found in Sri Lanka. Please try a different name.');
+            }
+        })
+        .catch(error => {
+            console.error('Error searching location:', error);
+            alert('Error searching for location. Please try again.');
+        });
+});
 
-  // Allow pressing Enter to search
-  document.getElementById('location-input').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-          document.getElementById('suggestions').style.display = 'none';
-          document.getElementById('search-button').click();
-      }
-  });
+// Allow pressing Enter to search
+document.getElementById('location-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        document.getElementById('suggestions').style.display = 'none';
+        document.getElementById('search-button').click();
+    }
+});
 
-  // Close suggestions when clicking outside
-  document.addEventListener('click', function(e) {
-      if (!e.target.closest('#search-container')) {
-          document.getElementById('suggestions').style.display = 'none';
-      }
-  });
+// Close suggestions when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#search-container')) {
+        document.getElementById('suggestions').style.display = 'none';
+    }
+});
 
-  // Handle image upload preview
-  document.getElementById('hospital-images').addEventListener('change', function(e) {
-      const files = e.target.files;
-      const previewContainer = document.getElementById('image-preview');
-      previewContainer.innerHTML = '';
+// Handle image upload preview
+document.getElementById('hospital-images').addEventListener('change', function(e) {
+    const files = e.target.files;
+    const previewContainer = document.getElementById('image-preview');
+    previewContainer.innerHTML = '';
 
-      for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          if (!file.type.match('image.*')) continue;
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (!file.type.match('image.*')) continue;
 
-          const reader = new FileReader();
-          reader.onload = function(e) {
-              const container = document.createElement('div');
-              container.className = 'image-container';
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const container = document.createElement('div');
+            container.className = 'image-container';
 
-              const img = document.createElement('img');
-              img.src = e.target.result;
-              img.className = 'preview-image';
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'preview-image';
 
-              const removeBtn = document.createElement('span');
-              removeBtn.className = 'remove-image';
-              removeBtn.innerHTML = '×';
-              removeBtn.onclick = function() {
-                  container.remove();
-                  // TODO: Handle removing the file from the FileList
-              };
+            const removeBtn = document.createElement('span');
+            removeBtn.className = 'remove-image';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = function() {
+                container.remove();
+                // TODO: Handle removing the file from the FileList
+            };
 
-              container.appendChild(img);
-              container.appendChild(removeBtn);
-              previewContainer.appendChild(container);
-          }
-          reader.readAsDataURL(file);
-      }
-  });
+            container.appendChild(img);
+            container.appendChild(removeBtn);
+            previewContainer.appendChild(container);
+        }
+        reader.readAsDataURL(file);
+    }
+});
 
-  // Form submission handler
-  document.getElementById('hospital-form').addEventListener('submit', function(e) {
-      if (!document.getElementById('latitude').value || !document.getElementById('longitude').value) {
-          e.preventDefault();
-          alert('Please select a location on the map by clicking on it.');
-          return;
-      }
+// Form submission handler
+document.getElementById('hospital-form').addEventListener('submit', function(e) {
+    if (!document.getElementById('latitude').value || !document.getElementById('longitude').value) {
+        e.preventDefault();
+        alert('Please select a location on the map by clicking on it.');
+        return;
+    }
 
-      if (!document.getElementById('hospital-name').value) {
-          e.preventDefault();
-          alert('Please enter a hospital name.');
-          return;
-      }
+    if (!document.getElementById('hospital-name').value) {
+        e.preventDefault();
+        alert('Please enter a hospital name.');
+        return;
+    }
 
-      // You can add more validation here if needed
-  });
+    // You can add more validation here if needed
+});
 </script>
 </body>
 </html>

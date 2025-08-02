@@ -1298,6 +1298,58 @@
                        font-size: 14px;
                    }
                }
+
+        .price-display {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2ecc71;
+    padding: 8px 0;
+}
+
+/* Payment Modal Styles */
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.payment-method {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.payment-method:hover {
+    border-color: #3498db;
+    background-color: #f8f9fa;
+}
+
+.payment-method i {
+    font-size: 24px;
+    margin-right: 15px;
+}
+
+.payment-method#creditCardMethod i {
+    color: #2c3e50;
+}
+
+.payment-method#paypalMethod i {
+    color: #003087;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
     </style>
 </head>
 <body>
@@ -1443,11 +1495,18 @@
                     <h3 class="doctor-name" th:text="${'Dr. ' + doctor.first_name + ' ' + doctor.last_name}"></h3>
                     <div class="doctor-specialty" th:text="${doctor.specialist} + ' • ' + ${doctor.experience} + ' years experience'"></div>
                     <p class="doctor-bio" th:text="${doctor.special_info}"></p>
+                    <p class="doctor-bio" th:if="${doctor.price != null and doctor.price > 0}"
+                       th:text="'Rs. ' + ${#numbers.formatDecimal(doctor.price, 1, 2)}">
+                    </p>
+                    <p class="doctor-bio" th:unless="${doctor.price != null and doctor.price > 0}">
+                        Price not available
+                    </p>
                     <div class="doctor-actions">
                         <a th:href="@{'/Customer/Appoinment/doctorProfile/' + ${doctor.unique_id}}" class="btn btn-profile">Profile</a>
                         <button type="button" class="btn btn-book book-btn"
                                 th:attr="data-doctor-id=${doctor.unique_id},
-                                     data-doctor-name=${'Dr. ' + doctor.first_name + ' ' + doctor.last_name}">
+                                     data-doctor-name=${'Dr. ' + doctor.first_name + ' ' + doctor.last_name},
+                                     data-doctor-price=${'Rs. ' + doctor.price}">
                             Book Now
                         </button>
                     </div>
@@ -1494,6 +1553,10 @@
                         <textarea id="specialReasons" name="specialReasons" rows="3"
                                   placeholder="Please mention any special requirements or reasons for your appointment"></textarea>
                     </div>
+                    <div class="form-group">
+                        <label id="AppointmentPrice">Appointment Price</label>
+                        <div id="appointmentPriceDisplay" class="price-display"></div>
+                    </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-close">Cancel</button>
@@ -1517,243 +1580,479 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Payment Method</h3>
+                <span class="close-payment-btn">&times;</span>
+            </div>
+
+            <div class="payment-options">
+                <div class="payment-method" id="creditCardMethod">
+                    <i class='bx bx-credit-card'></i>
+                    <span>Credit/Debit Card</span>
+                </div>
+                <div class="payment-method" id="paypalMethod">
+                    <i class='bx bxl-paypal'></i>
+                    <span>PayPal</span>
+                </div>
+            </div>
+
+            <!-- Credit Card Form (initially hidden) -->
+            <div id="creditCardForm" style="display: none;">
+                <form id="cardPaymentForm">
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardName">Name on Card</label>
+                        <input type="text" id="cardName" name="cardName" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expiryDate">Expiry Date</label>
+                            <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" name="cvv" placeholder="123" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-confirm">Pay Now</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- PayPal Button (initially hidden) -->
+            <div id="paypalButtonContainer" style="display: none;">
+                <div id="paypal-button"></div>
+                <button type="button" class="btn btn-close" id="backToPaymentMethods">Back</button>
+            </div>
+        </div>
+    </div>
+
 </section>
 
 <script>
+
     document.addEventListener('DOMContentLoaded', function() {
-        const modal = document.getElementById('bookingModal');
-        const bookButtons = document.querySelectorAll('.book-btn');
-        const closeBtn = document.querySelector('.close-btn');
-        const cancelBtn = document.querySelector('.btn-close');
-        const bookingForm = document.getElementById('appointmentForm');
-        const bookingFormContainer = document.getElementById('bookingFormContainer');
-        const confirmationMessage = document.getElementById('confirmationMessage');
-        const closeAfterBookingBtn = document.getElementById('closeAfterBooking');
-        const appointmentDateInput = document.getElementById('appointmentDate');
-        const timeSlotsContainer = document.getElementById('timeSlotsContainer');
-        const selectedTimeSlotInput = document.getElementById('selectedTimeSlot');
-        const confirmBookingBtn = document.getElementById('confirmBookingBtn');
-        const appointmentDateLabel = document.getElementById('appointmentDateLabel');
-        const dateError = document.getElementById('dateError');
-        const timeSlotError = document.getElementById('timeSlotError');
-        const loadingSpinner = document.getElementById('loadingSpinner');
+    // Modal elements
+    const modal = document.getElementById('bookingModal');
+    const bookButtons = document.querySelectorAll('.book-btn');
+    const closeBtn = document.querySelector('.close-btn');
+    const cancelBtn = document.querySelector('.btn-close');
+    const bookingForm = document.getElementById('appointmentForm');
+    const bookingFormContainer = document.getElementById('bookingFormContainer');
+    const confirmationMessage = document.getElementById('confirmationMessage');
+    const closeAfterBookingBtn = document.getElementById('closeAfterBooking');
+    const appointmentDateInput = document.getElementById('appointmentDate');
+    const timeSlotsContainer = document.getElementById('timeSlotsContainer');
+    const selectedTimeSlotInput = document.getElementById('selectedTimeSlot');
+    const confirmBookingBtn = document.getElementById('confirmBookingBtn');
+    const appointmentDateLabel = document.getElementById('appointmentDateLabel');
+    const dateError = document.getElementById('dateError');
+    const timeSlotError = document.getElementById('timeSlotError');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const appointmentPriceDisplay = document.getElementById('appointmentPriceDisplay');
 
-        // Set date range for the coming 3 months
-        const today = new Date();
-        const threeMonthsLater = new Date(today);
-        threeMonthsLater.setMonth(today.getMonth() + 3);
+    // Payment modal elements
+    const paymentModal = document.getElementById('paymentModal');
+    const closePaymentBtn = document.querySelector('.close-payment-btn');
+    const creditCardMethod = document.getElementById('creditCardMethod');
+    const paypalMethod = document.getElementById('paypalMethod');
+    const creditCardForm = document.getElementById('creditCardForm');
+    const paypalButtonContainer = document.getElementById('paypalButtonContainer');
+    const backToPaymentMethods = document.getElementById('backToPaymentMethods');
+    const cardPaymentForm = document.getElementById('cardPaymentForm');
 
-        // Format dates for input min/max attributes
-        const formatDateForInput = (date) => date.toISOString().split('T')[0];
-        appointmentDateInput.min = formatDateForInput(today);
-        appointmentDateInput.max = formatDateForInput(threeMonthsLater);
-        appointmentDateInput.value = formatDateForInput(today);
+    // Set date range for the coming 3 months
+    const today = new Date();
+    const threeMonthsLater = new Date(today);
+    threeMonthsLater.setMonth(today.getMonth() + 3);
 
-        // Open modal when Book Now button is clicked
-        bookButtons.forEach(button => {
-            button.addEventListener('click', async function() {
-                const doctorId = this.getAttribute('data-doctor-id');
-                const doctorName = this.getAttribute('data-doctor-name');
+    // Format dates for input min/max attributes
+    const formatDateForInput = (date) => date.toISOString().split('T')[0];
+    appointmentDateInput.min = formatDateForInput(today);
+    appointmentDateInput.max = formatDateForInput(threeMonthsLater);
+    appointmentDateInput.value = formatDateForInput(today);
 
-                document.getElementById('modalDoctorId').value = doctorId;
-                document.getElementById('modalDoctorName').value = doctorName;
-                appointmentDateLabel.textContent = `Appointment Date with ${doctorName}`;
+    // Open modal when Book Now button is clicked
+    bookButtons.forEach(button => {
+        button.addEventListener('click', async function() {
+            const doctorId = this.getAttribute('data-doctor-id');
+            const doctorName = this.getAttribute('data-doctor-name');
+            const price = this.getAttribute('data-doctor-price');
 
-                // Reset form and show it
-                bookingForm.reset();
-                bookingFormContainer.style.display = 'block';
-                confirmationMessage.style.display = 'none';
-                confirmBookingBtn.disabled = true;
-                selectedTimeSlotInput.value = '';
-                dateError.style.display = 'none';
-                timeSlotError.style.display = 'none';
+            document.getElementById('modalDoctorId').value = doctorId;
+            document.getElementById('modalDoctorName').value = doctorName;
+            appointmentPriceDisplay.textContent = price;
+            appointmentDateLabel.textContent = `Appointment Date with ${doctorName}`;
 
-                // Clear previous time slots
-                timeSlotsContainer.innerHTML = '';
+            addHiddenInput('appointmentPrice', price.replace('Rs. ', ''));
 
-                // Set default date to today
-                appointmentDateInput.value = formatDateForInput(today);
-
-                // Show loading spinner while fetching slots
-                loadingSpinner.style.display = 'block';
-
-                // Fetch and display available time slots for the default date
-                await fetchAndDisplayTimeSlots(doctorId, appointmentDateInput.value);
-
-                // Hide loading spinner
-                loadingSpinner.style.display = 'none';
-
-                modal.style.display = 'flex';
-            });
-        });
-
-        // Handle date change event
-        appointmentDateInput.addEventListener('change', async function() {
-            const doctorId = document.getElementById('modalDoctorId').value;
-            if (doctorId && this.value) {
-                // Show loading spinner
-                loadingSpinner.style.display = 'block';
-                timeSlotsContainer.innerHTML = '';
-
-                await handleDateChange(doctorId, this.value);
-
-                // Hide loading spinner
-                loadingSpinner.style.display = 'none';
-            }
-        });
-
-        // Handle date change
-        async function handleDateChange(doctorId, dateStr) {
-            if (!dateStr) {
-                dateError.style.display = 'block';
-                return;
-            }
-
+            // Reset form and show it
+            bookingForm.reset();
+            bookingFormContainer.style.display = 'block';
+            confirmationMessage.style.display = 'none';
+            confirmBookingBtn.disabled = true;
+            selectedTimeSlotInput.value = '';
             dateError.style.display = 'none';
-            await fetchAndDisplayTimeSlots(doctorId, dateStr);
-        }
+            timeSlotError.style.display = 'none';
 
-        // Fetch and display available time slots for a specific date
-        async function fetchAndDisplayTimeSlots(doctorId, dateString) {
-            try {
-                // First fetch all available time slots
-                const availabilityResponse = await fetch(`/api/doctor/${doctorId}/availability/${dateString}`);
-                if (!availabilityResponse.ok) {
-                    throw new Error('Failed to fetch availability');
-                }
-                const timeSlots = await availabilityResponse.json();
+            // Clear previous time slots
+            timeSlotsContainer.innerHTML = '';
 
-                // Then fetch already booked slots for this doctor and date
-                const bookedResponse = await fetch(`/api/doctor/${doctorId}/booked-slots/${dateString}`);
-                if (!bookedResponse.ok) {
-                    throw new Error('Failed to fetch booked slots');
-                }
-                const bookedSlots = await bookedResponse.json();
+            // Set default date to today
+            appointmentDateInput.value = formatDateForInput(today);
 
-                // Clear previous slots
-                timeSlotsContainer.innerHTML = '';
-                confirmBookingBtn.disabled = true;
-                selectedTimeSlotInput.value = '';
-                timeSlotError.style.display = 'none';
+            // Show loading spinner while fetching slots
+            loadingSpinner.style.display = 'block';
 
-                if (timeSlots.length === 0) {
-                    // Show "Doctor Unavailable" message
-                    const unavailableMessage = document.createElement('div');
-                    unavailableMessage.className = 'time-slot unavailable';
-                    unavailableMessage.textContent = 'Doctor Unavailable';
-                    timeSlotsContainer.appendChild(unavailableMessage);
-                    return;
-                }
+            // Fetch and display available time slots for the default date
+            await fetchAndDisplayTimeSlots(doctorId, appointmentDateInput.value);
 
-                // Create time slot buttons
-                timeSlots.forEach(slot => {
-                    const slotButton = document.createElement('div');
-                    slotButton.className = 'time-slot';
-                    slotButton.textContent = slot;
-                    slotButton.dataset.slot = slot;
+            // Hide loading spinner
+            loadingSpinner.style.display = 'none';
 
-                    // Check if slot is already booked
-                    if (bookedSlots.includes(slot)) {
-                        slotButton.classList.add('unavailable');
-                        slotButton.textContent = `${slot} (Booked)`;
-                        slotButton.style.cursor = 'not-allowed';
-                    } else {
-                        slotButton.addEventListener('click', function() {
-                            // Remove selected class from all slots
-                            document.querySelectorAll('.time-slot').forEach(s => {
-                                s.classList.remove('selected');
-                            });
-
-                            // Add selected class to clicked slot
-                            this.classList.add('selected');
-
-                            // Store selected time slot
-                            selectedTimeSlotInput.value = slot;
-                            confirmBookingBtn.disabled = false;
-                            timeSlotError.style.display = 'none';
-                        });
-                    }
-
-                    timeSlotsContainer.appendChild(slotButton);
-                });
-
-            } catch (error) {
-                console.error('Error fetching time slots:', error);
-                timeSlotsContainer.innerHTML = '';
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'time-slot unavailable';
-                errorMessage.textContent = 'Error Loading Availability';
-                timeSlotsContainer.appendChild(errorMessage);
-                confirmBookingBtn.disabled = true;
-            }
-        }
-
-        // Form validation before submission
-        bookingForm.addEventListener('submit', function(e) {
-            if (!selectedTimeSlotInput.value) {
-                e.preventDefault();
-                timeSlotError.style.display = 'block';
-                timeSlotsContainer.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-
-        // Close modal when X or Cancel is clicked
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function() {
-                modal.style.display = 'none';
-            });
-        }
-
-        if (cancelBtn) {
-            cancelBtn.addEventListener('click', function() {
-                modal.style.display = 'none';
-            });
-        }
-
-        // Close modal after booking
-        if (closeAfterBookingBtn) {
-            closeAfterBookingBtn.addEventListener('click', function() {
-                modal.style.display = 'none';
-            });
-        }
-
-        // Close modal when clicking outside of it
-        window.addEventListener('click', function(event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
+            modal.style.display = 'flex';
         });
     });
 
-    const body = document.querySelector("body"),
-      sidebar = body.querySelector(".sidebar"),
-      toggle = body.querySelector(".toggle"),
-      searchBtn = body.querySelector(".search-box"),
-      modeSwitch = body.querySelector(".toggle-switch"),
-      modeText = body.querySelector(".mode-text");
-
-// Check if dark mode is stored in localStorage and apply it
-if(localStorage.getItem("darkMode") === "enabled") {
-  body.classList.add("dark");
-  modeText.innerText = "Light Mode";
+    function addHiddenInput(name, value) {
+    let input = document.querySelector(`input[name="${name}"]`);
+    if (!input) {
+        input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        bookingForm.appendChild(input);
+    }
+    input.value = value;
 }
 
-toggle.addEventListener("click", () => {
-  sidebar.classList.toggle("close");
-  body.classList.toggle("sidebar-collapsed");
-});
+    // When confirm booking is clicked, show payment modal
+    confirmBookingBtn.addEventListener('click', function(e) {
+        e.preventDefault();
 
-modeSwitch.addEventListener("click", () => {
-  body.classList.toggle("dark");
+        // Validate form first
+        if (!selectedTimeSlotInput.value) {
+            timeSlotError.style.display = 'block';
+            timeSlotsContainer.scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
 
-  // Save the dark mode state in localStorage
-  if(body.classList.contains("dark")) {
-    modeText.innerText = "Light Mode";
-    localStorage.setItem("darkMode", "enabled");
-  } else {
-    modeText.innerText = "Dark Mode";
-    localStorage.setItem("darkMode", "disabled");
-  }
+        // Hide booking modal and show payment modal
+        modal.style.display = 'none';
+        paymentModal.style.display = 'flex';
+    });
+
+    // Credit card payment method selected
+    creditCardMethod.addEventListener('click', function() {
+        creditCardForm.style.display = 'block';
+        paypalButtonContainer.style.display = 'none';
+
+        // Clear any previous payment method
+        const existingInput = document.querySelector('input[name="paymentMethod"]');
+        if (existingInput) {
+            existingInput.remove();
+        }
+    });
+
+    // PayPal payment method selected
+    paypalMethod.addEventListener('click', function() {
+        paypalButtonContainer.style.display = 'block';
+        creditCardForm.style.display = 'none';
+
+        // Clear any previous payment method
+        const existingInput = document.querySelector('input[name="paymentMethod"]');
+        if (existingInput) {
+            existingInput.remove();
+        }
+
+        // Initialize PayPal button
+        renderPayPalButton();
+    });
+
+    // Back to payment methods
+    backToPaymentMethods.addEventListener('click', function() {
+        creditCardForm.style.display = 'none';
+        paypalButtonContainer.style.display = 'none';
+    });
+
+    // Close payment modal
+    closePaymentBtn.addEventListener('click', function() {
+        paymentModal.style.display = 'none';
+        modal.style.display = 'flex'; // Show booking modal again
+    });
+
+    // Submit card payment form
+    cardPaymentForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log("Credit card form submitted");
+
+        // Validate card details
+        if (!validateCardDetails()) {
+            return;
+        }
+
+        // Add payment method to booking form
+        addHiddenInput('paymentMethod', 'credit_card');
+
+        // Add card details to the booking form
+        addCardDetailsToForm();
+
+        console.log("Submitting booking form with credit card...");
+        bookingForm.submit();
+    });
+
+    // Function to render PayPal button
+    function renderPayPalButton() {
+        // This is a mock implementation - in a real app you'd use PayPal's SDK
+        const paypalButton = document.createElement('button');
+        paypalButton.className = 'btn btn-confirm';
+        paypalButton.innerHTML = 'Pay with PayPal';
+        paypalButton.addEventListener('click', function() {
+            // Add payment method to booking form
+            addHiddenInput('paymentMethod', 'paypal');
+
+            console.log("Submitting booking form with PayPal...");
+            bookingForm.submit();
+        });
+
+        document.getElementById('paypal-button').innerHTML = '';
+        document.getElementById('paypal-button').appendChild(paypalButton);
+    }
+
+    // Function to validate card details
+    function validateCardDetails() {
+        const cardNumber = document.getElementById('cardNumber').value;
+        const cardName = document.getElementById('cardName').value;
+        const expiryDate = document.getElementById('expiryDate').value;
+        const cvv = document.getElementById('cvv').value;
+
+        // Simple validation
+        if (!cardNumber || !cardName || !expiryDate || !cvv) {
+            alert('Please fill in all card details');
+            return false;
+        }
+
+        // Validate card number length
+        if (cardNumber.replace(/\s/g, '').length < 15) {
+            alert('Please enter a valid card number');
+            return false;
+        }
+
+        // Validate CVV length
+        if (cvv.length < 3) {
+            alert('Please enter a valid CVV');
+            return false;
+        }
+
+        return true;
+    }
+
+    // Helper function to add hidden inputs
+    function addHiddenInput(name, value) {
+        let input = document.querySelector(`input[name="${name}"]`);
+        if (!input) {
+            input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name;
+            bookingForm.appendChild(input);
+        }
+        input.value = value;
+    }
+
+    // Function to add card details to the main booking form
+    function addCardDetailsToForm() {
+        const cardNumber = document.getElementById('cardNumber').value;
+        const cardName = document.getElementById('cardName').value;
+        const expiryDate = document.getElementById('expiryDate').value;
+        const cvv = document.getElementById('cvv').value;
+
+        // Mask card number before submitting (for security)
+        const maskedCardNumber = '**** **** **** ' + cardNumber.slice(-4);
+
+        addHiddenInput('cardNumber', maskedCardNumber);
+        addHiddenInput('cardName', cardName);
+        addHiddenInput('expiryDate', expiryDate);
+        addHiddenInput('cvv', cvv);
+    }
+
+    // Handle date change event
+    appointmentDateInput.addEventListener('change', async function() {
+        const doctorId = document.getElementById('modalDoctorId').value;
+        if (doctorId && this.value) {
+            // Show loading spinner
+            loadingSpinner.style.display = 'block';
+            timeSlotsContainer.innerHTML = '';
+
+            await handleDateChange(doctorId, this.value);
+
+            // Hide loading spinner
+            loadingSpinner.style.display = 'none';
+        }
+    });
+
+    // Handle date change
+    async function handleDateChange(doctorId, dateStr) {
+        if (!dateStr) {
+            dateError.style.display = 'block';
+            return;
+        }
+
+        dateError.style.display = 'none';
+        await fetchAndDisplayTimeSlots(doctorId, dateStr);
+    }
+
+    // Fetch and display available time slots for a specific date
+    async function fetchAndDisplayTimeSlots(doctorId, dateString) {
+        try {
+            // First fetch all available time slots
+            const availabilityResponse = await fetch(`/api/doctor/${doctorId}/availability/${dateString}`);
+            if (!availabilityResponse.ok) {
+                throw new Error('Failed to fetch availability');
+            }
+            const timeSlots = await availabilityResponse.json();
+
+            // Then fetch already booked slots for this doctor and date
+            const bookedResponse = await fetch(`/api/doctor/${doctorId}/booked-slots/${dateString}`);
+            if (!bookedResponse.ok) {
+                throw new Error('Failed to fetch booked slots');
+            }
+            const bookedSlots = await bookedResponse.json();
+
+            // Clear previous slots
+            timeSlotsContainer.innerHTML = '';
+            confirmBookingBtn.disabled = true;
+            selectedTimeSlotInput.value = '';
+            timeSlotError.style.display = 'none';
+
+            if (timeSlots.length === 0) {
+                // Show "Doctor Unavailable" message
+                const unavailableMessage = document.createElement('div');
+                unavailableMessage.className = 'time-slot unavailable';
+                unavailableMessage.textContent = 'Doctor Unavailable';
+                timeSlotsContainer.appendChild(unavailableMessage);
+                return;
+            }
+
+            // Create time slot buttons
+            timeSlots.forEach(slot => {
+                const slotButton = document.createElement('div');
+                slotButton.className = 'time-slot';
+                slotButton.textContent = slot;
+                slotButton.dataset.slot = slot;
+
+                // Check if slot is already booked
+                if (bookedSlots.includes(slot)) {
+                    slotButton.classList.add('unavailable');
+                    slotButton.textContent = `${slot} (Booked)`;
+                    slotButton.style.cursor = 'not-allowed';
+                } else {
+                    slotButton.addEventListener('click', function() {
+                        // Remove selected class from all slots
+                        document.querySelectorAll('.time-slot').forEach(s => {
+                            s.classList.remove('selected');
+                        });
+
+                        // Add selected class to clicked slot
+                        this.classList.add('selected');
+
+                        // Store selected time slot
+                        selectedTimeSlotInput.value = slot;
+                        confirmBookingBtn.disabled = false;
+                        timeSlotError.style.display = 'none';
+                    });
+                }
+
+                timeSlotsContainer.appendChild(slotButton);
+            });
+
+        } catch (error) {
+            console.error('Error fetching time slots:', error);
+            timeSlotsContainer.innerHTML = '';
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'time-slot unavailable';
+            errorMessage.textContent = 'Error Loading Availability';
+            timeSlotsContainer.appendChild(errorMessage);
+            confirmBookingBtn.disabled = true;
+        }
+    }
+
+    // Form validation before submission
+    bookingForm.addEventListener('submit', function(e) {
+        if (!selectedTimeSlotInput.value) {
+            e.preventDefault();
+            timeSlotError.style.display = 'block';
+            timeSlotsContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+
+    // Close modal when X or Cancel is clicked
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+    }
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+    }
+
+    // Close modal after booking
+    if (closeAfterBookingBtn) {
+        closeAfterBookingBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+    }
+
+    // Close modal when clicking outside of it
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+        if (event.target === paymentModal) {
+            paymentModal.style.display = 'none';
+        }
+    });
+
+    // Dark mode toggle functionality
+    const body = document.querySelector("body"),
+        sidebar = body.querySelector(".sidebar"),
+        toggle = body.querySelector(".toggle"),
+        searchBtn = body.querySelector(".search-box"),
+        modeSwitch = body.querySelector(".toggle-switch"),
+        modeText = body.querySelector(".mode-text");
+
+    // Check if dark mode is stored in localStorage and apply it
+    if(localStorage.getItem("darkMode") === "enabled") {
+        body.classList.add("dark");
+        modeText.innerText = "Light Mode";
+    }
+
+    toggle.addEventListener("click", () => {
+        sidebar.classList.toggle("close");
+    });
+
+    modeSwitch.addEventListener("click", () => {
+        body.classList.toggle("dark");
+
+        // Save the dark mode state in localStorage
+        if(body.classList.contains("dark")) {
+            modeText.innerText = "Light Mode";
+            localStorage.setItem("darkMode", "enabled");
+        } else {
+            modeText.innerText = "Dark Mode";
+            localStorage.setItem("darkMode", "disabled");
+        }
+    });
 });
 
 </script>

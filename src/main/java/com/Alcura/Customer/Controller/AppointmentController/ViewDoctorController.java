@@ -30,14 +30,20 @@ public class ViewDoctorController
         this.doctorRepository = doctorRepository;
     }
 
-
-
     @GetMapping(value = "/Customer/AppointmentBooking", produces = MediaType.IMAGE_JPEG_VALUE)
-    public String ViewAllDoctorinForm(Model model)
-    {
+    public String ViewAllDoctorinForm(Model model) {
         List<ViewDoctorForm> doctorViewServices = doctorService.viewFullform();
+
+        // Enhanced logging
+        logger.info("Found {} doctors", doctorViewServices.size());
+        doctorViewServices.forEach(doctor -> {
+            logger.info("Doctor: {} {}, Price: {}",
+                    doctor.getFirst_name(),
+                    doctor.getLast_name(),
+                    doctor.getPrice());
+        });
+
         model.addAttribute("doctors", doctorViewServices);
-        logger.info("Size: " + doctorViewServices.size());
         return "/Customer/Appointment_Booking";
     }
 

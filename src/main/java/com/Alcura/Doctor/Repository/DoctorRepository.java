@@ -6,6 +6,7 @@ import com.Alcura.Doctor.Model.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.print.Doc;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer>
 
 
     @Query("SELECT new com.Alcura.Customer.DTO.ViewDoctorForm(" +
-            "d.firstName, d.lastName, d.experience, d.specialist, d.specialist_info, d.image, d.email, d.uniqueId, d. doctor_availablility) " +
+            "d.firstName, d.lastName, d.experience, d.specialist, d.specialist_info, d.image, d.email, d.uniqueId, d. doctor_availablility, d.price) " +
             "FROM Doctor d")
     List<ViewDoctorForm> viewDoctorinCustomerForm();
 
@@ -39,5 +40,6 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer>
     Doctor findByuniqueId(String uniqueId);
     @Query("SELECT d FROM Doctor d WHERE d.uniqueId = :uniqueId AND SIZE(d.availabilities) > 0")
     Optional<Doctor> findByUniqueIdforAvailabeStatus(String uniqueId);
+
 }
 

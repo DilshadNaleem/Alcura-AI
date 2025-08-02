@@ -12,7 +12,17 @@ public class ViewDoctorForm
     private byte[] image;
     private String email;
     private String unique_id;
+    private Float price;
     private LocalTime  doctor_availablility;
+
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
 
     public LocalTime getDoctor_availablility() {
         return doctor_availablility;
@@ -90,7 +100,8 @@ public class ViewDoctorForm
     public ViewDoctorForm(String firstName, String lastName,
                           String specialist, String experience,
                           String specialist_info, byte[] image,
-                          String email, String uniqueId, LocalTime doctor_availablility)
+                          String email, String uniqueId, LocalTime doctor_availablility,
+                          Float price)
     {
         this.first_name = firstName;
         this.last_name = lastName;
@@ -101,6 +112,7 @@ public class ViewDoctorForm
         this.email = email;
         this.unique_id = uniqueId;
         this.doctor_availablility = doctor_availablility;
+        this.price = price;
     }
 
 }

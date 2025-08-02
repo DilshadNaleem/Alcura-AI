@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface AppointmentEmailService
 {
-    void sendAppointmentConfirmaation(String toEmail, LocalDate AppointmentDate, String  doctorName, String appointmentId,String time);
+    void sendAppointmentConfirmaation(String toEmail, LocalDate AppointmentDate, String  doctorName, String appointmentId,String time, Float AppointmentPrice, String paymentMethod);
 
 }

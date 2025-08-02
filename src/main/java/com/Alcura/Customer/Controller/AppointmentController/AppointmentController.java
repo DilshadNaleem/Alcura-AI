@@ -1,9 +1,13 @@
 package com.Alcura.Customer.Controller.AppointmentController;
 
 import com.Alcura.Customer.Model.Appoinment;
+import com.Alcura.Customer.Model.Customer;
+import com.Alcura.Customer.Model.Payment;
 import com.Alcura.Customer.Repository.AppointmentRepository;
+import com.Alcura.Customer.Repository.PaymentRepo;
 import com.Alcura.Customer.Service.DoctorAvailabilityService;
 import com.Alcura.Customer.Service.Interfaces.AppoinmentService;
+import com.Alcura.Customer.Service.PaymentUniqueId;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
@@ -22,12 +26,17 @@ public class AppointmentController {
     private final AppoinmentService appointmentService;
     @Autowired
     private AppointmentRepository appointmentRepository;
+    @Autowired
+    private PaymentRepo paymentRepo;
     private final DoctorAvailabilityService doctorAvailabilityService;
+    private final PaymentUniqueId paymentUniqueId;
 
     public AppointmentController(AppoinmentService appointmentService,
-                                 DoctorAvailabilityService doctorAvailabilityService) {
+                                 DoctorAvailabilityService doctorAvailabilityService,
+                                 PaymentUniqueId paymentUniqueId) {
         this.appointmentService = appointmentService;
         this.doctorAvailabilityService = doctorAvailabilityService;
+        this.paymentUniqueId = paymentUniqueId;
     }
 
     @PostMapping("/Customer/Appointment")
@@ -37,9 +46,12 @@ public class AppointmentController {
             @RequestParam("appointment_date") LocalDate date,
             @RequestParam("appointment_time") String time,
             @RequestParam(value = "specialReasons", required = false) String specialReason,
+            @RequestParam("appointmentPrice") Float price,
+            @RequestParam("paymentMethod") String paymentMethod,
             HttpSession session,
             HttpServletResponse response) throws IOException {
 
+        logger.info("Recieved files {}",  paymentMethod );
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter writer = response.getWriter();
 
@@ -59,14 +71,33 @@ public class AppointmentController {
                 return;
             }
 
+
+            Appoinment appoinment = new Appoinment();
+
+
+            Payment payment = new Payment();
+            payment.setPrice(price);
+            payment.setPaymentMethod(paymentMethod);
+            payment.setCustomer(email);
+            payment = paymentUniqueId.createPayment(payment);
+
+
+
             Appoinment appointment = appointmentService.createAppointment(
                     doctorId,
                     doctorName,
                     time,
                     date,
                     specialReason,
-                    email
+                    email,
+                    price,
+                    paymentMethod
             );
+
+            appointment.setAppointmentId(payment.getUniqueId());
+            payment.setAppointment(appointment.getUnique_id());
+
+            paymentRepo.save(payment);
 
             sendAlert(writer, "Appointment created successfully!", "/Customer/AppointmentBooking");
 

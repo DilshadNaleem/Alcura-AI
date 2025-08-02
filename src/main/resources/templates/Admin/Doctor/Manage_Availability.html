@@ -1006,24 +1006,29 @@ tr.selectable:hover {
 
                                 <td th:text="${availability.status} ?: 'N/A'"></td>
                                 <td>
-                                    <span th:if="${availability.isAvailable == true}" class="badge bg-success">Available</span>
-                                    <span th:if="${availability.isAvailable == false}" class="badge bg-danger">Unavailable</span>
-                                    <span th:if="${availability.isAvailable == null}" class="badge bg-secondary">N/A</span>
+                                    <!-- First check if either time is null or 'UnAvailable' -->
+                                    <span th:if="${availability.startTime == null or availability.endTime == null or
+                  (availability.startTime != null and availability.startTime.toString().contains('UnAvailable')) or
+                  (availability.endTime != null and availability.endTime.toString().contains('UnAvailable'))}"
+                                          class="badge bg-danger">Unavailable</span>
+
+                                    <!-- If times are valid, then check the isAvailable flag -->
+                                    <span th:unless="${availability.startTime == null or availability.endTime == null or
+                     (availability.startTime != null and availability.startTime.toString().contains('UnAvailable')) or
+                     (availability.endTime != null and availability.endTime.toString().contains('UnAvailable'))}"
+                                          th:classappend="${availability.isAvailable == true} ? 'badge bg-success' : 'badge bg-danger'"
+                                          th:text="${availability.isAvailable == true} ? 'Available' : 'Unavailable'"></span>
                                 </td>
                                 <td th:text="${availability.validFrom} ?: 'N/A'"></td>
                                 <td th:text="${availability.validTo} ?: 'N/A'"></td>
                                 <td>
                                     <button class="btn btn-sm btn-info edit-btn"
+                                            th:if="${availability.status != 'CONFIRMED' and availability.status != 'Confirmed'}"
                                             data-id="${availability.id}"
                                             data-bs-toggle="modal"
                                             data-bs-target="#editAvailabilityModal">Edit</button>
                                     <form action="/Admin/ApproveAvailability" method="post">
                                         <input type="hidden" name="id" value="${availability.id}">
-                                        <button class="btn btn-sm btn-success"
-                                                data-id="${availability.id}"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editAvailabilityModal">Approve
-                                        </button>
                                     </form>
                                 </td>
                             </tr>
@@ -1039,77 +1044,7 @@ tr.selectable:hover {
     </div>
 </div>
 
-<!-- Add Availability Modal -->
-<div class="modal fade" id="addAvailabilityModal" tabindex="-1" aria-labelledby="addAvailabilityModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addAvailabilityModalLabel">Add New Availability</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="addAvailabilityForm" th:action="@{/Admin/Manage_Availability/add}" method="post">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="doctorId" class="form-label">Doctor</label>
-                        <select class="form-select" id="doctorId" name="doctorId" required>
-                            <option value="">Select Doctor</option>
-                            <!-- This would be populated via AJAX or server-side -->
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="dayOfWeek" class="form-label">Day of Week</label>
-                        <select class="form-select" id="dayOfWeek" name="dayOfWeek" required>
-                            <option value="">Select Day</option>
-                            <option value="MONDAY">Monday</option>
-                            <option value="TUESDAY">Tuesday</option>
-                            <option value="WEDNESDAY">Wednesday</option>
-                            <option value="THURSDAY">Thursday</option>
-                            <option value="FRIDAY">Friday</option>
-                            <option value="SATURDAY">Saturday</option>
-                            <option value="SUNDAY">Sunday</option>
-                        </select>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="startTime" class="form-label">Start Time</label>
-                            <input type="time" class="form-control" id="startTime" name="startTime" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="endTime" class="form-label">End Time</label>
-                            <input type="time" class="form-control" id="endTime" name="endTime" required>
-                        </div>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="isAvailable" name="isAvailable">
-                        <label class="form-check-label" for="isAvailable">Available</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="validFrom" class="form-label">Valid From</label>
-                            <input type="date" class="form-control" id="validFrom" name="validFrom">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="validTo" class="form-label">Valid To</label>
-                            <input type="date" class="form-control" id="validTo" name="validTo">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Status</label>
-                        <select class="form-select" id="status" name="status">
-                            <option value="ACTIVE">Active</option>
-                            <option value="INACTIVE">Inactive</option>
-                            <option value="HOLIDAY">Holiday</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save Availability</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+
 
 <!-- Edit Availability Modal -->
 <div class="modal fade" id="editAvailabilityModal" tabindex="-1" aria-labelledby="editAvailabilityModalLabel" aria-hidden="true">
@@ -1128,7 +1063,7 @@ tr.selectable:hover {
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Day of Week</label>
-                        <select class="form-select" id="editDayOfWeek" name="dayOfWeek" required>
+                        <select class="form-select" id="editDayOfWeek" >
                             <!-- This will be replaced with plain text when editing -->
                         </select>
                     </div>
@@ -1143,26 +1078,22 @@ tr.selectable:hover {
                             <input type="time" class="form-control" id="editEndTime" name="endTime" required>
                         </div>
                     </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="editIsAvailable" name="isAvailable">
-                        <label class="form-check-label" for="editIsAvailable">Available</label>
-                    </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="editValidFrom" class="form-label">Valid From</label>
-                            <input type="date" class="form-control" id="editValidFrom" name="validFrom">
+                            <input type="date" class="form-control" id="editValidFrom"  readonly>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="editValidTo" class="form-label">Valid To</label>
-                            <input type="date" class="form-control" id="editValidTo" name="validTo" readonly>
+                            <input type="date" class="form-control" id="editValidTo"  readonly>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="editStatus" class="form-label">Status</label>
                         <select class="form-select" id="editStatus" name="status">
-                            <option value="ACTIVE">Active</option>
-                            <option value="INACTIVE">Inactive</option>
-                            <option value="HOLIDAY">Holiday</option>
+                            <option value="Available">Available</option>
+                            <option value="Unavailable">Unavailable</option>
+
                         </select>
                     </div>
                 </div>
@@ -1314,7 +1245,7 @@ $(document).on('click', '.edit-btn', function(e) {
     e.stopPropagation(); // Prevent row selection when clicking edit button
 
     const row = $(this).closest('tr');
-    const id = $(this).data('id');
+    const id = row.find('td:eq(0)').text().trim();
 
     // Get data from the table row
     $('#editId').val(id);
@@ -1371,9 +1302,16 @@ let selectedSlots = [];
 
 $(document).on('click', '#availabilityTable tbody tr.selectable', function() {
     const row = $(this);
-    const availabilityId = row.find('td:eq(0)').text().trim(); // Availability ID
+    const availabilityId = row.find('td:eq(0)').text().trim();
     const doctorId = row.data('doctor-id'); // You'll need to add data-doctor-id attribute to rows
     const doctorName = row.find('td:eq(1)').text().trim();
+    const status = row.find('td:eq(5)').text().trim();
+
+     if (status === 'CONFIRMED' || status === 'Confirmed') {
+        Swal.fire('Already Confirmed', 'This slot is already confirmed and cannot be modified.', 'warning');
+        return;
+    }
+
 
     // If no doctor selected yet, or clicking on a row for the same doctor
     if (!selectedDoctorId || selectedDoctorId === doctorId) {
@@ -1439,28 +1377,12 @@ $(document).on('click', '#approveSelectedBtn', function() {
     });
 });
 
-// Form submission handlers
-$('#addAvailabilityForm').on('submit', function(e) {
-    e.preventDefault();
-    const formData = $(this).serialize();
 
-    $.ajax({
-        url: $(this).attr('action'),
-        method: 'POST',
-        data: formData,
-        success: function() {
-            Swal.fire('Success', 'Availability added successfully', 'success')
-                .then(() => window.location.reload());
-        },
-        error: function() {
-            Swal.fire('Error', 'Failed to add availability', 'error');
-        }
-    });
-});
 
 $('#editAvailabilityForm').on('submit', function(e) {
     e.preventDefault();
     const formData = $(this).serialize();
+    console.log("Form Submitted: " , formData);
 
     $.ajax({
         url: $(this).attr('action'),
@@ -1471,6 +1393,7 @@ $('#editAvailabilityForm').on('submit', function(e) {
                 .then(() => window.location.reload());
         },
         error: function() {
+          console.log("Error response:", xhr.responseText);
             Swal.fire('Error', 'Failed to update availability', 'error');
         }
     });
@@ -1513,16 +1436,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function loadDoctors() {
-    // This would be an AJAX call to load doctors for the dropdown
-    // For now, we'll just simulate it
-    $('#doctorId').html(`
-        <option value="">Select Doctor</option>
-        <option value="1">Dr. John Smith</option>
-        <option value="2">Dr. Sarah Johnson</option>
-        <option value="3">Dr. Michael Brown</option>
-    `);
-}
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>

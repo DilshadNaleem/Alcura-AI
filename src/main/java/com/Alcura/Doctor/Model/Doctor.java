@@ -82,6 +82,8 @@ public class Doctor {
     @Column(name = "doctor_availability")
     private LocalTime doctor_availablility;
 
+    @Column(name = "price")
+    private Float price;
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DoctorAvailability> availabilities = new ArrayList<>();
@@ -94,6 +96,15 @@ public class Doctor {
 
     public void setDoctor_availablility(LocalTime doctor_availablility) {
         this.doctor_availablility = doctor_availablility;
+    }
+
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
     }
 
     public boolean isFirstLogin() {
@@ -267,4 +278,6 @@ public class Doctor {
     public void setSpecialist(String specialist) {
         this.specialist = specialist;
     }
+
+
 }

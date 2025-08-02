@@ -75,6 +75,15 @@
         select:invalid {
             border-color: red;
         }
+        .countdown-message {
+            color: #d9534f;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -263,7 +272,8 @@
         </label>
     </div>
 
-    <button type="submit">Save Availability</button>
+    <button type="submit" id="saveAvailabilityBtn">Save Availability</button>
+    <div class="countdown-message" id="countdownMessage"></div>
 </form>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -324,14 +334,24 @@
         return slots;
     }
 
-    // Set the dates for NEXT week (Monday to Sunday)
-    function getNextWeekDates() {
-        const today = new Date();
-        const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+    // Get dates for the next week (optionally starting from last submission)
+    function getNextWeekDates(startFromToday = true) {
+        let referenceDate = new Date();
+
+        if (!startFromToday) {
+            const lastSubmission = localStorage.getItem('lastAvailabilitySubmission');
+            if (lastSubmission) {
+                referenceDate = new Date(lastSubmission);
+                // Move to next week
+                referenceDate.setDate(referenceDate.getDate() + 7);
+            }
+        }
+
+        const dayOfWeek = referenceDate.getDay(); // 0 (Sunday) to 6 (Saturday)
 
         // Calculate next Monday
-        let nextMonday = new Date(today);
-        nextMonday.setDate(today.getDate() + (7 - dayOfWeek + 1) % 7);
+        let nextMonday = new Date(referenceDate);
+        nextMonday.setDate(referenceDate.getDate() + ((7 - dayOfWeek + 1) % 7));
 
         // Set dates for each day of next week
         const dates = {};
@@ -346,14 +366,32 @@
         return dates;
     }
 
+    // Update the UI with new dates
+    function updateDatesInUI(dates) {
+        // Update date labels for each day
+        for (const day in dates) {
+            const dateElement = document.getElementById(`${day}Date`);
+            if (dateElement) {
+                const options = { month: 'short', day: 'numeric' };
+                dateElement.textContent = dates[day].toLocaleDateString('en-US', options);
+            }
+        }
+
+        // Update week range display
+        const weekRangeElement = document.getElementById('weekRange');
+        const startDate = dates['monday'];
+        const endDate = dates['sunday'];
+        const rangeOptions = { month: 'long', day: 'numeric' };
+        weekRangeElement.textContent = `Week of: ${startDate.toLocaleDateString('en-US', rangeOptions)} - ${endDate.toLocaleDateString('en-US', rangeOptions)}`;
+    }
+
     // Load existing availability from server
-    async function loadExistingAvailability() {
+    async function loadExistingAvailability(dates) {
         try {
             const response = await fetch('/Doctor/GetAvailability');
             if (!response.ok) throw new Error('Failed to fetch availability');
 
             const availabilityData = await response.json();
-            const dates = getNextWeekDates();
 
             if (availabilityData && availabilityData.length > 0) {
                 const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
@@ -388,17 +426,141 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    // Check if the save button should be disabled
+    function checkAvailabilityLock() {
+        const lastSubmission = localStorage.getItem('lastAvailabilitySubmission');
+        if (lastSubmission) {
+            const submissionTime = new Date(lastSubmission);
+            const now = new Date();
+            const fourDaysInMs = 4 * 24 * 60 * 60 * 1000;
+            const timeRemaining = submissionTime.getTime() + fourDaysInMs - now.getTime();
+
+            if (timeRemaining > 0) {
+                document.getElementById('saveAvailabilityBtn').disabled = true;
+                startCountdown(timeRemaining);
+                return true;
+            } else {
+                localStorage.removeItem('lastAvailabilitySubmission');
+            }
+        }
+        return false;
+    }
+
+    // Start the countdown timer
+    function startCountdown(durationMs) {
+        const countdownElement = document.getElementById('countdownMessage');
+        const saveButton = document.getElementById('saveAvailabilityBtn');
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const endTime = now + durationMs;
+
+            const timer = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = endTime - now;
+
+                if (distance <= 0) {
+                    clearInterval(timer);
+                    countdownElement.textContent = '';
+                    saveButton.disabled = false;
+                    localStorage.removeItem('lastAvailabilitySubmission');
+                    return;
+                }
+
+                // Calculate days, hours, minutes, seconds
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                countdownElement.textContent = `You can update your availability again in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }, 1000);
+        }
+
+        updateCountdown();
+    }
+
+    // Convert time string to minutes for comparison
+    function timeToMinutes(timeStr) {
+        if (!timeStr || !timeStr.includes(':')) return 0;
+        const parts = timeStr.split(':');
+        if (parts.length !== 2) return 0;
+
+        let hours = parseInt(parts[0], 10);
+        let minutes = parseInt(parts[1], 10);
+
+        if (isNaN(hours)) hours = 0;
+        if (isNaN(minutes)) minutes = 0;
+
+        return hours * 60 + minutes;
+    }
+
+    // Validate time slots for a specific day
+    function validateDay(day) {
+        const unavailableCheckbox = document.querySelector(`input[name="${day}Unavailable"]`);
+        const startSelect = document.querySelector(`select[name="${day}Start"]`);
+        const endSelect = document.querySelector(`select[name="${day}End"]`);
+        const startError = document.getElementById(`${day}StartError`);
+        const endError = document.getElementById(`${day}EndError`);
+
+        // Reset errors
+        startError.textContent = '';
+        endError.textContent = '';
+
+        // Skip validation if day is unavailable or globally unavailable
+        if (unavailableCheckbox.checked || !document.getElementById('globalAvailable').checked) {
+            return true;
+        }
+
+        // Check if times are selected
+        if (!startSelect.value || !endSelect.value) {
+            if (!startSelect.value) {
+                startError.textContent = 'Start time is required';
+            }
+            if (!endSelect.value) {
+                endError.textContent = 'End time is required';
+            }
+            return false;
+        }
+
+        // Convert times to minutes
+        const startMinutes = timeToMinutes(startSelect.value);
+        const endMinutes = timeToMinutes(endSelect.value);
+
+        // Check if end time is after start time
+        if (endMinutes <= startMinutes) {
+            endError.textContent = 'End time must be after start time';
+            return false;
+        }
+
+        // Check if duration is at least 2 hours (120 minutes)
+        const duration = endMinutes - startMinutes;
+        if (duration < 120) {
+            endError.textContent = 'Time slot must be at least 2 hours';
+            return false;
+        }
+
+        return true;
+    }
+
+    // Initialize the form
+    function initializeForm() {
         // Check for messages first
         checkForMessages();
 
-        // Set doctor unique ID (you would get this from your session)
+        // Set doctor unique ID
         document.getElementById('doctorUniqueId').value = 'DOCTOR_UNIQUE_ID';
 
         // Generate time slots and populate dropdowns
         const timeSlots = generateTimeSlots();
         const timeSelects = document.querySelectorAll('.time-select');
         timeSelects.forEach(select => {
+            // Clear existing options except the first one
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+
+            // Add new time slots
             timeSlots.forEach(slot => {
                 const option = document.createElement('option');
                 option.value = slot.value;
@@ -407,25 +569,15 @@
             });
         });
 
-        // Set the dates for each day
-        const dates = getNextWeekDates();
-        for (const day in dates) {
-            const dateElement = document.getElementById(`${day}Date`);
-            if (dateElement) {
-                const options = { month: 'short', day: 'numeric' };
-                dateElement.textContent = dates[day].toLocaleDateString('en-US', options);
-            }
-        }
+        // Get dates - use false to get the week after last submission if available
+        const dates = getNextWeekDates(false);
+        updateDatesInUI(dates);
 
-        // Display the week range at the top
-        const weekRangeElement = document.getElementById('weekRange');
-        const startDate = dates['monday'];
-        const endDate = dates['sunday'];
-        const rangeOptions = { month: 'long', day: 'numeric' };
-        weekRangeElement.textContent = `Next Week: ${startDate.toLocaleDateString('en-US', rangeOptions)} - ${endDate.toLocaleDateString('en-US', rangeOptions)}`;
+        // Load existing availability for these dates
+        loadExistingAvailability(dates);
 
-        // Load existing availability
-        loadExistingAvailability();
+        // Check if the button should be locked on page load
+        checkAvailabilityLock();
 
         // Handle unavailable checkboxes
         const unavailableCheckboxes = document.querySelectorAll('.unavailable');
@@ -480,7 +632,9 @@
         });
 
         // Load Default Times button functionality
-        document.getElementById('loadDefaults').addEventListener('click', function() {
+        document.getElementById('loadDefaults').addEventListener('click', function(e) {
+            e.preventDefault();
+
             // Set all days except Sunday to 8:00 AM - 8:00 PM
             const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
@@ -530,61 +684,6 @@
             });
         });
 
-        // Convert time string to minutes for comparison
-        function timeToMinutes(timeStr) {
-            if (!timeStr) return 0;
-            const [hours, minutes] = timeStr.split(':').map(Number);
-            return hours * 60 + minutes;
-        }
-
-        // Validate time slots for a specific day
-        function validateDay(day) {
-            const unavailableCheckbox = document.querySelector(`input[name="${day}Unavailable"]`);
-            const startSelect = document.querySelector(`select[name="${day}Start"]`);
-            const endSelect = document.querySelector(`select[name="${day}End"]`);
-            const startError = document.getElementById(`${day}StartError`);
-            const endError = document.getElementById(`${day}EndError`);
-
-            // Reset errors
-            startError.textContent = '';
-            endError.textContent = '';
-
-            // Skip validation if day is unavailable or globally unavailable
-            if (unavailableCheckbox.checked || !globalAvailable.checked) {
-                return true;
-            }
-
-            // Check if times are selected
-            if (!startSelect.value || !endSelect.value) {
-                if (!startSelect.value) {
-                    startError.textContent = 'Start time is required';
-                }
-                if (!endSelect.value) {
-                    endError.textContent = 'End time is required';
-                }
-                return false;
-            }
-
-            // Convert times to minutes
-            const startMinutes = timeToMinutes(startSelect.value);
-            const endMinutes = timeToMinutes(endSelect.value);
-
-            // Check if end time is after start time
-            if (endMinutes <= startMinutes) {
-                endError.textContent = 'End time must be after start time';
-                return false;
-            }
-
-            // Check if duration is at least 2 hours (120 minutes)
-            const duration = endMinutes - startMinutes;
-            if (duration < 120) {
-                endError.textContent = 'Time slot must be at least 2 hours';
-                return false;
-            }
-
-            return true;
-        }
-
         // Real-time validation when times are changed
         const timeSelectsAll = document.querySelectorAll('.time-select');
         timeSelectsAll.forEach(select => {
@@ -595,7 +694,7 @@
         });
 
         // Form submission validation
-        document.getElementById('availabilityForm').addEventListener('submit', function(e) {
+        document.getElementById('availabilityForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             // Check global availability first
@@ -629,7 +728,35 @@
                     return;
                 }
 
-                this.submit();
+                try {
+                    const formData = new FormData(this);
+                    const response = await fetch(this.action, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) throw new Error('Failed to save availability');
+
+                    // Store the current date as last submission
+                    const submissionDate = new Date();
+                    localStorage.setItem('lastAvailabilitySubmission', submissionDate.toISOString());
+
+                    // Disable the button and start countdown
+                    document.getElementById('saveAvailabilityBtn').disabled = true;
+                    startCountdown(4 * 24 * 60 * 60 * 1000); // 4 days in milliseconds
+
+                    // Show success message and reload to show next week
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Availability saved successfully',
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.reload(); // Refresh to show next week
+                    });
+
+                } catch (error) {
+                    showAlert('error', error.message);
+                }
             } else {
                 Swal.fire({
                     title: 'Validation Error',
@@ -638,7 +765,10 @@
                 });
             }
         });
-    });
+    }
+
+    // Initialize the form when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initializeForm);
 </script>
 </body>
 </html>

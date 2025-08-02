@@ -12,6 +12,7 @@ public interface AppoinmentService {
             String time,
             LocalDate date,
             String specialReason,
-            String customerEmail
-    );
+            String customerEmail,
+            Float AppointmentPrice,
+            String paymentMethod);
 }

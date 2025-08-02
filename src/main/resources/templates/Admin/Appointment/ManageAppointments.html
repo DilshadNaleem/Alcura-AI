@@ -11,6 +11,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <style>
+
+        html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+
+
+}
         /* Navigation Bar Styles */
         :root {
           --clr-primary: #7380ec;
@@ -225,11 +233,12 @@
           }
 
           aside {
-            position: fixed;
+            position: sticky;
             width: 18rem;
             z-index: 1000;
             height: 100vh;
             left: -100%;
+            overflow-y:hidden;
             transition: all 0.3s ease;
           }
 
@@ -284,6 +293,9 @@
         .main-container {
             display: flex;
             flex: 1;
+            height:100vh
+            overflow:hidden;
+
         }
 
         .right {
@@ -292,9 +304,10 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden;
             background-color: var(--clr-color-background);
+            height:100%;
+
         }
 
         .container {
@@ -303,12 +316,13 @@
             background: var(--clr-white);
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
-            overflow: hidden;
+            overflow: auto;
             padding: 1rem;
             margin: 0;
             flex: 1;
             display: flex;
             flex-direction: column;
+            min-height: 0;
         }
 
         /* Dark theme variables */
@@ -363,6 +377,19 @@
             color: var(--dark);
         }
 
+        body.dark-theme-variables .modal-header {
+    background-color: #495057;
+    border-bottom-color: #6c757d;
+    color: #f8f9fa;
+}
+
+body.dark-theme-variables .modal-header h3 {
+    color: #f8f9fa !important;
+}
+
+body.dark-theme-variables .reschedule-form-group label {
+    color: #f8f9fa !important;
+}
         /* Theme toggle button */
         .theme-toggler {
             position: fixed;
@@ -553,6 +580,11 @@
             border-radius: 0 4px 4px 0;
             color: var(--dark);
         }
+
+        .status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
 
         .appointment-container {
             display: flex;
@@ -814,6 +846,50 @@
                 width: 100%;
             }
         }
+
+        /* Add this to your existing CSS */
+.time-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.time-slot {
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid;
+}
+
+.time-slot.btn-primary {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.time-slot.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+    background-color: transparent;
+}
+
+.time-slot.btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+.time-slot.btn-danger {
+    background-color: var(--danger);
+    color: white;
+    border-color: var(--danger);
+    cursor: not-allowed;
+}
+
+.time-slot[disabled] {
+    opacity: 0.7;
+}
     </style>
 </head>
 
@@ -930,7 +1006,7 @@
                         <button class="btn btn-sm btn-outline-warning filter-btn" data-status="rescheduled_request">Reschedule Request</button>
                         <button class="btn btn-sm btn-outline-info filter-btn" data-status="rescheduled">Rescheduled</button>
                         <button class="btn btn-sm btn-outline-success filter-btn" data-status="completed">Completed</button>
-                        <button class="btn btn-sm btn-outline-danger filter-btn" data-status="canceled">Canceled</button>
+                        <button class="btn btn-sm btn-outline-danger filter-btn" data-status="rejected">Rejected</button>
                     </div>
                 </div>
             </div>
@@ -940,7 +1016,7 @@
                 <div th:each="app, stat : ${app}" class="appointment-col" th:data-status="${#strings.toLowerCase(#strings.replace(app.status, ' ', '_'))}">
                     <div class="card appointment-card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <span th:text="${app.doctor_name}"></span>
+                            <span th:text="${app.doctor_name}"  th:data-doctor-id="${app.doctor}"></span>
                             <span class="status-badge" th:classappend="'status-' + ${#strings.toLowerCase(#strings.replace(app.status, ' ', '_'))}">
                                 <span th:text="${app.status}"></span>
                             </span>
@@ -981,6 +1057,12 @@
                                 <div class="info-label">Reschedule Reason</div>
                                 <div th:text="${app.reschedule_reason} ?: 'No reason provided'" class="info-value"></div>
                             </div>
+
+                            <div class="mb-3" th:if="${app.status == 'Rejected' or app.status == 'Reject Request'}">
+                                <div class="info-label">Admin Notes</div>
+                                <div th:text="${app.adminNotes} ?: 'No reason provided'" class="info-value"></div>
+                            </div>
+
 
                             <div class="d-flex flex-wrap mt-3">
                                 <button class="btn btn-sm btn-info action-btn view-btn" th:attr="data-id=${app.unique_id}">
@@ -1037,8 +1119,9 @@
             <button class="close-modal">&times;</button>
         </div>
         <div class="modal-body">
-            <form id="rescheduleForm">
+            <form id="rescheduleForm" action="/Admin/Appointment/Reschedule" method="post">
                 <input type="hidden" id="rescheduleAppointmentId">
+                <input type="hidden" id="doctorId">
 
                 <div class="reschedule-form-group">
                     <label for="rescheduleAction">Action</label>
@@ -1051,12 +1134,22 @@
 
                 <div class="reschedule-form-group" id="newDateGroup" style="display: none;">
                     <label for="newAppointmentDate">New Appointment Date</label>
-                    <input type="date" id="newAppointmentDate" class="form-control">
+                    <input type="date" id="newAppointmentDate" class="form-control" min="">
                 </div>
 
-                <div class="reschedule-form-group" id="newTimeGroup" style="display: none;">
-                    <label for="newAppointmentTime">New Appointment Time</label>
-                    <input type="time" id="newAppointmentTime" class="form-control">
+                <!-- Add time slots container -->
+                <div class="reschedule-form-group" id="timeSlotsGroup" style="display: none;">
+                    <label>Available Time Slots</label>
+                    <div id="timeSlotsContainer" class="time-slots">
+                        <!-- Time slots will be dynamically inserted here -->
+                    </div>
+                    <div id="loadingSpinner" style="display: none; text-align: center;">
+                        <div class="spinner"></div>
+                        <p>Loading available time slots...</p>
+                    </div>
+                    <div id="noSlotsMessage" style="display: none; color: var(--danger);">
+                        Doctor Is In Leave
+                    </div>
                 </div>
 
                 <div class="reschedule-form-group">
@@ -1066,7 +1159,7 @@
 
                 <div class="reschedule-actions">
                     <button type="button" class="btn btn-secondary close-modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary" id="submitRescheduleBtn" disabled>Submit</button>
                 </div>
             </form>
         </div>
@@ -1085,6 +1178,7 @@
 <script src="/Admin/SOSSocket.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+
 <script>
     // Theme toggler functionality
     const themeToggler = document.querySelector('.theme-toggler');
@@ -1329,6 +1423,14 @@
                     <div class="detail-value">${rescheduleReason}</div>
                 </div>
                 ` : ''}
+
+                // Inside the view button click handler
+${status === 'Rejected' ? `
+<div class="detail-row">
+    <div class="detail-label">Rejection Reason:</div>
+    <div class="detail-value">${rescheduleReason}</div>
+</div>
+` : ''}
             `;
 
             // Insert content into modal and show it
@@ -1336,63 +1438,206 @@
             $('#appointmentModal').addClass('active');
         });
 
-        // Reschedule button functionality
-        $(document).on('click', '.reschedule-btn', function() {
-            const appointmentCard = $(this).closest('.appointment-card');
-            const appointmentId = appointmentCard.find('.card-body > div:first div').text();
+       $(document).on('click', '.reschedule-btn', function(e) {
+    const appointmentCard = $(this).closest('.appointment-card');
+    const appointmentId = appointmentCard.find('.card-body > div:first .info-value').text().trim();
+    const doctorId = appointmentCard.find('.card-header span:first').data('doctor-id');
 
-            // Set the appointment ID in the form
-            $('#rescheduleAppointmentId').val(appointmentId);
+    console.log('Appointment ID:', appointmentId);
+    console.log('Doctor ID:', doctorId);
 
-            // Reset form
-            $('#rescheduleForm')[0].reset();
-            $('#newDateGroup').hide();
-            $('#newTimeGroup').hide();
+    // Set the appointment ID in the form
+    $('#rescheduleAppointmentId').val(appointmentId);
+    $('#doctorId').val(doctorId);
 
-            // Show the modal
-            $('#rescheduleModal').addClass('active');
-            $('body').css('overflow', 'hidden');
-        });
+    // Reset form
+    $('#rescheduleForm')[0].reset();
+    $('#newDateGroup').hide();
+    $('#timeSlotsGroup').hide();
+    $('#submitRescheduleBtn').prop('disabled', true);
+    $('#timeSlotsContainer').empty();
+    $('#noSlotsMessage').hide();
+
+    const today = new Date().toISOString().split('T')[0];
+    $('#newAppointmentDate').attr('min', today);
+
+    // Show the modal
+    $('#rescheduleModal').addClass('active');
+    $('body').css('overflow', 'hidden');
+});
 
         // Handle reschedule action change
         $('#rescheduleAction').change(function() {
             if ($(this).val() === 'approve') {
+                // Set today's date as minimum when approving
+                const today = new Date().toISOString().split('T')[0];
+                $('#newAppointmentDate').attr('min', today);
+
                 $('#newDateGroup').show();
-                $('#newTimeGroup').show();
+                $('#timeSlotsGroup').show();
+                $('#submitRescheduleBtn').prop('disabled', true);
             } else {
                 $('#newDateGroup').hide();
-                $('#newTimeGroup').hide();
+                $('#timeSlotsGroup').hide();
+                $('#submitRescheduleBtn').prop('disabled', false);
             }
         });
 
-        // Handle reschedule form submission
-        $('#rescheduleForm').submit(function(e) {
-            e.preventDefault();
+        // Handle date change for reschedule
+        $('#newAppointmentDate').change(async function() {
+            const doctorId = $('#doctorId').val();
+            const dateStr = $(this).val();
 
-            const appointmentId = $('#rescheduleAppointmentId').val();
-            const action = $('#rescheduleAction').val();
-            const newDate = $('#newAppointmentDate').val();
-            const newTime = $('#newAppointmentTime').val();
-            const adminNotes = $('#adminNotes').val();
+            console.log('Date changed:', dateStr, 'Doctor ID:', doctorId);
 
-            // Validate form
-            if (action === 'approve' && (!newDate || !newTime)) {
-                alert('Please select both date and time for the new appointment');
+            if (!doctorId || !dateStr) {
+                console.error('Missing doctorId or dateStr');
                 return;
             }
 
-            // Here you would typically make an AJAX call to your backend
-            // For demonstration, we'll just show an alert
-            const actionText = action === 'approve' ? 'approved' : 'rejected';
-            alert(`Reschedule request ${actionText} for appointment ${appointmentId}\nNew date: ${newDate}\nNew time: ${newTime}\nNotes: ${adminNotes}`);
+            // Show loading spinner
+            $('#loadingSpinner').show();
+            $('#timeSlotsContainer').empty();
+            $('#noSlotsMessage').hide();
+            $('#submitRescheduleBtn').prop('disabled', true);
 
-            // Close the modal
-            $('#rescheduleModal').removeClass('active');
-            $('body').css('overflow', 'auto');
+            try {
+                console.log('Fetching available time slots...');
 
-            // In a real application, you would update the UI here after successful backend response
-            // For example, change the status of the appointment card
+                // First fetch all available time slots
+                const availabilityResponse = await fetch(`/api/doctor/${doctorId}/availability/${dateStr}`);
+                console.log('Availability response status:', availabilityResponse.status);
+
+                if (!availabilityResponse.ok) {
+                    throw new Error(`Failed to fetch availability: ${availabilityResponse.status}`);
+                }
+
+                const timeSlots = await availabilityResponse.json();
+
+
+                // Then fetch already booked slots for this doctor and date
+                const bookedResponse = await fetch(`/api/doctor/${doctorId}/booked-slots/${dateStr}`);
+                console.log('Booked slots response status:', bookedResponse.status);
+
+                if (!bookedResponse.ok) {
+                    throw new Error(`Failed to fetch booked slots: ${bookedResponse.status}`);
+                }
+
+                const bookedSlots = await bookedResponse.json();
+
+
+                // Clear previous slots
+                $('#timeSlotsContainer').empty();
+
+                if (timeSlots.length === 0) {
+                    console.log('No available time slots');
+                    $('#noSlotsMessage').show();
+                    return;
+                }
+
+                // Create time slot buttons
+                timeSlots.forEach(slot => {
+                    const slotButton = $('<button>')
+                        .addClass('btn btn-sm time-slot m-1')
+                        .text(slot)
+                        .data('slot', slot);
+
+                    console.log('Processing slot:', slot);
+
+                    // Check if slot is already booked
+                    if (bookedSlots.includes(slot)) {
+                        console.log('Slot is booked:', slot);
+                        slotButton.addClass('btn-danger')
+                            .prop('disabled', true)
+                            .attr('title', 'This slot is already booked');
+                    } else {
+                        console.log('Slot is available:', slot);
+                        slotButton.addClass('btn-outline-primary')
+                            .on('click', function() {
+                                // Remove selected class from all slots
+                                $('.time-slot').removeClass('btn-primary selected').addClass('btn-outline-primary');
+
+                                // Add selected class to clicked slot
+                                $(this).removeClass('btn-outline-primary').addClass('btn-primary selected');
+
+                                // Enable submit button
+                                $('#submitRescheduleBtn').prop('disabled', false);
+                                console.log('Selected slot:', $(this).data('slot'));
+                            });
+                    }
+
+                    $('#timeSlotsContainer').append(slotButton);
+                });
+
+            } catch (error) {
+                console.error('Error fetching time slots:', error);
+                $('#timeSlotsContainer').empty();
+                $('#noSlotsMessage').text('Error loading availability: ' + error.message).show();
+            } finally {
+                $('#loadingSpinner').hide();
+                console.log('Finished loading time slots');
+            }
         });
+
+
+
+$('#rescheduleForm').submit(function(e) {
+    e.preventDefault();
+
+    const appointmentId = $('#rescheduleAppointmentId').val();
+    const action = $('#rescheduleAction').val();
+    const newDate = $('#newAppointmentDate').val();
+    const selectedTimeSlot = $('.time-slot.selected').data('slot');
+    const adminNotes = $('#adminNotes').val();
+
+    // Validate form
+    if (action === 'approve') {
+        if (!newDate) {
+            alert('Please select a date for the new appointment');
+            return;
+        }
+
+        if (!selectedTimeSlot) {
+            alert('Please select a time slot');
+            return;
+        }
+    }
+
+    // Create a proper JSON payload
+    const payload = {
+        appointmentId: appointmentId,
+        action: action,
+        newDate: newDate,
+        newTime: selectedTimeSlot,
+        adminNotes: adminNotes
+    };
+
+    console.log('Submitting reschedule:', payload);
+
+    // Use proper AJAX with JSON content type
+    $.ajax({
+        url: '/Admin/Appointment/Reschedule',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(payload),
+        success: function(response) {
+           if (response.status === 'Rejected') {
+        alert('Appointment has been rejected');
+    } else {
+        alert('Reschedule request processed successfully');
+    }
+    $('#rescheduleModal').removeClass('active');
+    $('body').css('overflow', 'auto');
+    location.reload();
+        },
+        error: function(xhr, status, error) {
+            const errorMsg = xhr.responseJSON?.message || error;
+            console.error('Error details:', xhr.responseJSON);
+            alert('Error processing reschedule request: ' + errorMsg);
+        }
+    });
+});
+
 
         // Close modal functionality
         $(document).on('click', '.close-modal', function() {
