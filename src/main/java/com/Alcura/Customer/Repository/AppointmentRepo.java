@@ -1,5 +1,6 @@
 package com.Alcura.Customer.Repository;
 
+import com.Alcura.Admin.DTO.ProfitCalculationDTO;
 import com.Alcura.Customer.Model.Appoinment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -43,4 +44,14 @@ public interface AppointmentRepo extends JpaRepository<Appoinment, Integer> {
     List<Appoinment> findByCustomerEmailAndStatusOrderByUniqueIdDesc(
             @Param("customerEmail") String customerEmail,
             @Param("status") String status);
+
+    @Query("SELECT new com.Alcura.Admin.DTO.ProfitCalculationDTO(" +
+            "a.unique_id, a.doctor, a.doctor_name, a.customer_email, a.status, " +
+            "a.appointmentId, a.created_at, d.uniqueId, d.email, " +
+            "dc.hospital_price, dc.newPrice, dc.price, dc.doctor_email) " +
+            "FROM Appoinment a " +
+            "JOIN Doctor d ON a.doctor = d.uniqueId " +  // Changed to match SQL
+            "JOIN DoctorPrice dc ON dc.doctor_email = d.email")
+    List<ProfitCalculationDTO> findAllAppointmentsWithDoctorInfo();
+
 }

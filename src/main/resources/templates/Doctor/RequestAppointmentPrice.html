@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Hospital Management</title>
+    <!-- Icon and Font Links -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="/Admin/AdminNav.css">
+    <style>
+        /* Light Mode (Default) Variables */
+:root {
+  --right-bg: #f6f6f9;
+  --form-bg: #ffffff;
+  --text-color: #363949;
+  --text-color-light: #7d8da1;
+  --form-border: #dce1eb;
+  --input-bg: #f6f6f9;
+  --input-focus-bg: #ffffff;
+  --button-bg: #4a6fa5;
+  --button-hover: #5a7fb5;
+}
+
+/* Dark Mode Variables */
+.dark-theme-variables {
+  --right-bg: #1a1a1a;
+  --form-bg: #2d2d2d;
+  --text-color: #e0e0e0;
+  --text-color-light: #bbbbbb;
+  --form-border: #444;
+  --input-bg: #3d3d3d;
+  --input-focus-bg: #4d4d4d;
+  --button-bg: #4a6fa5;
+  --button-hover: #5a7fb5;
+}
+
+/* Form and Right Section Styles (uses variables) */
+.right {
+  background-color: var(--right-bg);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+.right h1 {
+  color: var(--text-color);
+}
+
+.right form {
+  background-color: var(--form-bg);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.right form div {
+  margin-bottom: 15px;
+}
+
+.right form label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--text-color-light);
+}
+
+.right form input[type="number"],
+.right form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--form-border);
+  border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.right form input[type="number"]:focus,
+.right form textarea:focus {
+  outline: none;
+  border-color: var(--form-border);
+  background-color: var(--input-focus-bg);
+}
+
+.right form button {
+  background-color: var(--button-bg);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.right form button:hover {
+  background-color: var(--button-hover);
+}
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <!-- Sidebar Navigation -->
+    <aside>
+        <div class="top">
+            <div class="logo">
+                <h2>A <span class="danger">lcura</span></h2>
+            </div>
+            <div class="close" id="close_btn">
+                <span class="material-symbols-sharp">close</span>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <a href="/Admin/Dashboard">
+                <span class="material-symbols-sharp">dashboard</span>
+                <h3>Dashboard</h3>
+            </a>
+            <a href="/Admin/ManageCustomers">
+                <span class="material-symbols-sharp">group</span>
+                <h3>Customers</h3>
+            </a>
+            <a href="/Admin/DiseaseModelDashboard">
+                <span class="material-symbols-sharp">monitor_heart</span>
+                <h3>Disease Model</h3>
+            </a>
+            <a href="/Admin/MedicineModelDashboard">
+                <span class="material-symbols-sharp">medication</span>
+                <h3>Medicine Model</h3>
+            </a>
+            <a th:href="@{/Admin/SOS}">
+                <span class="material-symbols-sharp">emergency</span>
+                <h3>Emergency Alerts</h3>
+                <span class="msg_count notification-badge">0</span>
+            </a>
+            <a th:href="@{/Admin/FaceEnrollment}">
+                <span class="material-symbols-sharp">face</span>
+                <h3>Face Enrollment</h3>
+            </a>
+            <a href="/Admin/Manage_Doctors">
+                <span class="material-symbols-sharp">medical_services</span>
+                <h3>Doctors</h3>
+            </a>
+            <a href="/Admin/Feedbacks">
+                <span class="material-symbols-sharp">feedback</span>
+                <h3>Reports</h3>
+            </a>
+            <a href="/Admin/Manage_Appointments">
+                <span class="material-symbols-sharp">event_available</span>
+                <h3>Appointments</h3>
+            </a>
+            <a href="/Admin/ManageHospitals" class="active">
+                <span class="material-symbols-sharp">local_hospital</span>
+                <h3>Hospitals</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">settings</span>
+                <h3>Settings</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">add_circle</span>
+                <h3>Add Product</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">logout</span>
+                <h3>Logout</h3>
+            </a>
+        </div>
+    </aside>
+
+    <div class="right">
+        <div class="top">
+            <button id="menu_bar" aria-label="Toggle menu">
+                <span class="material-symbols-sharp">menu</span>
+            </button>
+        </div>
+
+        <!-- Theme toggle button -->
+        <div class="theme-toggler">
+            <span class="material-symbols-sharp active">light_mode</span>
+            <span class="material-symbols-sharp">dark_mode</span>
+        </div>
+
+        <h1> Request the price of the Appointment</h1>
+        <form action="/Doctor/RequestAppointmentPrice" method="post">
+            <div>
+                <label for="price">Price Rs :</label>
+                <input type="number" id="price" name="price" step="0.01" min="0" required>
+            </div>
+
+            <div>
+                <label for="description">Description :</label>
+                <textarea id="description" name="description" rows="4" cols="50" required></textarea>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+
+
+    </div>
+</div>
+
+<script src="/Admin/AdminNav.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+</body>
+</html>

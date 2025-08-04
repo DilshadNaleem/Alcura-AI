@@ -30,9 +30,13 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer>
 
 
     @Query("SELECT new com.Alcura.Customer.DTO.ViewDoctorForm(" +
-            "d.firstName, d.lastName, d.experience, d.specialist, d.specialist_info, d.image, d.email, d.uniqueId, d. doctor_availablility, d.price) " +
-            "FROM Doctor d")
+            "d.firstName, d.lastName, d.experience, d.specialist, d.specialist_info, " +
+            "d.image, d.email, d.uniqueId, d.doctor_availablility, dp.newPrice) " +
+            "FROM Doctor d " +
+            "JOIN DoctorPrice dp ON d.email = dp.doctor_email " +
+            "WHERE dp.status = 'Success'")
     List<ViewDoctorForm> viewDoctorinCustomerForm();
+
 
     @Query("SELECT d FROM Doctor d ORDER BY d.createdAt DESC LIMIT 10")
     List<Doctor> findRecentDoctors();

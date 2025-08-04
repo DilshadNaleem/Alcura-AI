@@ -560,7 +560,8 @@
                     <div class="middle">
                         <div class="left">
                             <h3>Total Sales</h3>
-                            <h1>$25,024</h1>
+                            <h1 th:text="${'Rs ' + #numbers.formatDecimal(totalSales, 1, 2)}">RS 0.00</h1>
+
                         </div>
                         <div class="progress">
                             <svg>
@@ -579,7 +580,7 @@
                 <div class="middle">
                     <div class="left">
                         <h3>Total Expenses</h3>
-                        <h1>$14,200</h1>
+                        <h1 th:text="${'Rs ' + #numbers.formatDecimal(totalExpenses, 1, 2)}">RS 0.00</h1>
                     </div>
                     <div class="progress">
                         <svg>
@@ -596,7 +597,7 @@
                 <div class="middle">
                     <div class="left">
                         <h3>Total Income</h3>
-                        <h1>$10,824</h1>
+                        <h1 th:text="${'Rs ' + #numbers.formatDecimal(totalProfit, 1, 2)}">RS 0.00</h1>
                     </div>
                     <div class="progress">
                         <svg>

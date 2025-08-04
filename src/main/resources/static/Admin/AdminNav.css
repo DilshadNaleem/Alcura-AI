@@ -206,41 +206,49 @@ aside .sidebar a .msg_count {
 
 
  /* Responsive Styles */
-        @media screen and (max-width: 1200px) and (min-width: 769px) {
-          aside .sidebar h3 {
+    @media screen and (max-width: 1200px) and (min-width: 769px) {
+        aside {
+            width: 80px; /* collapse width */
+        }
+
+        .right {
+            margin-left: 80px; /* Match the collapsed sidebar width */
+            width: calc(100% - 80px); /* Adjust width calculation */
+        }
+
+        aside .sidebar h3 {
             display: none;
-          }
-aside {
-    width: 80px; /* collapse width */
-  }
-     aside .sidebar a h3 {
-    display: none; /* hide label text */
-  }
-            .msg_count {
-                display: none;
-            }
-          aside .sidebar a {
+        }
+
+        aside .sidebar a h3 {
+            display: none; /* hide label text */
+        }
+
+        .msg_count {
+            display: none;
+        }
+
+        aside .sidebar a {
             width: 5.6rem;
             justify-content: flex-start;
             margin-left: 0;
             padding: 0;
-          }
+        }
 
-          aside .logo h2
-          {
+        aside .logo h2 {
             display: none;
-          }
-          aside .sidebar a:last-child {
+        }
+
+        aside .sidebar a:last-child {
             position: relative;
             margin-top: 1.8rem;
             width: 5.6rem;
-          }
-
-          aside .sidebar a span {
-            margin-left: 0;
-          }
         }
 
+        aside .sidebar a span {
+            margin-left: 0;
+        }
+    }
 
 @media screen and (max-width: 768px) {
     #close_btn {

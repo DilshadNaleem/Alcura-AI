@@ -11,6 +11,7 @@ public class AdminAppointmentRescheduleEmailService
     @Autowired
     private JavaMailSender mailSender;
 
+
     public void sendAppointmentStatusEmail(String toEmail, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("hypermarket403@gmail.com");

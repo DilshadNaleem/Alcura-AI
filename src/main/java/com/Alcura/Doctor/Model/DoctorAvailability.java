@@ -1,9 +1,11 @@
 package com.Alcura.Doctor.Model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -38,6 +40,10 @@ public class DoctorAvailability {
     // For recurring availability
     private LocalDate validFrom;
     private LocalDate validTo;
+
+    @CreationTimestamp
+    @Column (name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
     public Long getId() {
         return id;

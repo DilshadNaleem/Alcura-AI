@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Hospital Management</title>
+    <link rel="stylesheet" href="/Admin/AdminNav.css">
+    <!-- Icon and Font Links -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <style>
+        /* Light Mode Variables (default) */
+        :root {
+          --primary-bg: #f6f6f9;
+          --secondary-bg: #ffffff;
+          --text-color: #363949;
+          --input-bg: #ffffff;
+          --input-border: #ced4da;
+          --input-text: #495057;
+          --button-primary: #7380ec;
+          --button-primary-hover: #5d6bd6;
+          --button-text: #ffffff;
+          --form-shadow: 0 2rem 3rem rgba(132, 139, 200, 0.18);
+        }
+
+        /* Dark Mode Variables */
+        body.dark-theme-variables {
+          --primary-bg: #181a1e;
+          --secondary-bg: #202528;
+          --text-color: #edeffd;
+          --input-bg: #2d2d2d;
+          --input-border: #555;
+          --input-text: #f8f9fa;
+          --button-primary: #4895ef;
+          --button-primary-hover: #3f7fd4;
+          --form-shadow: 0 2rem 3rem rgba(0, 0, 0, 0.4);
+        }
+
+        /* Base Styles */
+        body {
+          font-family: 'Poppins', sans-serif;
+          background-color: var(--primary-bg);
+          color: var(--text-color);
+          transition: all 0.3s ease;
+          margin: 0;
+          padding: 0;
+          min-height: 100vh;
+        }
+
+        .main-container {
+          display: flex;
+          min-height: 100vh;
+        }
+
+        .right {
+          flex: 1;
+          padding: 2rem;
+          background-color: var(--primary-bg);
+          overflow-y: auto;
+          height: 100vh;
+        }
+
+        /* Form Styles */
+        form {
+          background-color: var(--secondary-bg);
+          padding: 2rem;
+          border-radius: 1rem;
+          box-shadow: var(--form-shadow);
+          max-width: 600px;
+          margin: 2rem auto;
+          transition: all 0.3s ease;
+        }
+
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 500;
+          color: var(--text-color);
+        }
+
+        input[type="number"] {
+          width: 100%;
+          padding: 0.75rem 1rem;
+          margin-bottom: 1.5rem;
+          border: 1px solid var(--input-border);
+          border-radius: 0.4rem;
+          background-color: var(--input-bg);
+          color: var(--input-text);
+          font-family: 'Poppins', sans-serif;
+          font-size: 1rem;
+          transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+          outline: none;
+          border-color: var(--button-primary);
+          box-shadow: 0 0 0 0.25rem rgba(115, 128, 236, 0.25);
+        }
+
+        button[type="submit"] {
+          background-color: var(--button-primary);
+          color: var(--button-text);
+          padding: 0.75rem 1.5rem;
+          border: none;
+          border-radius: 0.4rem;
+          cursor: pointer;
+          font-weight: 500;
+          font-family: 'Poppins', sans-serif;
+          font-size: 1rem;
+          transition: all 0.3s ease;
+          width: 100%;
+          margin-top: 1rem;
+        }
+
+        button[type="submit"]:hover {
+          background-color: var(--button-primary-hover);
+          transform: translateY(-2px);
+        }
+
+        /* Theme Toggle Styles */
+        .theme-toggler {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: var(--button-primary);
+          color: white;
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+          z-index: 1000;
+        }
+
+        .theme-toggler span {
+          position: absolute;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+
+        .theme-toggler span.active {
+          opacity: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+          .right {
+            padding: 1rem;
+          }
+
+          form {
+            padding: 1.5rem;
+          }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <!-- Sidebar Navigation -->
+    <aside>
+        <div class="top">
+            <div class="logo">
+                <h2>A <span class="danger">lcura</span></h2>
+            </div>
+            <div class="close" id="close_btn">
+                <span class="material-symbols-sharp">close</span>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <a href="/Admin/Dashboard">
+                <span class="material-symbols-sharp">dashboard</span>
+                <h3>Dashboard</h3>
+            </a>
+            <a href="/Admin/ManageCustomers">
+                <span class="material-symbols-sharp">group</span>
+                <h3>Customers</h3>
+            </a>
+            <a href="/Admin/DiseaseModelDashboard">
+                <span class="material-symbols-sharp">monitor_heart</span>
+                <h3>Disease Model</h3>
+            </a>
+            <a href="/Admin/MedicineModelDashboard">
+                <span class="material-symbols-sharp">medication</span>
+                <h3>Medicine Model</h3>
+            </a>
+            <a th:href="@{/Admin/SOS}">
+                <span class="material-symbols-sharp">emergency</span>
+                <h3>Emergency Alerts</h3>
+                <span class="msg_count notification-badge">0</span>
+            </a>
+            <a th:href="@{/Admin/FaceEnrollment}">
+                <span class="material-symbols-sharp">face</span>
+                <h3>Face Enrollment</h3>
+            </a>
+            <a href="/Admin/Manage_Doctors">
+                <span class="material-symbols-sharp">medical_services</span>
+                <h3>Doctors</h3>
+            </a>
+            <a href="/Admin/Feedbacks">
+                <span class="material-symbols-sharp">feedback</span>
+                <h3>Reports</h3>
+            </a>
+            <a href="/Admin/Manage_Appointments">
+                <span class="material-symbols-sharp">event_available</span>
+                <h3>Appointments</h3>
+            </a>
+            <a href="/Admin/ManageHospitals" class="active">
+                <span class="material-symbols-sharp">local_hospital</span>
+                <h3>Hospitals</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">settings</span>
+                <h3>Settings</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">add_circle</span>
+                <h3>Add Product</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">logout</span>
+                <h3>Logout</h3>
+            </a>
+        </div>
+    </aside>
+
+    <div class="right">
+        <div class="top">
+            <button id="menu_bar" aria-label="Toggle menu">
+                <span class="material-symbols-sharp">menu</span>
+            </button>
+        </div>
+
+        <!-- Theme toggle button -->
+        <div class="theme-toggler">
+            <span class="material-symbols-sharp active">light_mode</span>
+            <span class="material-symbols-sharp">dark_mode</span>
+        </div>
+        <form action="/Admin/SetPercentage" method="post">
+            <h1>Manage Percentage</h1> <br>
+            <label>Percentage Set for one Appointment</label>
+            <input type="number" min="1" max="80" name="range">
+            <label>Set Percentage %</label>
+            <input type="number" th:value="${price.hospital_price}">
+            <button type="submit">Submit</button>
+            
+        </form>
+    </div>
+</div>
+
+<script src="/Admin/AdminNav.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+</body>
+</html>

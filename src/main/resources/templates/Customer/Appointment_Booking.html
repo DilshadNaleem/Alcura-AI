@@ -1498,6 +1498,7 @@
                     <p class="doctor-bio" th:if="${doctor.price != null and doctor.price > 0}"
                        th:text="'Rs. ' + ${#numbers.formatDecimal(doctor.price, 1, 2)}">
                     </p>
+                    <label>Including VAT %</label>
                     <p class="doctor-bio" th:unless="${doctor.price != null and doctor.price > 0}">
                         Price not available
                     </p>

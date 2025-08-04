@@ -1,9 +1,11 @@
 package com.Alcura.Admin.Controller;
 
+import com.Alcura.Admin.DTO.ProfitCalculationDTO;
 import com.Alcura.Admin.Model.Admin;
 import com.Alcura.Admin.Repository.AdminRepository;
 import com.Alcura.Customer.Model.Appoinment;
 import com.Alcura.Customer.Model.Customer;
+import com.Alcura.Customer.Repository.AppointmentRepo;
 import com.Alcura.Customer.Repository.AppointmentRepository;
 import com.Alcura.Customer.Repository.CustomerRepository;
 import com.Alcura.Doctor.Model.Doctor;
@@ -33,51 +35,85 @@ public class AdminDashboardController {
     private final CustomerRepository customerRepository;
     private final Logger logger = LoggerFactory.getLogger(AdminDashboardController.class);
     private final DoctorRepository doctorRepository;
-
+    private final AppointmentRepo appointmentRepo;
 
     public AdminDashboardController(AdminRepository adminRepository,
                                     AppointmentRepository appointmentRepository,
                                     CustomerRepository customerRepository,
-                                    DoctorRepository doctorRepository)
+                                    DoctorRepository doctorRepository,
+                                    AppointmentRepo appointmentRepo)
     {
         this.adminRepository = adminRepository;
         this.appointmentRepository = appointmentRepository;
         this.customerRepository = customerRepository;
         this.doctorRepository = doctorRepository;
+        this.appointmentRepo = appointmentRepo;
     }
 
 
     @GetMapping("/Admin/Dashboard")
-    public String showAdminName(Model model, HttpSession session) {
+    public String showAdminDashboard(Model model, HttpSession session) {
+        // 1. Check admin authentication (from showAdminName)
         String email = (String) session.getAttribute("email");
-
-        if(email == null || email.isEmpty()) {
+        if (email == null || email.isEmpty()) {
             return "redirect:/Admin/Signing";
         }
 
-        Admin admin = adminRepository.findByEmailAndStatus(email,1);
-
-        if (admin == null)
-        {
+        Admin admin = adminRepository.findByEmailAndStatus(email, 1);
+        if (admin == null) {
             return "redirect:/Admin/Signing";
         }
 
+        // 2. Add admin details to model
         model.addAttribute("adminName", admin.getFirstName());
         model.addAttribute("adminImage", admin.getImage());
         System.out.println("Image Path: " + admin.getImage());
+
         try {
+            // 3. Load recent entities (from showAdminName)
             List<Appoinment> appointments = appointmentRepository.findRecentAppointments();
-            logger.debug("Loaded {} appointments", appointments.size());
-            model.addAttribute("appointments", appointments);
-
             List<Customer> customers = customerRepository.findRecentCustomers();
-            model.addAttribute("customers",customers);
-
             List<Doctor> doctors = doctorRepository.findRecentDoctors();
+
+            model.addAttribute("appointments", appointments);
+            model.addAttribute("customers", customers);
             model.addAttribute("doctors", doctors);
+
+            // 4. Add sales/profit calculations (from profit())
+            List<ProfitCalculationDTO> allAppointments = appointmentRepo.findAllAppointmentsWithDoctorInfo();
+
+            double totalSales = 0.0;
+            double totalProfit = 0.0;
+            double totalExpenses = 0.0;
+            int totalAppointments = allAppointments.size();
+
+            for (ProfitCalculationDTO appointment : allAppointments) {
+                Float price = appointment.getPrice();
+                Float newPrice = appointment.getNewPrice();
+
+                if (price != null) {
+                    totalSales +=  newPrice;
+                    if (newPrice != null) {
+                        totalProfit += (  newPrice - price);
+                        totalExpenses += price;
+                    }
+                }
+            }
+
+            model.addAttribute("totalSales", totalSales);
+            model.addAttribute("totalProfit", totalProfit);
+            model.addAttribute("totalExpenses", totalExpenses);
+            model.addAttribute("totalAppointments", totalAppointments);
+
         } catch (Exception e) {
-            logger.error("Failed to load appointments: {}", e.getMessage());
-            model.addAttribute("appointments", List.of()); // Empty list on error
+            logger.error("Error loading dashboard data: {}", e.getMessage());
+            // Initialize empty attributes to prevent Thymeleaf errors
+            model.addAttribute("appointments", List.of());
+            model.addAttribute("customers", List.of());
+            model.addAttribute("doctors", List.of());
+            model.addAttribute("totalSales", 0.0);
+            model.addAttribute("totalProfit", 0.0);
+            model.addAttribute("totalAppointments", 0);
         }
 
         return "/Admin/AdminDashboard";
