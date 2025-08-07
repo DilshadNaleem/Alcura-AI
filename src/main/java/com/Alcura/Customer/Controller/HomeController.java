@@ -19,16 +19,6 @@ public class HomeController
         return "/Customer/verification";
     }
 
-    @GetMapping("/Customer/Dashboard")
-    public String dashboard (HttpSession session)
-    {
-        if (session.getAttribute("email") == null)
-        {
-            return "/Customer/Signing";
-        }
-        return  "/Customer/Dashboard";
-    }
-
 
     @GetMapping("/Customer/editProfile")
     public String profile()

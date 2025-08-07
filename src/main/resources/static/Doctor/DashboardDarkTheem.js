@@ -1,44 +1,75 @@
-document.addEventListener('DOMContentLoaded', function() {
-        // Sidebar functionality
-        const sideMenu = document.querySelector('aside');
-        const menuBtn = document.querySelector('#menu_bar');
-        const closeBtn = document.querySelector('#close_btn');
-        const themeToggler = document.querySelector('.theme-toggler');
-        const lightModeIcon = document.getElementById('light-mode');
-        const darkModeIcon = document.getElementById('dark-mode');
 
-        // Check for saved theme preference on page load
-        if (localStorage.getItem('darkMode') === 'enabled') {
-            document.body.classList.add('dark-theme-variables');
-            lightModeIcon.classList.remove('active');
-            darkModeIcon.classList.add('active');
+    // Function to enable dark mode
+    function enableDarkMode() {
+        document.body.classList.add('dark-theme-variables');
+        localStorage.setItem('darkMode', 'enabled');
+        updateThemeTogglerIcons(true);
+    }
+
+    // Function to disable dark mode
+    function disableDarkMode() {
+        document.body.classList.remove('dark-theme-variables');
+        localStorage.setItem('darkMode', 'disabled');
+        updateThemeTogglerIcons(false);
+    }
+
+    // Function to update the toggler icons
+    function updateThemeTogglerIcons(isDarkMode) {
+        const icons = document.querySelectorAll('.theme-toggler span');
+        if (icons.length >= 2) {
+            if (isDarkMode) {
+                icons[0].classList.remove('active'); // light icon
+                icons[1].classList.add('active');    // dark icon
+            } else {
+                icons[0].classList.add('active');    // light icon
+                icons[1].classList.remove('active'); // dark icon
+            }
+        }
+    }
+
+    // Initialize theme on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check for saved theme preference
+        const darkMode = localStorage.getItem('darkMode') === 'enabled';
+
+        // Set initial theme
+        if (darkMode) {
+            enableDarkMode();
         } else {
-            document.body.classList.remove('dark-theme-variables');
-            lightModeIcon.classList.add('active');
-            darkModeIcon.classList.remove('active');
+            disableDarkMode();
         }
 
-        menuBtn.addEventListener('click', () => {
-            sideMenu.style.display = "block";
+        // Setup theme toggler
+        const themeToggler = document.querySelector('.theme-toggler');
+        if (themeToggler) {
+            themeToggler.addEventListener('click', () => {
+                if (document.body.classList.contains('dark-theme-variables')) {
+                    disableDarkMode();
+                } else {
+                    enableDarkMode();
+                }
+            });
+        }
+
+        // Menu toggle functionality
+        document.getElementById('menu_toggle').addEventListener('click', function() {
+            document.querySelector('.sidebar-container').classList.toggle('active');
         });
 
-        closeBtn.addEventListener('click', () => {
-            sideMenu.style.display = "none";
-        });
-
-        // Theme toggler with localStorage persistence
-        themeToggler.addEventListener('click', () => {
-            document.body.classList.toggle('dark-theme-variables');
-
-            // Update button states
-            lightModeIcon.classList.toggle('active');
-            darkModeIcon.classList.toggle('active');
-
-            // Save theme preference to localStorage
-            if (document.body.classList.contains('dark-theme-variables')) {
-                localStorage.setItem('darkMode', 'enabled');
-            } else {
-                localStorage.setItem('darkMode', 'disabled');
-            }
+        document.getElementById('close_btn').addEventListener('click', function() {
+            document.querySelector('.sidebar-container').classList.remove('active');
         });
     });
+
+    // Image preview functionality
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                document.getElementById('profileImage').src = e.target.result;
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }

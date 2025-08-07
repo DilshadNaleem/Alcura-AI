@@ -1,119 +1,218 @@
-<!-- src/main/resources/static/upload.jsp -->
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-
     <meta http-equiv="X-ua-compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Side Menu</title>
     <link rel="stylesheet" href="style.css">
     <!---Boxicon css-->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        /* Table Container Styles */
+        .table-container {
+            margin: 40px auto;
+            padding: 0 20px;
+            max-width: 1200px;
+            width: 100%;
+        }
 
+        /* Table Styles */
+        .appointments-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 30px 0;
+            font-size: 0.95em;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            table-layout: fixed;
+        }
+
+        .appointments-table thead {
+            background-color: #4a6baf;
+            color: white;
+        }
+
+        .appointments-table th {
+            padding: 16px 18px;
+            text-align: left;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .appointments-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .appointments-table tbody tr:hover {
+            background-color: #f5f7ff;
+        }
+
+        .appointments-table td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 14px 18px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+        }
+
+        .appointments-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Column Widths */
+        .appointments-table th:nth-child(1),
+        .appointments-table td:nth-child(1) {
+            width: 10%;
+        }
+
+        .appointments-table th:nth-child(2),
+        .appointments-table td:nth-child(2) {
+            width: 20%;
+        }
+
+        .appointments-table th:nth-child(3),
+        .appointments-table td:nth-child(3) {
+            width: 15%;
+        }
+
+        .appointments-table th:nth-child(4),
+        .appointments-table td:nth-child(4) {
+            width: 15%;
+        }
+
+        .appointments-table th:nth-child(5),
+        .appointments-table td:nth-child(5) {
+            width: 15%;
+        }
+
+        .appointments-table th:nth-child(6),
+        .appointments-table td:nth-child(6) {
+            width: 25%;
+        }
+
+        /* Status Styling */
+        .status-pending {
+            color: #ff9800;
+            font-weight: 500;
+        }
+
+        .status-confirmed {
+            color: #4caf50;
+            font-weight: 500;
+        }
+
+        .status-cancelled {
+            color: #f44336;
+            font-weight: 500;
+        }
+
+        .box-container {
+            margin-bottom: 60px;
+        }
+
+        .home {
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
 
 <nav class="sidebar close">
     <header>
         <div class="image-text">
-                    <span class="image">
-                        <img src="log.png" alt="">
-                    </span>
-
+            <span class="image">
+                <img src="log.png" alt="">
+            </span>
             <div class="text header-text">
                 <span class="name">Alucra</span>
                 <span class="profession">Web developer</span>
             </div>
         </div>
-
         <i class='bx bx-chevron-right toggle'></i>
     </header>
 
     <div class="menu-bar">
         <div class="menu">
             <li class="search-box">
-                <i class='bx bx-search icon' ></i>
+                <i class='bx bx-search icon'></i>
                 <input type="search" placeholder="Search" id="searchBox">
             </li>
 
-
             <ul class="menu-links">
-
                 <li class="nav-link">
                     <a href="/Customer/Dashboard">
-                        <i class='bx bx-home-alt icon' ></i>
+                        <i class='bx bx-home-alt icon'></i>
                         <span class="text nav-text">Dashboard</span>
                     </a>
                 </li>
-
                 <li class="nav-link">
                     <a href="/Customer/editProfile">
-                        <i class='bx bx-user icon' ></i>
+                        <i class='bx bx-user icon'></i>
                         <span class="text nav-text">Edit profile</span>
                     </a>
                 </li>
-
                 <li class="nav-link">
                     <a href="/Customer/Model">
-                        <i class='bx bx-cube icon' ></i>
+                        <i class='bx bx-cube icon'></i>
                         <span class="text nav-text">Model</span>
                     </a>
                 </li>
                 <li class="nav-link">
                     <a href="/Customer/FaceEnrollment">
-                        <i class='bx bx-face icon' ></i>
+                        <i class='bx bx-face icon'></i>
                         <span class="text nav-text">Face</span>
                     </a>
                 </li>
                 <li class="nav-link">
                     <a href="/Customer/SOS">
-                        <i class='bx bx-first-aid icon' ></i>
+                        <i class='bx bx-first-aid icon'></i>
                         <span class="text nav-text">SOS</span>
                     </a>
                 </li>
                 <li class="nav-link">
                     <a href="/Customer/MedicineClassifier">
-                        <i class='bx bx-capsule icon' ></i>
+                        <i class='bx bx-capsule icon'></i>
                         <span class="text nav-text">Drug</span>
                     </a>
                 </li>
                 <li class="nav-link">
                     <a href="/Customer/DiseaseClassifier">
-                        <i class='bx bx-bug icon' ></i>
+                        <i class='bx bx-bug icon'></i>
                         <span class="text nav-text">Disease</span>
                     </a>
                 </li>
-                 <li class="nav-link">
-                     <a href="/Customer/DiseaseSymptomChecker">
-                         <i class="bx bx-clinic icon"></i>
-                         <span class="text nav-text">Diseae Symptom</span>
-                     </a>
-                 </li>
-
+                <li class="nav-link">
+                    <a href="/Customer/DiseaseSymptomChecker">
+                        <i class="bx bx-clinic icon"></i>
+                        <span class="text nav-text">Diseae Symptom</span>
+                    </a>
+                </li>
                 <li class="nav-link">
                     <a href="/Customer/AppointmentBooking">
                         <i class="bx bx-calendar icon"></i>
                         <span class="text nav-text">Appointment Bookings</span>
                     </a>
                 </li>
-
             </ul>
         </div>
         <div class="bottom-content">
             <li class="">
                 <a href="#">
-                    <i class='bx bx-log-out icon' ></i>
+                    <i class='bx bx-log-out icon'></i>
                     <span class="text nav-text">Logout</span>
                 </a>
             </li>
-
             <li class="mode">
                 <div class="moon-sun">
-                    <i class='bx bx-moon icon moon' ></i>
-                    <i class='bx bx-sun icon sun' ></i>
+                    <i class='bx bx-moon icon moon'></i>
+                    <i class='bx bx-sun icon sun'></i>
                 </div>
-
                 <span class="mode-text text">Dark Mode</span>
                 <div class="toggle-switch">
                     <span class="switch"></span>
@@ -127,39 +226,56 @@
     <div class="text">Dashboard</div>
     <div class="box-container">
         <div class="box">
-
-            <a href="EditProfile.html" class="link">
+            <a href="/Customer/editProfile" class="link">
                 <img src="logo.png" alt="" class="logo">
                 <h3>hi</h3>
             </a>
         </div>
-
         <div class="box">
             <img src="logo.png" alt="" class="logo">
             <a href="#" class="link">Heei</a>
         </div>
-
-
         <div class="box">
             <img src="logo.png" alt="" class="logo">
             <a href="/Customer/MyHistory" class="link">History</a>
         </div>
-
         <div class="box">
             <img src="logo.png" alt="" class="logo">
             <a href="#" class="link">Click</a>
         </div>
-
         <div class="box">
             <img src="logo.png" alt="" class="logo">
             <a href="#" class="link">Heei</a>
         </div>
-
-
         <div class="box">
             <img src="logo.png" alt="" class="logo">
             <a href="#" class="link">Heei</a>
         </div>
+    </div>
+
+    <div class="table-container">
+        <table class="appointments-table">
+            <thead>
+            <tr>
+                <th>Unique Id</th>
+                <th>Doctor Name</th>
+                <th>Appointment Date</th>
+                <th>Appointment Time</th>
+                <th>Status</th>
+                <th>Created At</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="appo, stat : ${appointments}">
+                <td th:text="${stat.count}"></td>
+                <td th:text="${appo.doctor_name}"></td>
+                <td th:text="${appo.appointment_date}"></td>
+                <td th:text="${appo.appointment_time}"></td>
+                <td th:classappend="${'status-' + appo.status.toLowerCase()}" th:text="${appo.status}"></td>
+                <td th:text="${#temporals.format(appo.created_at)}"></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </section>
 

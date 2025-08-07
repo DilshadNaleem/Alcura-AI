@@ -506,7 +506,7 @@
                 <span class="material-symbols-sharp">medication</span>
                 <h3>Medicine Model</h3>
             </a>
-            <a th:href="@{/Admin/SOS}">
+            <a th:href="@{/Admin/SOSView}">
                 <span class="material-symbols-sharp">emergency</span>
                 <h3>Emergency Alerts</h3>
                 <span class="msg_count notification-badge">0</span>
@@ -519,9 +519,21 @@
                 <span class="material-symbols-sharp">medical_services</span>
                 <h3>Doctors</h3>
             </a>
+            <a href="/Admin/Manage_Availability">
+                <span class="material-symbols-sharp">schedule</span>
+                <h3>Doctor Availabilities</h3>
+            </a>
+            <a href="/Admin/Manage_Doctor/Price">
+                <span class="material-symbols-sharp">paid</span>
+                <h3>Manage Price</h3>
+            </a>
+            <a href="/Admin/Manage_Percentage">
+                <span class="material-symbols-sharp">percent</span>
+                <h3>Profit Percentage</h3>
+            </a>
             <a href="/Admin/Feedbacks">
                 <span class="material-symbols-sharp">feedback</span>
-                <h3>Reports</h3>
+                <h3>Feedbacks</h3>
             </a>
             <a href="/Admin/Manage_Appointments">
                 <span class="material-symbols-sharp">event_available</span>
@@ -531,6 +543,7 @@
                 <span class="material-symbols-sharp">local_hospital</span>
                 <h3>Hospitals</h3>
             </a>
+
             <a href="#">
                 <span class="material-symbols-sharp">settings</span>
                 <h3>Settings</h3>
@@ -555,7 +568,7 @@
         <!-- Insights Cards -->
         <section class="insights">
             <div class="sales">
-                <a href="/Admin/DiseaseModelDashboard">
+                <a href="/Admin/ProfitCalculation">
                     <span class="material-symbols-sharp">trending_up</span>
                     <div class="middle">
                         <div class="left">
@@ -576,6 +589,7 @@
 
 
             <div class="expenses">
+                <a href="/Admin/ProfitCalculation">
                 <span class="material-symbols-sharp">local_mall</span>
                 <div class="middle">
                     <div class="left">
@@ -590,9 +604,11 @@
                     </div>
                 </div>
                 <small>Last 24 Hours</small>
+                </a>
             </div>
 
             <div class="income">
+                <a href="/Admin/ProfitCalculation">
                 <span class="material-symbols-sharp">stacked_line_chart</span>
                 <div class="middle">
                     <div class="left">
@@ -607,6 +623,29 @@
                     </div>
                 </div>
                 <small>Last 24 Hours</small>
+                </a>
+            </div>
+
+
+            <div class="profit-percentage">
+                <a href="/Admin/Manage_Percentage">
+                    <span class="material-symbols-sharp">percent</span>
+                    <div class="middle">
+                        <div class="left">
+                            <h3>Profit Percentage</h3>
+                            <h1 th:text="${#numbers.formatDecimal(profitPercentage, 1, 2) + '%'}">0.00%</h1>
+                        </div>
+                        <div class="progress">
+                            <svg>
+                                <circle r="30" cy="40" cx="40"></circle>
+                            </svg>
+                            <div class="number">
+                                <p th:text="${#numbers.formatDecimal(profitPercentage, 1, 2) + '%'}">0%</p>
+                            </div>
+                        </div>
+                    </div>
+                    <small>Current Margin</small>
+                </a>
             </div>
         </section>
 
@@ -626,7 +665,7 @@
             <table>
                 <thead>
                 <tr>
-                    <th>Appoinment ID</th>
+                    <th>Appointment ID</th>
                     <th>Doctor </th>
                     <th>Time</th>
                     <th>Status</th>
@@ -653,7 +692,7 @@
                 </tbody>
             </table>
 
-            <a href="#" class="view-all">Show All</a>
+            <a href="/Admin/Manage_Appointments" class="view-all">Show All</a>
         </section>
     </main>
 
@@ -721,23 +760,7 @@
             </div>
         </section>
 
-        <!-- Sales Analytics Section -->
-        <section class="sales-analytics">
-            <h2>Sales Analytics</h2>
-            <div class="item online">
-                <div class="icon">
-                    <span class="material-symbols-sharp">shopping_cart</span>
-                </div>
-                <div class="right_text">
-                    <div class="info">
-                        <h3>Online Orders</h3>
-                        <small class="text-muted">Last seen 2 Hours</small>
-                    </div>
-                    <h5 class="danger">-17%</h5>
-                    <h3>3849</h3>
-                </div>
-            </div>
-        </section>
+
     </div>
 </div>
 
@@ -845,6 +868,10 @@
                         border-radius: 4px; cursor: pointer; margin-right: 10px;">
                         <i class="fas fa-route"></i> View Detailed Route
                     </button>
+                    <button onclick="completeEmergency('${emergency.trackingId}')"
+            style="background: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-right: 10px;">
+            <i class="fas fa-check-circle"></i> Complete Request
+        </button>
                     <button onclick="closeEmergencyModal('${modalId}', '${emergency.trackingId}')"
                         style="background: #757575; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
                         <i class="fas fa-times"></i> Dismiss
@@ -920,6 +947,9 @@
                 <p><strong>Time:</strong> ${new Date(emergency.timestamp).toLocaleTimeString()}</p>
                 <div class="actions">
                    <button onclick='window.location.href = "/Admin/SOSView"'>View Map</button>
+                    <button style="background: #4CAF50;" onclick="completeEmergency('${emergency.trackingId}')">
+            <i class="fas fa-check-circle"></i> Complete Request
+        </button>
                     <button class="secondary" onclick="acknowledgeEmergency('${emergency.trackingId}')">Acknowledge</button>
                 </div>
             `;
@@ -1183,6 +1213,27 @@
             `;
         }
     }
+
+  function completeEmergency(trackingId) {
+    // Create a form dynamically
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/Admin/CompleteSOS';
+
+    // Add trackingId as form parameter
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'trackingId';
+    input.value = trackingId;
+    form.appendChild(input);
+
+    // Submit the form
+    document.body.appendChild(form);
+    form.submit();
+
+    // Remove the form after submission
+    setTimeout(() => document.body.removeChild(form), 100);
+}
     /*]]>*/
 </script>
 </body>

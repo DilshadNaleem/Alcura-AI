@@ -1,485 +1,22 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Customer Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
     <style>
-        :root {
-            --clr-danger: #ff7782;
-            --clr-primary: #7380ec;
-            --clr-light: rgba(132, 139, 200, 0.18);
-            --clr-info-dark: #7d8da1;
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --secondary: #3f37c9;
-            --accent: #4895ef;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --success: #4cc9f0;
-            --warning: #f8961e;
-            --danger: #f72585;
-            --border-radius: 12px;
-            --clr-info-dark: #7d8da1;
-            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --clr-white: #fff;
-            --clr-dark-variant: #677483;
-            --clr-color-background: #f6f6f9;
 
-            /* Sidebar variables */
-            --sidebar-width: 280px;
-            --sidebar-bg: #fff;
-            --sidebar-active-bg: rgba(67, 97, 238, 0.1);
-            --sidebar-active-color: #4361ee;
-            --sidebar-hover-bg: rgba(67, 97, 238, 0.05);
-            --sidebar-text-color: #677483;
-        }
-
-        /* Dark theme variables */
-        body.dark-theme-variables {
-            --primary: #4895ef;
-            --primary-dark: #3f7fd4;
-            --secondary: #4a4ecc;
-            --accent: #4cc9f0;
-            --light: #212529;
-            --dark: #f8f9fa;
-            --gray: #adb5bd;
-            --success: #4cc9f0;
-            --warning: #f8961e;
-            --danger: #f72585;
-            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            --clr-white: #202528;
-            --clr-dark-variant: #677483;
-            --clr-color-background: #181a1e;
-            background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%);
-
-            /* Dark sidebar variables */
-            --sidebar-bg: #1a1a1a;
-            --sidebar-active-bg: rgba(58, 134, 255, 0.2);
-            --sidebar-active-color: #4d9eff;
-            --sidebar-hover-bg: rgba(58, 134, 255, 0.1);
-            --sidebar-text-color: rgba(255, 255, 255, 0.7);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            color: var(--dark);
-            background-color: #f5f7fa;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-            transition: var(--transition);
-        }
-
-        /* Sidebar Styles */
-        .sidebar-container {
-            width: var(--sidebar-width);
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            background: var(--sidebar-bg);
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            transition: var(--transition);
-        }
-
-        .sidebar-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .sidebar-logo h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 0;
-            color: var(--dark);
-        }
-
-        .sidebar-logo .danger {
-            color: var(--clr-danger);
-        }
-
-        .sidebar-close-btn {
-            display: none;
-            cursor: pointer;
-            color: var(--dark);
-        }
-
-        .sidebar-menu {
-            padding: 1rem 0;
-            height: calc(100vh - 5rem);
-            overflow-y: auto;
-        }
-
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1.5rem;
-            color: var(--sidebar-text-color);
-            text-decoration: none;
-            transition: var(--transition);
-            margin: 0.25rem 0;
-            border-left: 3px solid transparent;
-        }
-
-        .sidebar-menu a:hover {
-            background-color: var(--sidebar-hover-bg);
-            color: var(--clr-primary);
-        }
-
-        .sidebar-menu a.active {
-            background-color: var(--sidebar-active-bg);
-            color: var(--sidebar-active-color);
-            border-left: 3px solid var(--sidebar-active-color);
-        }
-
-        .sidebar-menu a span {
-            margin-right: 1rem;
-            font-size: 1.25rem;
-        }
-
-        .sidebar-menu h3 {
-            font-size: 1rem;
-            font-weight: 500;
-            margin: 0;
-        }
-
-        .sidebar-menu .notification-badge {
-            background-color: var(--clr-danger);
-            color: var(--clr-white);
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            border-radius: 50px;
-            margin-left: auto;
-        }
-
-        /* Mobile Menu Toggle */
-        .menu-toggle-btn {
-            display: none;
-            position: fixed;
-            top: 1.5rem;
-            left: 1.5rem;
-            z-index: 999;
-            background: var(--clr-white);
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            margin-left: var(--sidebar-width);
-            padding: 2rem;
-            transition: var(--transition);
-            min-height: 100vh;
-            background-color: var(--clr-color-background);
-        }
-
-        .container {
-            width: 100%;
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 20px;
-            background: var(--clr-white);
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-        }
-
-        /* Rest of your existing styles... */
-        .mt-4 {
-            margin-top: 1.5rem;
-        }
-
-        .mb-4 {
-            margin-bottom: 1.5rem;
-        }
-
-        .d-flex {
-            display: flex;
-        }
-
-        .justify-content-between {
-            justify-content: space-between;
-        }
-
-        .align-items-center {
-            align-items: center;
-        }
-
-        .card {
-            background-color: var(--clr-white);
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            margin-bottom: 20px;
-            transition: var(--transition);
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        .card-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .card-footer {
-            padding: 15px 20px;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            font-size: 0.85rem;
-        }
-
-        .shadow {
-            box-shadow: var(--box-shadow);
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-        }
-
-        .btn-secondary {
-            background-color: var(--secondary);
-            color: white;
-        }
-
-        .btn-danger {
-            background-color: var(--danger);
-            color: white;
-        }
-
-        .btn-warning {
-            background-color: var(--warning);
-            color: white;
-        }
-
-        .danger {
-            color: var(--clr-danger);
-        }
-
-        .btn-info {
-            background-color: var(--accent);
-            color: white;
-        }
-
-        .btn-sm {
-            padding: 5px 10px;
-            font-size: 0.875rem;
-        }
-
-        .float-end {
-            float: right;
-        }
-
-        .text-muted {
-            color: var(--gray);
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 0 -10px;
-        }
-
-        .col-md-6 {
-            width: 50%;
-            padding: 0 10px;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    width: 100%;
-}
-
-#customerTable {
-    width: 100% !important;
-    table-layout: auto;
-}
-
-        .table-bordered th,
-        .table-bordered td {
-            border: 1px solid #dee2e6;
-            padding: 8px;
-        }
-
-        .table th {
-            text-align: left;
-            background-color: var(--light);
-        }
-
-        .input-group {
-            display: flex;
-            align-items: stretch;
-        }
-
-        .input-group-text {
-            padding: 8px 12px;
-            background-color: var(--light);
-            border: 1px solid var(--gray);
-            border-radius: 4px 0 0 4px;
-        }
-
-        .form-control {
-            padding: 8px 12px;
-            border: 1px solid var(--gray);
-            border-left: none;
-            border-right: none;
-            flex: 1;
-            background-color: var(--clr-white);
-            color: var(--dark);
-        }
-
-        .btn-outline-secondary {
-            background-color: transparent;
-            border: 1px solid var(--gray);
-            border-radius: 0 4px 4px 0;
-            color: var(--dark);
-        }
-
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .status-pending {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-
-        .status-confirmed {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .status-canceled {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-
-        .status-rescheduled {
-            background-color: #cce5ff;
-            color: #004085;
-        }
-
-        .status-rescheduled_request {
-            background-color: #e2d4f0;
-            color: #4a2d7a;
-        }
-
-        .status-completed {
-            background-color: #d1e7dd;
-            color: #0f5132;
-        }
-
-        .info-label {
-            font-weight: 600;
-            color: var(--gray);
-            margin-bottom: 5px;
-        }
-
-        .action-btn {
-            margin-right: 5px;
-            margin-bottom: 5px;
-        }
-
-        .flex-wrap {
-            flex-wrap: wrap;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: var(--gray);
-            width: 100%;
-        }
-
-        .empty-state i {
-            font-size: 50px;
-            margin-bottom: 20px;
-            color: var(--light);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .gap-2 {
-            gap: 0.5rem;
-        }
-
-        /* Profile image styles */
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin: 0 auto;
-            display: block;
-            border: 5px solid var(--light);
-        }
-
-        .profile-header {
-            background-color: var(--light);
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        /* Theme toggle button */
         .theme-toggler {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: var(--primary);
+            background: var(--clr-primary);
             color: white;
             width: 44px;
             height: 44px;
@@ -501,11 +38,62 @@
         .theme-toggler span.active {
             opacity: 1;
         }
+        :root {
+              --clr-primary: #7380ec;
+             --clr-danger: #ff7782;
+             --clr-success: #41f1b6;
+             --clr-white: #fff;
+             --clr-info-dark: #7d8da1;
+            --clr-info-light: #dce1eb;
+            --clr-dark: #363949;
+            --clr-warnig: #ff4edc;
+            --clr-light: rgba(132, 139, 200, 0.18);
+            --clr-primary-variant: #111e88;
+             --clr-dark-variant: #677483;
+            --clr-color-background: #f6f6f9;
 
-        /* Dark mode adjustments */
+            --card-border-radius: 2rem;
+            --border-radius-1: 0.4rem;
+            --border-radius-2: 0.8rem;
+            --border-radius-3: 1.2rem;
+
+            --card-padding: 1.8rem;
+            --padding-1: 1.2rem;
+            --box-shadow: 0 2rem 3rem var(--clr-light);
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f72585;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Dark theme variables */
+        body.dark-theme-variables {
+            --primary: #4895ef;
+            --primary-dark: #3f7fd4;
+            --secondary: #4a4ecc;
+            --accent: #4cc9f0;
+            --light: #212529;
+            --dark: #f8f9fa;
+            --gray: #adb5bd;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f72585;
+            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%);
+        }
+
         body.dark-theme-variables .container {
             background: #2d2d2d;
-            color: var(--dark);
+            color: #f8f9fa;
         }
 
         body.dark-theme-variables .card {
@@ -516,24 +104,19 @@
         body.dark-theme-variables .card-header {
             background-color: #495057;
             border-bottom-color: #6c757d;
-            color: var(--dark);
+            color: #f8f9fa;
         }
 
-        body.dark-theme-variables .card-footer {
-            background-color: #495057;
-            border-top-color: #6c757d;
-            color: var(--gray);
-        }
-
+        /* Dark theme table styling */
         body.dark-theme-variables .table {
             background-color: #343a40 !important;
-            color: var(--dark) !important;
+            color: #f8f9fa !important;
         }
 
         body.dark-theme-variables .table th,
         body.dark-theme-variables .table td {
             background-color: #343a40 !important;
-            color: var(--dark) !important;
+            color: #f8f9fa !important;
             border-color: #495057 !important;
         }
 
@@ -541,9 +124,10 @@
             background-color: rgba(255, 255, 255, 0.05) !important;
         }
 
+        /* Modal content in dark mode */
         body.dark-theme-variables .modal-content {
             background-color: #343a40;
-            color: var(--dark);
+            color: #f8f9fa;
         }
 
         body.dark-theme-variables .modal-header,
@@ -552,132 +136,771 @@
             background-color: #2d2d2d;
         }
 
-        body.dark-theme-variables .modal-title {
-            color: var(--dark) !important;
+        body.dark-theme-variables .modal-title,
+        body.dark-theme-variables .modal-body h5 {
+            color: #f8f9fa !important;
         }
 
+        /* Tables inside modal in dark mode */
+        body.dark-theme-variables .modal-body .table {
+            background-color: #343a40 !important;
+            color: #f8f9fa !important;
+        }
+
+        body.dark-theme-variables .modal-body .table th {
+            background-color: #2d2d2d !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+
+        body.dark-theme-variables .modal-body .table td {
+            background-color: #343a40 !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+
+        /* Text colors in dark mode */
         body.dark-theme-variables .text-muted {
-            color: var(--gray) !important;
+            color: #adb5bd !important;
         }
 
-        body.dark-theme-variables .input-group-text {
-            background-color: #495057;
-            border-color: #6c757d;
-            color: var(--dark);
-        }
-
-        body.dark-theme-variables .form-control {
-            background-color: #495057;
-            border-color: #6c757d;
-            color: var(--dark);
-        }
-
-        body.dark-theme-variables .form-control::placeholder {
-            color: var(--gray);
-        }
-
-        body.dark-theme-variables .btn-outline-secondary {
-            background-color: transparent;
-            border-color: #6c757d;
-            color: var(--dark);
-        }
-
-        body.dark-theme-variables .btn-outline-secondary:hover {
-            background-color: #495057;
-            color: var(--dark);
-        }
-
-        body.dark-theme-variables .empty-state {
-            color: var(--gray);
-        }
-
-        body.dark-theme-variables .card-body div,
-        body.dark-theme-variables .info-label,
-        body.dark-theme-variables .detail-value,
-        body.dark-theme-variables .detail-label,
-        body.dark-theme-variables .text-muted {
-            color: var(--gray) !important;
-        }
-
-        body.dark-theme-variables .card-body .info-label {
-            color: var(--gray) !important;
-        }
-
-        body.dark-theme-variables h5 {
-            color: white !important;
-        }
-
+        /* Profile header in modal */
         body.dark-theme-variables .profile-header {
-            background-color: #495057;
-        }
-
-        body.dark-theme-variables .profile-img {
-            border-color: #495057;
-        }
-
-        body.dark-theme-variables .sidebar-top {
-            border-bottom-color: rgba(255, 255, 255, 0.1);
-        }
-
-        body.dark-theme-variables .sidebar-logo h2 {
-            color: var(--dark);
-        }
-
-        body.dark-theme-variables .sidebar-close-btn {
-            color: var(--dark);
-        }
-
-        body.dark-theme-variables .menu-toggle-btn {
             background-color: #2d2d2d;
+        }
+
+        /* DataTables header in dark mode */
+        body.dark-theme-variables .dataTables_scrollHead {
+            background-color: #2d2d2d !important;
+        }
+
+        body.dark-theme-variables .dataTables_scrollHead thead th {
+            background-color: #2d2d2d !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+
+        body.dark-theme-variables .dataTables_scrollHeadInner {
+            background-color: #2d2d2d !important;
+        }
+
+        body.dark-theme-variables table.dataTable thead th {
+            background-color: #2d2d2d !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+
+        /* Pagination in dark mode */
+        body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button {
+            color: #f8f9fa !important;
+        }
+
+        body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            color: #f8f9fa !important;
+            background: var(--primary) !important;
+            border: 1px solid var(--primary) !important;
+        }
+
+        /* Search box in dark mode */
+        body.dark-theme-variables .dataTables_filter input {
+            background-color: #495057;
+            color: #f8f9fa;
+            border-color: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Layout adjustments */
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        aside {
+            width: 280px;
+            background: white;
+            box-shadow: var(--box-shadow);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: hidden;
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        /* Make the right content area fill remaining space */
+        .right {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+             overflow-y: auto;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Adjust the container to fill available space */
+        .container {
+            width: 100%;
+            max-width: 100%;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            padding: 1rem;
+            margin: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Make the card fill the container */
+        .card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 0;
+            border-radius: var(--border-radius);
+            border: none;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background-color: var(--light);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+        }
+
+        /* Make the card body fill the card */
+        .card-body {
+            flex: 1;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+
+
+        /* Hide scrollbar when not needed */
+        .table-responsive::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 3px;
+        }
+
+        .table-responsive::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+
+        /* Only show scrollbar on hover */
+        .table-responsive:not(:hover)::-webkit-scrollbar-thumb {
+            background-color: transparent;
+        }
+
+        /* Adjust table header to be sticky */
+        #hospitalTable thead th {
+            position: sticky;
+            top: 0;
+            background-color: var(--light);
+            z-index: 10;
+        }
+
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
             color: var(--dark);
         }
 
-        @media (max-width: 1200px) {
-            .sidebar-container {
-                left: -280px;
+        .table th {
+            font-weight: 600;
+            background-color: var(--light);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-info {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .btn-info:hover {
+            background-color: #3a7bd5;
+            border-color: #3a7bd5;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            border-color: var(--warning);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: block;
+            border: 5px solid var(--light);
+            box-shadow: var(--box-shadow);
+        }
+
+        .profile-header {
+            background-color: var(--light);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .hospital-image {
+            max-width: 100%;
+            max-height: 300px;
+            display: block;
+            margin: 0 auto;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .image-container {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-content {
+            border-radius: var(--border-radius);
+            border: none;
+            box-shadow: var(--box-shadow);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 var(--border-radius) var(--border-radius) !important;
+        }
+
+        /* Focus ring for accessibility */
+        button:focus, a:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.5);
+        }
+
+        /* DataTables pagination styling */
+        .dataTables_wrapper .dataTables_paginate {
+            padding: 1rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        /* Responsive design */
+        @media (max-width: 992px) {
+            .container {
+                padding: 1.5rem;
             }
 
-            .sidebar-container.active {
-                left: 0;
+            aside {
+                width: 250px;
             }
+        }
 
-            .menu-toggle-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .sidebar-close-btn {
-                display: block;
-            }
-
-            .main-content {
-                margin-left: 0;
+        @media (max-width: 768px) {
+            .container {
                 padding: 1rem;
             }
+
+            .right {
+                height: auto;
+                padding: 0.5rem;
+            }
+
+              #close_btn {
+        display: flex;
+    }
+
+            .profile-header {
+                padding: 1.5rem;
+            }
+
+            .main-container {
+                flex-direction: column;
+            }
+
+            aside {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .right {
+                padding: 1rem 0;
+            }
         }
+
+        /* Navigation Bar Styles */
+        :root {
+          --clr-primary: #7380ec;
+          --clr-danger: #ff7782;
+          --clr-success: #41f1b6;
+          --clr-white: #fff;
+          --clr-info-dark: #7d8da1;
+          --clr-info-light: #dce1eb;
+          --clr-dark: #363949;
+          --clr-warnig: #ff4edc;
+          --clr-light: rgba(132, 139, 200, 0.18);
+          --clr-primary-variant: #111e88;
+          --clr-dark-variant: #677483;
+          --clr-color-background: #f6f6f9;
+
+          --card-border-radius: 2rem;
+          --border-radius-1: 0.4rem;
+          --border-radius-2: 0.8rem;
+          --border-radius-3: 1.2rem;
+
+          --card-padding: 1.8rem;
+          --padding-1: 1.2rem;
+          --box-shadow: 0 2rem 3rem var(--clr-light);
+        }
+
+        /* Dark theme variables */
+        .dark-theme-variables {
+          --clr-color-background: #181a1e;
+          --clr-white: #202528;
+          --clr-light: rgba(0, 0, 0, 0.4);
+          --clr-dark: #edeffd;
+          --clr-dark-variant: #677483;
+          --box-shadow: 0 2rem 3rem var(--clr-light);
+        }
+
+        /* Sidebar Navigation */
+        aside {
+          height: 100vh;
+          position: sticky;
+          top: 0;
+          background: var(--clr-white);
+          box-shadow: var(--box-shadow);
+          width: 280px;
+          transition: all 0.3s ease;
+          z-index: 100;
+        }
+
+        aside .top {
+          background: var(--clr-white);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-top: 1.4rem;
+          padding: 0 1rem;
+        }
+
+        aside .logo {
+          display: flex;
+          gap: 1rem;
+          align-items: center;
+        }
+
+        aside .logo h2 {
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: var(--clr-dark);
+        }
+
+        aside .logo .danger {
+          color: var(--clr-danger);
+        }
+
+        aside .close {
+          display: flex;
+          align-items: center;
+        }
+
+        aside .close span {
+          font-size: 1.5rem;
+          cursor: pointer;
+          color: var(--clr-dark);
+        }
+
+        /* Sidebar Menu */
+        aside .sidebar {
+          background: var(--clr-white);
+          display: flex;
+          flex-direction: column;
+          height: calc(100vh - 4.5rem);
+          position: relative;
+          top: 1rem;
+          padding: 0 1rem;
+          overflow: hidden;
+        }
+        /* Add these rules to your existing dark mode styles */
+body.dark-theme-variables .dataTables_wrapper .dataTables_length,
+body.dark-theme-variables .dataTables_wrapper .dataTables_info,
+body.dark-theme-variables .dataTables_wrapper .dataTables_filter label,
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: var(--clr-white) !important;
+}
+
+body.dark-theme-variables .dataTables_wrapper .dataTables_filter input::placeholder {
+    color: var(--clr-info-light) !important;
+    opacity: 1;
+}
+
+body.dark-theme-variables .dataTables_wrapper .dataTables_filter input {
+    color: var(--clr-white) !important;
+}
+
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+    color: var(--clr-info-light) !important;
+}
+
+
+        aside .sidebar a {
+          display: flex;
+          color: var(--clr-info-dark);
+          margin-left: 2rem;
+          gap: 1rem;
+          align-items: center;
+          height: 3.3rem;
+          transition: all 0.1s ease;
+          border-radius: var(--border-radius-1);
+          padding: 0 1rem;
+          text-decoration: none;
+        }
+/* Add these rules to your existing dark mode styles */
+body.dark-theme-variables .dataTables_wrapper .dataTables_length,
+body.dark-theme-variables .dataTables_wrapper .dataTables_info,
+body.dark-theme-variables .dataTables_wrapper .dataTables_filter label,
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: var(--clr-white) !important;
+}
+
+body.dark-theme-variables .dataTables_wrapper .dataTables_filter input::placeholder {
+    color: var(--clr-info-light) !important;
+    opacity: 1;
+}
+
+body.dark-theme-variables .dataTables_wrapper .dataTables_filter input {
+    color: var(--clr-white) !important;
+}
+
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+    color: var(--clr-info-light) !important;
+}
+
+body.dark-theme-variables .dataTables_wrapper .dataTables_length select,
+body.dark-theme-variables .dataTables_wrapper .dataTables_length select option {
+    background-color: var(--clr-dark-variant) !important;
+    color: var(--clr-white) !important;
+    border-color: var(--clr-info-dark) !important;
+}
+
+body.dark-theme-variables .dataTables_wrapper .dataTables_length select:focus {
+    border-color: var(--clr-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(115, 128, 236, 0.25) !important;
+}
+
+body.dark-theme-variables .dataTables_wrapper .dataTables_info {
+    color: var(--clr-white) !important;
+}
+
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: var(--clr-primary) !important;
+    color: var(--clr-white) !important;
+    border: 1px solid var(--clr-primary) !important;
+}
+
+ /* Add these rules to your existing dark mode styles */
+body.dark-theme-variables .dataTables_wrapper .dataTables_length,
+body.dark-theme-variables .dataTables_wrapper .dataTables_info,
+body.dark-theme-variables .dataTables_wrapper .dataTables_filter label,
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: white !important;
+}
+
+/* Specifically target the length menu dropdown */
+body.dark-theme-variables .dataTables_wrapper .dataTables_length select {
+    background-color: #495057 !important;
+    color: white !important;
+    border-color: #6c757d !important;
+}
+
+/* Target the options in the dropdown */
+body.dark-theme-variables .dataTables_wrapper .dataTables_length select option {
+    background-color: #495057 !important;
+    color: white !important;
+}
+
+/* Target the info text */
+body.dark-theme-variables .dataTables_wrapper .dataTables_info {
+    color: white !important;
+}
+
+/* Target the pagination buttons */
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: white !important;
+    border: 1px solid #6c757d !important;
+}
+
+/* Current page button */
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: var(--primary) !important;
+    color: white !important;
+    border: 1px solid var(--primary) !important;
+}
+
+/* Hover state for buttons */
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #495057 !important;
+    color: white !important;
+}
+
+
+body.dark-theme-variables .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: var(--clr-dark-variant) !important;
+    color: var(--clr-white) !important;
+    border: 1px solid var(--clr-info-dark) !important;
+}
+        aside .sidebar a span {
+          font-size: 1.6rem;
+          transition: all 0.3s ease-in-out;
+          color: var(--clr-info-dark);
+        }
+
+        aside .sidebar a h3 {
+          font-weight: 500;
+          font-size: 0.9rem;
+          color: var(--clr-info-dark);
+        }
+
+        aside .sidebar a:last-child {
+          position: absolute;
+          bottom: 1rem;
+          width: calc(100% - 2rem);
+        }
+
+        aside .sidebar a.active {
+          background-color: var(--clr-light);
+          color: var(--clr-primary);
+          margin-left: 0;
+          border-left: 5px solid var(--clr-primary);
+          margin-left: calc(1rem - 3px);
+        }
+
+        aside .sidebar a.active span,
+        aside .sidebar a.active h3 {
+          color: var(--clr-primary);
+        }
+
+        aside .sidebar a:hover span {
+          margin-left: 0.5rem;
+        }
+
+        aside .sidebar a .msg_count {
+          background-color: var(--clr-danger);
+          color: var(--clr-white);
+          padding: 2px 5px;
+          font-size: 11px;
+          border-radius: var(--border-radius-1);
+          margin-left: auto;
+        }
+
+        /* Mobile Menu Toggle */
+        #menu_bar {
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          cursor: pointer;
+          display: none;
+          color: var(--clr-dark);
+          padding: 0.5rem;
+        }
+
+        /* Responsive Styles */
+        @media screen and (max-width: 1200px) and (min-width: 769px) {
+          aside .sidebar h3 {
+            display: none;
+          }
+aside {
+    width: 80px; /* collapse width */
+  }
+     aside .sidebar a h3 {
+    display: none; /* hide label text */
+  }
+            .msg_count {
+                display: none;
+            }
+          aside .sidebar a {
+            width: 5.6rem;
+            justify-content: flex-start;
+            margin-left: 0;
+            padding: 0;
+          }
+
+          aside .logo h2
+          {
+            display: none;
+          }
+          aside .sidebar a:last-child {
+            position: relative;
+            margin-top: 1.8rem;
+            width: 5.6rem;
+          }
+
+          aside .sidebar a span {
+            margin-left: 0;
+          }
+        }
+
+        @media screen and (max-width: 768px) {
+             #close_btn {
+        display: flex !important; /* Force show on mobile */
+    }
+
+          aside {
+            position: fixed;
+            width: 18rem;
+            z-index: 1000;
+            height: 100vh;
+            left: -100%;
+            transition: all 0.3s ease;
+          }
+
+          aside.active {
+            left: 0;
+          }
+
+          aside .logo h2 {
+            display: inline;
+          }
+
+          aside .sidebar h3 {
+            display: inline;
+          }
+
+          aside .sidebar a {
+            width: 100%;
+            height: 3.4rem;
+            justify-content: flex-start;
+            padding: 0 1rem;
+            margin-left: 0;
+          }
+
+          aside .sidebar a:last-child {
+            position: absolute;
+            bottom: 1rem;
+            width: calc(100% - 2rem);
+          }
+
+          aside .top div.close span {
+            display: inline;
+            position: absolute;
+            right: 1rem;
+            font-size: 1.8rem;
+            cursor: pointer;
+          }
+
+          #menu_bar {
+            display: block;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 100;
+          }
+        }
+
+        #close_btn {
+    display: none;
+}
+
     </style>
 </head>
 <body>
 
 <div class="main-container">
     <!-- Sidebar Navigation -->
-    <aside class="sidebar-container">
-        <div class="sidebar-top">
-            <div class="sidebar-logo">
+    <aside>
+        <div class="top">
+            <div class="logo">
                 <h2>A <span class="danger">lcura</span></h2>
             </div>
-            <div class="sidebar-close-btn" id="close_btn">
+            <div class="close" id="close_btn">
                 <span class="material-symbols-sharp">close</span>
             </div>
         </div>
 
-        <div class="sidebar-menu">
-            <a href="/Admin/Dashboard">
+        <div class="sidebar">
+            <a href="/Admin/Dashboard" >
                 <span class="material-symbols-sharp">dashboard</span>
                 <h3>Dashboard</h3>
             </a>
-            <a href="/Admin/ManageCustomers" class="active">
+            <a href="/Admin/ManageCustomers"  class="active">
                 <span class="material-symbols-sharp">group</span>
                 <h3>Customers</h3>
             </a>
@@ -702,9 +925,21 @@
                 <span class="material-symbols-sharp">medical_services</span>
                 <h3>Doctors</h3>
             </a>
+            <a href="/Admin/Manage_Availability">
+                <span class="material-symbols-sharp">schedule</span>
+                <h3>Doctor Availabilities</h3>
+            </a>
+            <a href="/Admin/Manage_Doctor/Price">
+                <span class="material-symbols-sharp">paid</span>
+                <h3>Manage Price</h3>
+            </a>
+            <a href="/Admin/Manage_Percentage">
+                <span class="material-symbols-sharp">percent</span>
+                <h3>Profit Percentage</h3>
+            </a>
             <a href="/Admin/Feedbacks">
                 <span class="material-symbols-sharp">feedback</span>
-                <h3>Reports</h3>
+                <h3>Feedbacks</h3>
             </a>
             <a href="/Admin/Manage_Appointments">
                 <span class="material-symbols-sharp">event_available</span>
@@ -729,51 +964,23 @@
         </div>
     </aside>
 
-    <!-- Mobile menu toggle button -->
-    <button class="menu-toggle-btn" id="menu_toggle">
-        <span class="material-symbols-sharp">menu</span>
-    </button>
+    <div class="right">
+        <div class="top">
+            <button id="menu_bar" aria-label="Toggle menu">
+                <span class="material-symbols-sharp">menu</span>
+            </button>
+        </div>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container mt-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1><i class="bi bi-people-fill"></i> Customer Management</h1>
-                <div>
-                    <a href="#" class="btn btn-primary">
-                        <i class="bi bi-plus-circle"></i> Add New
-                    </a>
-                </div>
-            </div>
+        <div class="container">
+            <h1>Hospital Management</h1>
 
-            <!-- Search Section -->
-            <div class="card shadow mb-4">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                <input type="text" id="searchInput" class="form-control" placeholder="Search customers...">
-                                <button class="btn btn-outline-secondary" type="button" id="searchButton">Search</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Customer Table -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold">All Customers</h6>
-                    <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-sm btn-outline-primary filter-btn active" data-status="all">All</button>
-                        <button class="btn btn-sm btn-outline-success filter-btn" data-status="active">Active</button>
-                        <button class="btn btn-sm btn-outline-danger filter-btn" data-status="inactive">Inactive</button>
-                    </div>
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">All Customers</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="customerTable" class="table table-striped table-bordered">
+                        <table id="hospitalTable" class="table table-striped table-bordered" style="width:100%">
                             <thead>
                             <tr>
                                 <th>Number</th>
@@ -819,189 +1026,332 @@
                             </tr>
                             </tbody>
                         </table>
+                        <a href="/">Add New Customer</a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Customer View Modal -->
-        <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="customerModalLabel">Customer Profile</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="profile-header text-center">
-                            <h3 id="customerName">Loading...</h3>
-                            <p class="text-muted" id="customerType">Loading...</p>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h5>Basic Information</h5>
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th>Unique ID</th>
-                                        <td id="customerUniqueId">Loading...</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Email</th>
-                                        <td id="customerEmail">Loading...</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Contact Number</th>
-                                        <td id="customerContact">Loading...</td>
-                                    </tr>
-                                    <tr>
-                                        <th>NIC</th>
-                                        <td id="customerNic">Loading...</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <h5>Additional Information</h5>
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th>Status</th>
-                                        <td id="customerStatus">Loading...</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Account Created</th>
-                                        <td id="customerCreatedAt">Loading...</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Last Updated</th>
-                                        <td id="customerUpdatedAt">Loading...</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <a href="#" id="deleteCustomerBtn" class="btn btn-danger">
-                            <i class="bi bi-trash"></i> Delete Profile
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Theme toggle button -->
-        <div class="theme-toggler">
-            <span class="material-symbols-sharp active">light_mode</span>
-            <span class="material-symbols-sharp">dark_mode</span>
-        </div>
-    </main>
+        <a href="/Admin/AddNewHospital">Add Hospital</a>
+    </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script src="/Admin/Toggle.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Customer View Modal -->
+<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customerModalLabel">Customer Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-header text-center">
+                    <h3 id="customerName">Loading...</h3>
+                    <p class="text-muted" id="customerType">Loading...</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Basic Information</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Unique ID</th>
+                                <td id="customerUniqueId">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td id="customerEmail">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>Contact Number</th>
+                                <td id="customerContact">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>NIC</th>
+                                <td id="customerNic">Loading...</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Additional Information</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Status</th>
+                                <td id="customerStatus">Loading...</td>
+                            </tr>
+                            <tr>
+                                <th>Account Created</th>
+                                <td id="customerCreatedAt">Loading...</td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="#" id="deleteCustomerBtn" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Delete Profile
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Theme toggle button -->
+<div class="theme-toggler">
+    <span class="material-symbols-sharp active">light_mode</span>
+    <span class="material-symbols-sharp">dark_mode</span>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-    $(document).ready(function() {
-        // Mobile menu toggle functionality
-        $('#menu_toggle').click(function() {
-            $('.sidebar-container').toggleClass('active');
-        });
+    // Theme toggler functionality
+const themeToggler = document.querySelector('.theme-toggler');
 
-        $('#close_btn').click(function() {
-            $('.sidebar-container').removeClass('active');
-        });
-
-        // Initialize DataTable
-        $('#customerTable').DataTable({
-            responsive: true
-        });
-
-        // Search functionality
-        $('#searchButton').click(function() {
-            const value = $('#searchInput').val().toLowerCase();
-            $('#customerTable tbody tr').filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-            });
-        });
-
-        $('#searchInput').on('keyup', function(e) {
-            if (e.key === 'Enter') {
-                $('#searchButton').click();
-            }
-        });
-
-        // Status filter functionality
-        $('.filter-btn').click(function() {
-            const status = $(this).data('status');
-            $('.filter-btn').removeClass('active');
-            $(this).addClass('active');
-
-            if (status === 'all') {
-                $('#customerTable tbody tr').show();
-            } else {
-                $('#customerTable tbody tr').each(function() {
-                    const rowStatus = $(this).find('td:nth-child(8) .badge').text().toLowerCase();
-                    $(this).toggle(rowStatus === status);
-                });
-            }
-        });
-
-        // Handle view button click
-        $('.view-btn').click(function() {
-            const uniqueId = $(this).data('unique-id');
-            loadCustomerData(uniqueId);
-        });
-
-        // Function to load customer data
-        function loadCustomerData(uniqueId) {
-            const row = $(`button[data-unique-id="${uniqueId}"]`).closest('tr');
-
-            if (row.length) {
-                const data = {
-                    uniqueId: uniqueId,
-                    name: row.find('td:nth-child(3) span').text(),
-                    email: row.find('td:nth-child(4)').text(),
-                    contact: row.find('td:nth-child(5)').text(),
-                    nic: row.find('td:nth-child(6)').text(),
-                    type: row.find('td:nth-child(7)').text(),
-                    status: row.find('td:nth-child(8) .badge').text(),
-                    createdAt: row.find('td:nth-child(9)').text()
-                };
-
-                $('#customerName').text(data.name);
-                $('#customerType').text(data.type);
-                $('#customerUniqueId').text(data.uniqueId);
-                $('#customerEmail').text(data.email);
-                $('#customerContact').text(data.contact);
-                $('#customerNic').text(data.nic);
-                $('#customerStatus').html(data.status === 'Active' ?
-                    '<span class="badge bg-success">Active</span>' :
-                    '<span class="badge bg-danger">Inactive</span>');
-                $('#customerCreatedAt').text(data.createdAt);
-                $('#customerUpdatedAt').text(data.createdAt);
-                $('#deleteCustomerBtn').attr('href', `/Admin/DeleteCustomers/${data.uniqueId}`);
-            }
-        }
-
-        $('#customerModal').on('show.bs.modal', function() {
-            $('#customerName').text('Loading...');
-            $('#customerType').text('Loading...');
-            $('#customerUniqueId').text('Loading...');
-            $('#customerEmail').text('Loading...');
-            $('#customerContact').text('Loading...');
-            $('#customerNic').text('Loading...');
-            $('#customerStatus').html('Loading...');
-            $('#customerCreatedAt').text('Loading...');
-            $('#customerUpdatedAt').text('Loading...');
-        });
+// Function to apply dark mode styles to all elements
+function applyDarkModeStyles() {
+    // Apply to container
+    document.querySelectorAll('.container').forEach(container => {
+        container.style.backgroundColor = '#2d2d2d';
+        container.style.color = '#f8f9fa';
     });
 
+    // Apply to inputs and selects
+    const inputs = document.querySelectorAll('input, select');
+    inputs.forEach(input => {
+        input.style.backgroundColor = '#495057';
+        input.style.color = '#f8f9fa';
+        input.style.borderColor = '#6c757d';
+    });
 
+    // Apply to DataTables
+    applyDarkModeTableStyles();
+
+    // Apply to other elements as needed
+    document.querySelectorAll('.card').forEach(card => {
+        card.style.backgroundColor = '#343a40';
+        card.style.borderColor = '#495057';
+    });
+
+    document.querySelectorAll('.card-header').forEach(header => {
+        header.style.backgroundColor = '#495057';
+        header.style.borderBottomColor = '#6c757d';
+        header.style.color = '#f8f9fa';
+    });
+}
+
+// Function to apply light mode styles to all elements
+function applyLightModeStyles() {
+    // Revert container
+    document.querySelectorAll('.container').forEach(container => {
+        container.style.backgroundColor = '';
+        container.style.color = '';
+    });
+
+    // Revert inputs and selects
+    const inputs = document.querySelectorAll('input, select');
+    inputs.forEach(input => {
+        input.style.backgroundColor = '';
+        input.style.color = '';
+        input.style.borderColor = '';
+    });
+
+    // Revert DataTables
+    applyLightModeTableStyles();
+
+    // Revert other elements
+    document.querySelectorAll('.card').forEach(card => {
+        card.style.backgroundColor = '';
+        card.style.borderColor = '';
+    });
+
+    document.querySelectorAll('.card-header').forEach(header => {
+        header.style.backgroundColor = '';
+        header.style.borderBottomColor = '';
+        header.style.color = '';
+    });
+}
+
+// Function to apply dark mode styles specifically to DataTables
+function applyDarkModeTableStyles() {
+    $('.dataTables_scrollHead, .dataTables_scrollHead thead th, .dataTables_scrollHeadInner, table.dataTable thead th').css({
+        'background-color': '#2d2d2d !important',
+        'color': '#f8f9fa !important',
+        'border-color': '#495057 !important'
+    });
+
+    $('.dataTables_filter input, .dataTables_length select').css({
+        'background-color': '#495057',
+        'color': '#f8f9fa',
+        'border-color': '#6c757d'
+    });
+
+    $('.dataTables_info').css('color', '#f8f9fa !important');
+    $('.paginate_button').css('color', '#f8f9fa !important');
+}
+
+// Function to apply light mode styles specifically to DataTables
+function applyLightModeTableStyles() {
+    $('.dataTables_scrollHead, .dataTables_scrollHead thead th, .dataTables_scrollHeadInner, table.dataTable thead th').css({
+        'background-color': 'white !important',
+        'color': 'black !important',
+        'border-color': '#dee2e6 !important'
+    });
+
+    $('.dataTables_filter input, .dataTables_length select').css({
+        'background-color': 'white',
+        'color': 'black',
+        'border-color': '#dee2e6'
+    });
+
+    $('.dataTables_info').css('color', '');
+    $('.paginate_button').css('color', '');
+}
+
+// Theme toggle event listener
+if (themeToggler) {
+    themeToggler.addEventListener('click', function() {
+        document.body.classList.toggle('dark-theme-variables');
+        localStorage.setItem('darkMode', document.body.classList.contains('dark-theme-variables'));
+
+        // Toggle active icons
+        const icons = this.querySelectorAll('span');
+        icons.forEach(icon => icon.classList.toggle('active'));
+
+        // Apply appropriate styles
+        if (document.body.classList.contains('dark-theme-variables')) {
+            applyDarkModeStyles();
+        } else {
+            applyLightModeStyles();
+        }
+    });
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Check for saved theme preference
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    const themeToggler = document.querySelector('.theme-toggler');
+
+    if (darkMode) {
+        document.body.classList.add('dark-theme-variables');
+        if (themeToggler) {
+            themeToggler.querySelector('span:nth-child(1)').classList.remove('active');
+            themeToggler.querySelector('span:nth-child(2)').classList.add('active');
+        }
+
+        // Apply dark mode styles immediately
+        applyDarkModeStyles();
+    }
+
+    // Sidebar toggle functionality for mobile
+    const menuBtn = document.getElementById('menu_bar');
+    const closeBtn = document.getElementById('close_btn');
+    const sidebar = document.querySelector('aside');
+
+    if (menuBtn && closeBtn && sidebar) {
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+        });
+    }
+
+    // Initialize DataTable with custom settings
+    const hospitalTable = $('#hospitalTable').DataTable({
+        scrollY: 'calc(100vh - 300px)',
+        scrollCollapse: true,
+        paging: true,
+        responsive: true,
+        fixedHeader: true,
+        dom: '<"top"f>rt<"bottom"lip><"clear">',
+        language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Search customers...",
+            lengthMenu: "Show _MENU_ hospitals per page",
+            info: "Showing _START_ to _END_ of _TOTAL_ customers",
+            infoEmpty: "No hospitals available",
+            infoFiltered: "(filtered from _MAX_ total hospitals)"
+        },
+        initComplete: function() {
+            // Apply styles immediately after initialization
+            if (document.body.classList.contains('dark-theme-variables')) {
+                applyDarkModeStyles();
+            }
+        },
+        drawCallback: function() {
+            // Reapply styles when table is redrawn
+            if (document.body.classList.contains('dark-theme-variables')) {
+                applyDarkModeStyles();
+            }
+        }
+    });
+
+    // Reapply styles when table is redrawn (e.g., when searching or paginating)
+    hospitalTable.on('draw', function() {
+        if (document.body.classList.contains('dark-theme-variables')) {
+            applyDarkModeStyles();
+        }
+    });
+
+    // Handle view button click for customer modal
+    $(document).on('click', '.view-btn', function() {
+        const uniqueId = $(this).data('unique-id');
+        const row = $(this).closest('tr');
+
+        // Extract data from the row
+        const data = {
+            uniqueId: uniqueId,
+            name: row.find('td:nth-child(3) span').text(),
+            email: row.find('td:nth-child(4)').text(),
+            contact: row.find('td:nth-child(5)').text(),
+            nic: row.find('td:nth-child(6)').text(),
+            type: row.find('td:nth-child(7)').text(),
+            status: row.find('td:nth-child(8) span').text(),
+            createdAt: row.find('td:nth-child(9)').text()
+        };
+
+        // Update modal with the data
+        $('#customerName').text(data.name);
+        $('#customerType').text(data.type);
+        $('#customerUniqueId').text(data.uniqueId);
+        $('#customerEmail').text(data.email);
+        $('#customerContact').text(data.contact);
+        $('#customerNic').text(data.nic);
+        $('#customerStatus').text(data.status);
+        $('#customerCreatedAt').text(data.createdAt);
+
+        // Update the delete button with uniqueId
+        $('#deleteCustomerBtn').attr('href', `/Admin/DeleteCustomers/${data.uniqueId}`);
+    });
+
+    // When customer modal is shown, reset its content
+    $('#customerModal').on('show.bs.modal', function() {
+        $('#customerName').text('Loading...');
+        $('#customerType').text('Loading...');
+        $('#customerUniqueId').text('Loading...');
+        $('#customerEmail').text('Loading...');
+        $('#customerContact').text('Loading...');
+        $('#customerNic').text('Loading...');
+        $('#customerStatus').text('Loading...');
+        $('#customerCreatedAt').text('Loading...');
+        $('#customerUpdatedAt').text('Loading...');
+    });
+});
+
+// SOS and Dashboard scripts remain unchanged
 </script>
+
 <script src="/Admin/SOSSocket.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="/Admin/Dashboard.js"></script>
 </body>
 </html>

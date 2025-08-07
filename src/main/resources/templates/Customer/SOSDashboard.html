@@ -89,6 +89,26 @@
             background: #f0f0f0 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" stroke="%23ddd" stroke-width="8" fill="none"><animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="1s" repeatCount="indefinite"/></circle></svg>') no-repeat center;
             background-size: 50px;
         }
+
+         .cancel-form {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3f3;
+            border-radius: 5px;
+            border-left: 4px solid #d9534f;
+        }
+        .cancel-form button {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .cancel-form button:hover {
+            background-color: #c9302c;
+        }
     </style>
 </head>
 <body>
@@ -130,6 +150,12 @@
             <div id="eta">Calculating ETA...</div>
             <a href="/Customer/SOS">Dashboard</a>
         </div>
+    </div>
+
+    <div class="cancel-form">
+        <h3>Cancel Emergency Request</h3>
+        <p>Click the button below to cancel your emergency request:</p>
+        <button id="cancel-request-btn">Cancel Emergency Request</button>
     </div>
 </div>
 
@@ -367,6 +393,33 @@ console.log("Hospital ID:", hospitalData.id);
             document.getElementById('patient-location').innerHTML = `<p class="error">Geolocation not supported by this browser.</p>`;
         }
     }
+
+    // Handle cancel request
+document.getElementById('cancel-request-btn').addEventListener('click', function() {
+    if (!trackingId) {
+        alert('Error: No tracking ID available');
+        return;
+    }
+
+    if (confirm('Are you sure you want to cancel this emergency request?')) {
+        // Send the request to cancel
+        fetch(`/Customer/CancelSOS?trackingId=${trackingId}`, {
+            method: 'POST'
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Emergency request cancelled successfully');
+                window.location.href = '/Customer/SOS'; // Redirect to dashboard
+            } else {
+                throw new Error('Failed to cancel request');
+            }
+        })
+        .catch(error => {
+            console.error('Error cancelling request:', error);
+            alert('Error cancelling request: ' + error.message);
+        });
+    }
+});
 </script>
 </body>
 </html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Appointment Booking</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="/Customer/style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        /* Light mode styles (default) */
+.home h1 {
+    color: #333; /* Default color for light mode */
+    text-align: center;
+    margin: 20px 0;
+    width: 100%
+}
+
+.home label {
+    color: #333; /* Default color for light mode */
+}
+
+.home button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.home button:hover {
+    background-color: #45a049;
+}
+
+/* Dark mode styles */
+.dark .home h1,
+.dark .home label {
+    color: white; /* White text in dark mode */
+}
+
+.dark .home button {
+    background-color: #2d7d32; /* Darker green for dark mode */
+    color: white;
+}
+
+.dark .home button:hover {
+    background-color: #1e5a23; /* Even darker green on hover */
+}
+    </style>
+</head>
+<body>
+
+
+<nav class="sidebar close">
+    <header>
+        <div class="image-text">
+                    <span class="image">
+                        <img src="log.png" alt="">
+                    </span>
+
+            <div class="text header-text">
+                <span class="name">Alucra</span>
+                <span class="profession">Web developer</span>
+            </div>
+        </div>
+
+        <i class='bx bx-chevron-right toggle'></i>
+    </header>
+
+    <div class="menu-bar">
+        <div class="menu">
+            <li class="search-box">
+                <i class='bx bx-search icon' ></i>
+                <input type="search" placeholder="Search" id="searchBox">
+            </li>
+
+
+            <ul class="menu-links">
+
+                <li class="nav-link">
+                    <a href="/Customer/Dashboard">
+                        <i class='bx bx-home-alt icon' ></i>
+                        <span class="text nav-text">Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="nav-link">
+                    <a href="/Customer/editProfile">
+                        <i class='bx bx-user icon' ></i>
+                        <span class="text nav-text">Edit profile</span>
+                    </a>
+                </li>
+
+                <li class="nav-link">
+                    <a href="/Customer/Model">
+                        <i class='bx bx-cube icon' ></i>
+                        <span class="text nav-text">Model</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="/Customer/FaceEnrollment">
+                        <i class='bx bx-face icon' ></i>
+                        <span class="text nav-text">Face</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="/Customer/SOS">
+                        <i class='bx bx-first-aid icon' ></i>
+                        <span class="text nav-text">SOS</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="/Customer/MedicineClassifier">
+                        <i class='bx bx-capsule icon' ></i>
+                        <span class="text nav-text">Drug</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="/Customer/DiseaseClassifier">
+                        <i class='bx bx-bug icon' ></i>
+                        <span class="text nav-text">Disease</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="/Customer/DiseaseSymptomChecker">
+                        <i class="bx bx-clinic icon"></i>
+                        <span class="text nav-text">Diseae Symptom</span>
+                    </a>
+                </li>
+
+                <li class="nav-link">
+                    <a href="/Customer/AppointmentBooking">
+                        <i class="bx bx-calendar icon"></i>
+                        <span class="text nav-text">Appointment Bookings</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+        <div class="bottom-content">
+            <li class="">
+                <a href="#">
+                    <i class='bx bx-log-out icon' ></i>
+                    <span class="text nav-text">Logout</span>
+                </a>
+            </li>
+
+            <li class="mode">
+                <div class="moon-sun">
+                    <i class='bx bx-moon icon moon' ></i>
+                    <i class='bx bx-sun icon sun' ></i>
+                </div>
+
+                <span class="mode-text text">Dark Mode</span>
+                <div class="toggle-switch">
+                    <span class="switch"></span>
+                </div>
+            </li>
+        </div>
+    </div>
+</nav>
+
+
+<section class="home">
+    <div class="class-container">
+    </div>
+    <h1>FeedBack Form</h1>
+
+    <form action="/Customer/AddFeedback" method="post">
+        <label>Enter the Description</label>
+        <textarea name="details" placeholder="Enter the Feedback" required>
+        </textarea>
+        <button type="submit">Submit</button>
+    </form>
+</section>
+<script src="/Customer/script.js"></script>
+</body>
+</html>

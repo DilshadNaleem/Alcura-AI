@@ -5,8 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor Dashboard</title>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Fonts and Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
@@ -152,6 +154,9 @@
                 display: none;
             }
 
+             .right .top .profile .profile-photo {
+            display: none;
+
             .right .top button {
                 display: inline-block;
                 background: transparent;
@@ -226,6 +231,20 @@
         .modal-button:hover {
             background: #45a049;
         }
+
+        .modal {
+    display: none; /* This hides it by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
     </style>
 </head>
 <body>
@@ -242,43 +261,36 @@
         </div>
 
         <div class="sidebar">
-            <a href="/Doctor/Dashboard"  class="active">
-                <span class="material-symbols-sharp">grid_view</span>
+            <a href="/Doctor/Dashboard" class="active">
+                <span class="material-symbols-sharp">dashboard</span>
                 <h3>Dashboard</h3>
             </a>
-
+            <a href="/Doctor/Edit">
+                <span class="material-symbols-sharp">edit_document</span>
+                <h3>Edit Profile</h3>
+            </a>
+            <a href="/Doctor/ManageAppointment">
+                <span class="material-symbols-sharp">calendar_today</span>
+                <h3>Appointments</h3>
+            </a>
             <a href="/Doctor/FaceEnrollment">
                 <span class="material-symbols-sharp">face</span>
                 <h3>Face Enrollment</h3>
             </a>
-
-            <a href="/Doctor/SetAvailability" >
-                <span class="material-symbols-sharp">person_outline</span>
+            <a href="/Doctor/SetAvailability">
+                <span class="material-symbols-sharp">schedule</span>
                 <h3>Manage Availability</h3>
             </a>
-            <a href="">
-                <span class="material-symbols-sharp">insights</span>
-                <h3>Analytics</h3>
-            </a>
-            <a href="">
-                <span class="material-symbols-sharp">mail_outline</span>
-                <h3>Messages</h3>
-                <span class="msg_count notification-badge">0</span>
-            </a>
-            <a href="#">
-                <span class="material-symbols-sharp">receipt_long</span>
-                <h3>Products</h3>
-            </a>
-            <a href="#">
-                <span class="material-symbols-sharp">report_gmailerrorred</span>
-                <h3>Reports</h3>
+            <a href="/Doctor/Request_Appointment_Fee">
+                <span class="material-symbols-sharp">payments</span>
+                <h3>Request Price</h3>
             </a>
             <a href="#">
                 <span class="material-symbols-sharp">settings</span>
                 <h3>Settings</h3>
             </a>
             <a href="#">
-                <span class="material-symbols-sharp">add</span>
+                <span class="material-symbols-sharp">medication</span>
                 <h3>Add Product</h3>
             </a>
             <a href="#">
@@ -334,11 +346,12 @@
             </div>
 
             <div class="income">
+                <a href="">
                 <span class="material-symbols-sharp">stacked_line_chart</span>
                 <div class="middle">
                     <div class="left">
                         <h3>Total Income</h3>
-                        <h1>$10,824</h1>
+                        <h1 th:text = "${'Rs ' + #numbers.formatDecimal(totalEarnings, 1, 2)}">RS 0.00</h1>
                     </div>
                     <div class="progress">
                         <svg>
@@ -348,43 +361,42 @@
                     </div>
                 </div>
                 <small>Last 24 Hours</small>
+                </a>
             </div>
         </section>
 
         <!-- Recent Orders Table -->
         <section class="recent_order">
             <header>
-                <h2>Recent Orders</h2>
+                <h2>Next Appointments</h2>
 
             </header>
 
             <table>
                 <thead>
                 <tr>
-                    <th>Product Name</th>
-                    <th>Product Number</th>
-                    <th>Payments</th>
+                    <th>Appointment ID</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Price</th>
                     <th>Status</th>
-                    <th>Details</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Mini USB</td>
-                    <td>4563</td>
-                    <td>Due</td>
-                    <td class="warning">Pending</td>
-                    <td class="primary">Details</td>
+                <tr th:each="appointment : ${appointments}">
+                    <td th:text="${appointment.unique_id}"></td>
+                    <td th:text="${appointment.customer_email}"></td>
+                    <td th:text="${appointment.appointment_date}"></td>
+                    <td th:text="${appointment.appointment_time}"></td>
+                    <td th:text="${appointment.appointmentPrice}"></td>
+                    <td class="success" th:text="${appointment.status}"></td>
                 </tr>
-                <tr>
-                    <td>Wireless Mouse</td>
-                    <td>4564</td>
-                    <td>Paid</td>
-                    <td class="success">Completed</td>
-                    <td class="primary">Details</td>
-                </tr>
+
                 </tbody>
             </table>
+
+
             <a href="#" class="view-all">Show All</a>
         </section>
     </main>
@@ -404,7 +416,7 @@
             <div class="profile">
                 <div class="info">
                     <p><b th:text="${adminName + ' ' + adminLastName}"></b></p>
-                    <p>Admin</p>
+                    <p>Doctor</p>
                     <small class="text-muted"></small>
                 </div>
                 <div class="profile-photo">
@@ -416,22 +428,18 @@
 
         <!-- Recent Updates Section -->
         <section class="recent_updates">
-            <h2>Recent Updates</h2>
+            <h2>Recent Success Appointments</h2>
             <div class="updates">
-                <div class="update">
+                <div class="update" th:each="appointment, iterStat : ${appointments}">
                     <div class="profile-photo">
-                        <img th:src="@{/images/profile-4.jpg}" alt="Babar's profile photo"/>
+                        <img th:if="${customerImages[iterStat.index] != null}"
+                             th:src="@{'http://localhost:8081' + ${customerImages[iterStat.index]}}"
+                             alt="Customer profile photo"/>
                     </div>
                     <div class="message">
-                        <p><b>Babar</b> Received his order of USB</p>
-                    </div>
-                </div>
-                <div class="update">
-                    <div class="profile-photo">
-                        <img th:src="@{/images/profile-3.jpg}" alt="Ali's profile photo"/>
-                    </div>
-                    <div class="message">
-                        <p><b>Ali</b> Received his order of USB</p>
+                        <!-- Your appointment content here -->
+                        <p th:text="${appointment.customer_email}"></p>
+                        <!-- Add other appointment details as needed -->
                     </div>
                 </div>
             </div>
@@ -456,51 +464,8 @@
         </section>
     </div>
 </div>
-<!-- First Login Modal -->
-<div id="firstLoginModal" class="modal" >
-    <div class="modal-content">
-        <h2>Welcome!</h2>
-        <p>This is your first login. Please complete your profile information.</p>
-        <button onclick="closeModal()" class="modal-button">
-            OK
-        </button>
-    </div>
-</div>
 
-<script>
-    // Debugging - log current localStorage value
-    console.log("Current localStorage value:", localStorage.getItem('showFirstLoginModal'));
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // Debugging
-        console.log("DOM fully loaded, checking for first login...");
-
-        if (localStorage.getItem('showFirstLoginModal') === 'true') {
-            console.log("Showing first login modal");
-            document.getElementById('firstLoginModal').style.display = 'flex';
-            localStorage.removeItem('showFirstLoginModal');
-        } else {
-            console.log("No first login flag found");
-        }
-    });
-
-    function closeModal() {
-        document.getElementById('firstLoginModal').style.display = 'none';
-    }
-
-    // Show modal if first login
-    document.addEventListener('DOMContentLoaded', function() {
-        if (localStorage.getItem('showFirstLoginModal') === 'true') {
-            document.getElementById('firstLoginModal').style.display = 'block';
-            localStorage.removeItem('showFirstLoginModal');
-        }
-    });
-
-    // Add this function to help test the modal manually
-    function testModal() {
-        document.getElementById('firstLoginModal').style.display = 'flex';
-    }
-</script>
 <!-- JavaScript Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
@@ -508,6 +473,52 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     document.addEventListener('DOMContentLoaded', function() {
+
+            const shouldShowModal = /*[[${showFirstLoginModal}]]*/ false;
+
+    if (shouldShowModal) {
+        Swal.fire({
+            title: 'Welcome to Alcura Doctor Portal!',
+            html: `
+                <div style="text-align: center;">
+                    <p>We're excited to have you on board!</p>
+                    <p>To get started, please complete your profile information to provide better care for your patients.</p>
+                </div>
+            `,
+            icon: 'info',
+            imageUrl: '/images/doctor-welcome.png',  // Add your image if needed
+            imageWidth: 150,
+            imageAlt: 'Welcome image',
+            showCancelButton: true,
+            confirmButtonText: 'Complete My Profile Now',
+            cancelButtonText: 'Remind Me Later',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#aaa',
+            backdrop: `
+                rgba(0,0,0,0.7)
+                url("/images/doctor-hero.jpg")
+                center top
+                no-repeat
+            `,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            width: '650px',
+            padding: '2em',
+            customClass: {
+                container: 'first-login-modal'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/Doctor/Edit';
+            } else {
+                // Optional: Track that they deferred profile completion
+                console.log('User deferred profile completion');
+                // fetch('/api/track-deferral', { method: 'POST' });
+            }
+        });
+    }
+
+
         // Sidebar functionality
         const sideMenu = document.querySelector('aside');
         const menuBtn = document.querySelector('#menu_bar');

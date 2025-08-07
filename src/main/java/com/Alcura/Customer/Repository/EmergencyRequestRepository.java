@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EmergencyRequestRepository extends JpaRepository<EmergencyRequest, Long> {
-    Optional<EmergencyRequest> findByTrackingId(String trackingId);
+
     List<EmergencyRequest> findByStatus (String status);
+    EmergencyRequest findByTrackingId(String trackingId);
 
 }

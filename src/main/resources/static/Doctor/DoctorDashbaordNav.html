@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Hospital Management</title>
+    <link rel="stylesheet" href="/Admin/AdminNav.css">
+    <!-- Icon and Font Links -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
+</head>
+<body>
+
+<div class="main-container">
+    <!-- Sidebar Navigation -->
+    <aside>
+        <div class="top">
+            <div class="logo">
+                <h2>A <span class="danger">lcura</span></h2>
+            </div>
+            <div class="close" id="close_btn">
+                <span class="material-symbols-sharp">close</span>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <a href="/Doctor/Dashboard" class="active">
+                <span class="material-symbols-sharp">dashboard</span>
+                <h3>Dashboard</h3>
+            </a>
+            <a href="/Doctor/Edit">
+                <span class="material-symbols-sharp">edit_document</span>
+                <h3>Edit Profile</h3>
+            </a>
+            <a href="/Doctor/ManageAppointment">
+                <span class="material-symbols-sharp">calendar_today</span>
+                <h3>Appointments</h3>
+            </a>
+            <a href="/Doctor/FaceEnrollment">
+                <span class="material-symbols-sharp">face</span>
+                <h3>Face Enrollment</h3>
+            </a>
+            <a href="/Doctor/SetAvailability">
+                <span class="material-symbols-sharp">schedule</span>
+                <h3>Manage Availability</h3>
+            </a>
+            <a href="/Doctor/Request_Appointment_Fee">
+                <span class="material-symbols-sharp">payments</span>
+                <h3>Request Price</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">settings</span>
+                <h3>Settings</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">medication</span>
+                <h3>Add Product</h3>
+            </a>
+            <a href="#">
+                <span class="material-symbols-sharp">logout</span>
+                <h3>Logout</h3>
+            </a>
+        </div>
+    </aside>
+
+    <div class="right">
+        <div class="top">
+            <button id="menu_bar" aria-label="Toggle menu">
+                <span class="material-symbols-sharp">menu</span>
+            </button>
+        </div>
+
+        <!-- Theme toggle button -->
+        <div class="theme-toggler">
+            <span class="material-symbols-sharp active">light_mode</span>
+            <span class="material-symbols-sharp">dark_mode</span>
+        </div>
+        <!-- Main Content-->
+
+
+    </div>
+</div>
+
+<script src="/Doctor/DashboardDarkTheem.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+</body>
+</html>

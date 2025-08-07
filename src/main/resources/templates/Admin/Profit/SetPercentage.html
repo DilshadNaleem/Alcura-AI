@@ -187,7 +187,7 @@
                 <span class="material-symbols-sharp">medication</span>
                 <h3>Medicine Model</h3>
             </a>
-            <a th:href="@{/Admin/SOS}">
+            <a th:href="@{/Admin/SOSView}">
                 <span class="material-symbols-sharp">emergency</span>
                 <h3>Emergency Alerts</h3>
                 <span class="msg_count notification-badge">0</span>
@@ -200,6 +200,18 @@
                 <span class="material-symbols-sharp">medical_services</span>
                 <h3>Doctors</h3>
             </a>
+            <a href="/Admin/Manage_Availability">
+                <span class="material-symbols-sharp">schedule</span>
+                <h3>Doctor Availabilities</h3>
+            </a>
+            <a href="/Admin/Manage_Doctor/Price">
+                <span class="material-symbols-sharp">paid</span>
+                <h3>Manage Price</h3>
+            </a>
+            <a href="/Admin/Manage_Percentage" class="active">
+                <span class="material-symbols-sharp">percent</span>
+                <h3>Profit Percentage</h3>
+            </a>
             <a href="/Admin/Feedbacks">
                 <span class="material-symbols-sharp">feedback</span>
                 <h3>Reports</h3>
@@ -208,7 +220,7 @@
                 <span class="material-symbols-sharp">event_available</span>
                 <h3>Appointments</h3>
             </a>
-            <a href="/Admin/ManageHospitals" class="active">
+            <a href="/Admin/ManageHospitals" >
                 <span class="material-symbols-sharp">local_hospital</span>
                 <h3>Hospitals</h3>
             </a>
@@ -219,7 +231,7 @@
             <a href="#">
                 <span class="material-symbols-sharp">add_circle</span>
                 <h3>Add Product</h3>
-            </a>
+            </a> <br>
             <a href="#">
                 <span class="material-symbols-sharp">logout</span>
                 <h3>Logout</h3>
@@ -253,5 +265,8 @@
 
 <script src="/Admin/AdminNav.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="/Admin/SOSSocket.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </body>
 </html>

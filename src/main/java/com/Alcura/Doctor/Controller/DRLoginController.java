@@ -50,14 +50,7 @@ public class DRLoginController {
 
                 if (doctor != null) {
                     logger.debug("Found doctor with ID: {}", doctor.getId());
-                    if (doctor.isFirstLogin()) {
-                        logger.info("First login detected for doctor ID: {}", doctor.getId());
-                        out.println("alert('Welcome! This is your first login. Please complete your profile.');");
-                        out.println("localStorage.setItem('showFirstLoginModal', 'true');");
-                        doctor.setFirstLogin(false);
-                        doctorRepository.save(doctor);
-                        logger.debug("Updated firstLogin status for doctor ID: {}", doctor.getId());
-                    }
+
                 } else {
                     logger.warn("Doctor not found in database for email: {}", request.getEmail());
                 }

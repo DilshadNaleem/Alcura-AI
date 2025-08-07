@@ -27,4 +27,7 @@ public interface AppointmentRepository extends JpaRepository<Appoinment, Integer
             @Param("doctor") String doctor,
             @Param("date") LocalDate date,
             @Param("time") String time);
+
+    @Query("SELECT a FROM Appoinment a WHERE a.doctor = :doctorId")
+    List<Appoinment> findByDoctor(@Param("doctorId") String doctorId);
 }

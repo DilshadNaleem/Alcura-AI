@@ -120,7 +120,7 @@
           background: var(--clr-white);
           display: flex;
           flex-direction: column;
-          height: 86vh;
+          height: calc(100vh - 4rem);
           position: relative;
           top: 1rem;
           padding: 0 1rem;
@@ -233,7 +233,7 @@
           }
 
           aside {
-            position: sticky;
+            position: fixed;
             width: 18rem;
             z-index: 1000;
             height: 100vh;
@@ -890,6 +890,11 @@ body.dark-theme-variables .reschedule-form-group label {
 .time-slot[disabled] {
     opacity: 0.7;
 }
+
+        /* Make search icon white in dark mode only */
+body.dark-theme-variables .input-group-text .bi.bi-search {
+    color: white;
+}
     </style>
 </head>
 
@@ -937,9 +942,21 @@ body.dark-theme-variables .reschedule-form-group label {
                 <span class="material-symbols-sharp">medical_services</span>
                 <h3>Doctors</h3>
             </a>
+            <a href="/Admin/Manage_Availability">
+                <span class="material-symbols-sharp">schedule</span>
+                <h3>Doctor Availabilities</h3>
+            </a>
+            <a href="/Admin/Manage_Doctor/Price">
+                <span class="material-symbols-sharp">paid</span>
+                <h3>Manage Price</h3>
+            </a>
+            <a href="/Admin/Manage_Percentage">
+                <span class="material-symbols-sharp">percent</span>
+                <h3>Profit Percentage</h3>
+            </a>
             <a href="/Admin/Feedbacks">
                 <span class="material-symbols-sharp">feedback</span>
-                <h3>Reports</h3>
+                <h3>Feedbacks</h3>
             </a>
             <a href="/Admin/Manage_Appointments" class="active">
                 <span class="material-symbols-sharp">event_available</span>

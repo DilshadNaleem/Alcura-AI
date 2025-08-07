@@ -85,12 +85,14 @@ public class AdminDashboardController {
             double totalSales = 0.0;
             double totalProfit = 0.0;
             double totalExpenses = 0.0;
+            double hospital = 0.0;
             int totalAppointments = allAppointments.size();
 
             for (ProfitCalculationDTO appointment : allAppointments) {
                 Float price = appointment.getPrice();
                 Float newPrice = appointment.getNewPrice();
-
+                Double hospitalPrice = appointment.getHospital_price();
+                hospital = hospitalPrice;
                 if (price != null) {
                     totalSales +=  newPrice;
                     if (newPrice != null) {
@@ -104,6 +106,7 @@ public class AdminDashboardController {
             model.addAttribute("totalProfit", totalProfit);
             model.addAttribute("totalExpenses", totalExpenses);
             model.addAttribute("totalAppointments", totalAppointments);
+            model.addAttribute("profitPercentage", hospital);
 
         } catch (Exception e) {
             logger.error("Error loading dashboard data: {}", e.getMessage());

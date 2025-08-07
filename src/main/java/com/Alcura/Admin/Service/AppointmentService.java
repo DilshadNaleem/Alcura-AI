@@ -17,4 +17,8 @@ public class AppointmentService
     {
         return appointmentRepository.findAll();
     }
+    public  List<Appoinment> getAllAppointmentsForDoctor(String doctor)
+    {
+        return appointmentRepository.findByDoctor(doctor);
+    }
 }

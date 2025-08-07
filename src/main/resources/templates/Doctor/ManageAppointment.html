@@ -3,7 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Admin - Doctor Management</title>
+    <title>Admin - Hospital Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -588,7 +588,7 @@
           background: var(--clr-white);
           display: flex;
           flex-direction: column;
-          height: calc(100vh - 4.5rem);
+          height: 86vh;
           position: relative;
           top: 1rem;
           padding: 0 1rem;
@@ -896,65 +896,36 @@ aside {
         </div>
 
         <div class="sidebar">
-            <a href="/Admin/Dashboard" >
+            <a href="/Doctor/Dashboard" >
                 <span class="material-symbols-sharp">dashboard</span>
                 <h3>Dashboard</h3>
             </a>
-            <a href="/Admin/ManageCustomers">
-                <span class="material-symbols-sharp">group</span>
-                <h3>Customers</h3>
+            <a href="/Doctor/Edit">
+                <span class="material-symbols-sharp">edit_document</span>
+                <h3>Edit Profile</h3>
             </a>
-            <a href="/Admin/DiseaseModelDashboard">
-                <span class="material-symbols-sharp">monitor_heart</span>
-                <h3>Disease Model</h3>
+            <a href="/Doctor/ManageAppointment" class="active">
+                <span class="material-symbols-sharp">calendar_today</span>
+                <h3>Appointments</h3>
             </a>
-            <a href="/Admin/MedicineModelDashboard">
-                <span class="material-symbols-sharp">medication</span>
-                <h3>Medicine Model</h3>
-            </a>
-            <a th:href="@{/Admin/SOSView}">
-                <span class="material-symbols-sharp">emergency</span>
-                <h3>Emergency Alerts</h3>
-                <span class="msg_count notification-badge">0</span>
-            </a>
-            <a th:href="@{/Admin/FaceEnrollment}">
+            <a href="/Doctor/FaceEnrollment">
                 <span class="material-symbols-sharp">face</span>
                 <h3>Face Enrollment</h3>
             </a>
-            <a href="/Admin/Manage_Doctors" class="active">
-                <span class="material-symbols-sharp">medical_services</span>
-                <h3>Doctors</h3>
-            </a>
-            <a href="/Admin/Manage_Availability">
+            <a href="/Doctor/SetAvailability">
                 <span class="material-symbols-sharp">schedule</span>
-                <h3>Doctor Availabilities</h3>
+                <h3>Manage Availability</h3>
             </a>
-            <a href="/Admin/Manage_Doctor/Price">
-                <span class="material-symbols-sharp">paid</span>
-                <h3>Manage Price</h3>
-            </a>
-            <a href="/Admin/Manage_Percentage">
-                <span class="material-symbols-sharp">percent</span>
-                <h3>Profit Percentage</h3>
-            </a>
-            <a href="/Admin/Feedbacks">
-                <span class="material-symbols-sharp">feedback</span>
-                <h3>Feedbacks</h3>
-            </a>
-            <a href="/Admin/Manage_Appointments">
-                <span class="material-symbols-sharp">event_available</span>
-                <h3>Appointments</h3>
-            </a>
-            <a href="/Admin/ManageHospitals" >
-                <span class="material-symbols-sharp">local_hospital</span>
-                <h3>Hospitals</h3>
+            <a href="/Doctor/Request_Appointment_Fee">
+                <span class="material-symbols-sharp">payments</span>
+                <h3>Request Price</h3>
             </a>
             <a href="#">
                 <span class="material-symbols-sharp">settings</span>
                 <h3>Settings</h3>
             </a>
             <a href="#">
-                <span class="material-symbols-sharp">add_circle</span>
+                <span class="material-symbols-sharp">medication</span>
                 <h3>Add Product</h3>
             </a>
             <a href="#">
@@ -972,11 +943,11 @@ aside {
         </div>
 
         <div class="container">
-            <h1>Doctor Management</h1>
+            <h1>Appointment Management</h1>
 
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">All Hospitals</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">All Appointment</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -985,123 +956,96 @@ aside {
                             <tr>
                                 <th>Number</th>
                                 <th>Unique ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Contact</th>
-                                <th>Specialist</th>
-                                <th>Experience</th>
-                                <th>Other Specialization</th>
-                                <th>Qualification</th>
-                                <th>First Login</th>
-                                <th>Created At</th>
+                                <th>Customer Email</th>
+                                <th>Appointment Date</th>
+                                <th>Appointment Time</th>
+                                <th>Special Reasons</th>
                                 <th>Status</th>
+                                <th>Appointment Price</th>
+                                <th>Created At</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:if="${doctors != null and !doctors.empty}" th:each="doctor, stat : ${doctors}">
+                            <tr th:each="hospital, stat : ${app}">
                                 <td th:text="${stat.count}"></td>
-                                <td th:text="${doctor.uniqueId} ?: 'Data is null'"></td>
+                                <td th:text="${hospital.unique_id}"></td>
                                 <td>
-                                    <span th:text="${doctor.firstName + ' ' + doctor.lastName} ?: 'Data is null'"></span>
+                                    <span th:text="${hospital.customer_email}"></span>
                                 </td>
-                                <td th:text="${doctor.email} ?: 'Data is null'"></td>
-                                <td th:text="${doctor.contactNumber} ?: 'Data is null'"></td>
-                                <td th:text="${doctor.specialist} ?: 'Data is null'"></td>
-                                <td th:text="${doctor.experience} ?: 'Data is null'"></td>
-                                <td th:text="${doctor.other_specialization} ?: 'Data is null'"></td>
-                                <td th:text="${doctor.Qualification} ?: 'Data is null'"></td>
+                                <td th:text="${hospital.appointment_date}"></td>
+                                <td th:text="${hospital.appointment_time}"></td>
+                                <td th:text="${hospital.special_reasons}"></td>
+                                <td th:text="${hospital.status}"></td>
+                                <td th:text="${hospital.appointmentPrice}"></td>
+                                <td th:text="${#temporals.format(hospital.created_at, 'yyyy-MM-dd HH:mm')}"></td>
                                 <td>
-                                    <span th:if="${doctor.firstLogin == true}">Logged In</span>
-                                    <span th:if="${doctor.firstLogin == false}">Not Logged In</span>
-                                    <span th:if="${doctor.firstLogin == null}">Data is null</span>
-                                </td>
-                                <td th:text="${doctor.createdAt != null} ? ${#temporals.format(doctor.createdAt, 'yyyy-MM-dd HH:mm')} : 'Data is null'"></td>
-                                <td>
-                                    <span th:if="${doctor.status == 1}">Active</span>
-                                    <span th:if="${doctor.status == 0}">InActive</span>
-                                    <span th:if="${doctor.status == null}">Data is null</span>
-                                </td>
-                                <td>
-                                    <button th:attr="data-id=${doctor.uniqueId}, data-unique-id=${doctor.uniqueId}"
+                                    <button th:attr="data-id=${hospital.unique_id}, data-unique-id=${hospital.unique_id}"
                                             class="btn btn-sm btn-info view-btn"
                                             data-bs-toggle="modal"
                                             data-bs-target="#hospitalModal">View</button>
-                                    <a th:href="@{/Admin/DeleteDoctor/{id}(id=${doctor.uniqueId})}"
-                                       class="btn btn-sm btn-warning">Delete</a>
+                                    <form th:if="${hospital.status == 'Pending'}" th:action="@{/Doctor/CompleteAppointment/{id}(id=${hospital.unique_id})}"
+                                          method="post" style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-warning">Complete</button>
+                                    </form>
                                 </td>
-                            </tr>
-                            <tr th:if="${doctors == null or doctors.empty}">
-                                <td colspan="13" style="text-align: center;">No doctors found</td>
                             </tr>
                             </tbody>
                         </table>
-                        <a href="/Doctor/Signing">Add New Doctor</a>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
-<!-- Hospital View Modal -->
+<!-- Appointment View Modal -->
 <div class="modal fade" id="hospitalModal" tabindex="-1" aria-labelledby="hospitalModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="hospitalModalLabel">Hospital Profile</h5>
+                <h5 class="modal-title" id="hospitalModalLabel">Appointment Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="profile-header text-center">
-                    <div class="image-container">
-                        <img id="hospitalImage" class="hospital-image" src="" alt="Hospital Image"
-                             onerror="">
-                    </div>
-                    <h3 id="hospitalName">Loading...</h3>
-                    <p class="text-muted" id="hospitalType">Medical Facility</p>
+                    <h3 id="appointmentId">Appointment #<span id="uniqueId">Loading...</span></h3>
+                    <p class="text-muted" id="appointmentStatus">Status: Loading...</p>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6">
-                        <h5>Basic Information</h5>
+                        <h5>Customer Information</h5>
                         <table class="table table-bordered">
                             <tr>
-                                <th>Unique ID</th>
-                                <td id="hospitalUniqueId">Loading...</td>
+                                <th>Customer Email</th>
+                                <td id="customerEmail">Loading...</td>
                             </tr>
                             <tr>
-                                <th>Email</th>
-                                <td id="hospitalEmail">Loading...</td>
+                                <th>Appointment Date</th>
+                                <td id="appointmentDate">Loading...</td>
                             </tr>
                             <tr>
-                                <th>Contact Number</th>
-                                <td id="hospitalContact">Loading...</td>
-                            </tr>
-                            <tr>
-                                <th>Address</th>
-                                <td id="hospitalAddress">Loading...</td>
+                                <th>Appointment Time</th>
+                                <td id="appointmentTime">Loading...</td>
                             </tr>
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <h5>Location Information</h5>
+                        <h5>Appointment Details</h5>
                         <table class="table table-bordered">
                             <tr>
-                                <th>Longitude</th>
-                                <td id="hospitalLongitude">Loading...</td>
+                                <th>Special Reasons</th>
+                                <td id="specialReasons">Loading...</td>
                             </tr>
                             <tr>
-                                <th>Latitude</th>
-                                <td id="hospitalLatitude">Loading...</td>
+                                <th>Price</th>
+                                <td id="appointmentPrice">Loading...</td>
                             </tr>
                             <tr>
-                                <th>Description</th>
-                                <td id="hospitalDescription">Loading...</td>
-                            </tr>
-                            <tr>
-                                <th>Account Created</th>
-                                <td id="hospitalCreatedAt">Loading...</td>
+                                <th>Created At</th>
+                                <td id="createdAt">Loading...</td>
                             </tr>
                         </table>
                     </div>
@@ -1109,8 +1053,7 @@ aside {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <a href="#" id="updateHospitalBtn" class="btn btn-primary">Update</a>
-                <a href="#" id="deleteHospitalBtn" class="btn btn-danger">Delete Hospital</a>
+                <a href="#" id="completeAppointmentBtn" class="btn btn-warning">Complete Appointment</a>
             </div>
         </div>
     </div>
@@ -1126,153 +1069,161 @@ aside {
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-    // Theme toggler functionality
-    const themeToggler = document.querySelector('.theme-toggler');
-    if (themeToggler) {
-        themeToggler.addEventListener('click', function() {
-            document.body.classList.toggle('dark-theme-variables');
-            localStorage.setItem('darkMode', document.body.classList.contains('dark-theme-variables'));
+    // Function to enable dark mode
+    function enableDarkMode() {
+        document.body.classList.add('dark-theme-variables');
+        localStorage.setItem('darkMode', 'enabled');
 
-            // Toggle active icons
-            const icons = this.querySelectorAll('span');
-            icons.forEach(icon => icon.classList.toggle('active'));
+        // Apply to container
+        document.querySelectorAll('.container').forEach(container => {
+            container.style.backgroundColor = '#2d2d2d';
+            container.style.color = '#f8f9fa';
+        });
 
-            // Reinitialize DataTable to ensure proper functionality
-            reinitializeDataTable();
+        // Apply to inputs, selects, and textareas
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.style.backgroundColor = '#495057';
+            input.style.color = '#f8f9fa';
+            input.style.borderColor = '#6c757d';
+        });
 
-            // Update DataTables styles for the new theme
-            updateDataTablesTheme();
+        // Apply to DataTables
+        applyDarkModeTableStyles();
+
+        // Apply to cards
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.backgroundColor = '#343a40';
+            card.style.borderColor = '#495057';
+        });
+
+        // Apply to card headers
+        document.querySelectorAll('.card-header').forEach(header => {
+            header.style.backgroundColor = '#495057';
+            header.style.borderBottomColor = '#6c757d';
+            header.style.color = '#f8f9fa';
+        });
+
+        // Update toggle button state
+        const themeToggler = document.querySelector('.theme-toggler');
+        if (themeToggler) {
+            themeToggler.querySelector('span:nth-child(1)').classList.remove('active');
+            themeToggler.querySelector('span:nth-child(2)').classList.add('active');
+        }
+    }
+
+    // Function to disable dark mode
+    function disableDarkMode() {
+        document.body.classList.remove('dark-theme-variables');
+        localStorage.setItem('darkMode', 'disabled');
+
+        // Revert container styles
+        document.querySelectorAll('.container').forEach(container => {
+            container.style.backgroundColor = '';
+            container.style.color = '';
+        });
+
+        // Revert input styles
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.style.backgroundColor = '';
+            input.style.color = '';
+            input.style.borderColor = '';
+        });
+
+        // Revert DataTables
+        applyLightModeTableStyles();
+
+        // Revert card styles
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.backgroundColor = '';
+            card.style.borderColor = '';
+        });
+
+        // Revert card header styles
+        document.querySelectorAll('.card-header').forEach(header => {
+            header.style.backgroundColor = '';
+            header.style.borderBottomColor = '';
+            header.style.color = '';
+        });
+
+        // Update toggle button state
+        const themeToggler = document.querySelector('.theme-toggler');
+        if (themeToggler) {
+            themeToggler.querySelector('span:nth-child(1)').classList.add('active');
+            themeToggler.querySelector('span:nth-child(2)').classList.remove('active');
+        }
+    }
+
+    // Function to apply dark mode styles specifically to DataTables
+    function applyDarkModeTableStyles() {
+        $('.dataTables_scrollHead, .dataTables_scrollHead thead th, .dataTables_scrollHeadInner, table.dataTable thead th').css({
+            'background-color': '#2d2d2d',
+            'color': '#f8f9fa',
+            'border-color': '#495057'
+        });
+
+        $('.dataTables_filter input, .dataTables_length select').css({
+            'background-color': '#495057',
+            'color': '#f8f9fa',
+            'border-color': '#6c757d'
+        });
+
+        $('.dataTables_info, .paginate_button').css('color', '#f8f9fa');
+        $('.dataTable').css('background-color', '#343a40');
+        $('.dataTable tbody tr').css('background-color', '#343a40');
+        $('.dataTable tbody td').css({
+            'color': '#f8f9fa',
+            'border-color': '#495057'
         });
     }
 
-    // Function to update DataTables theme styles
-    function updateDataTablesTheme() {
-        const isDarkMode = document.body.classList.contains('dark-theme-variables');
+    // Function to apply light mode styles specifically to DataTables
+    function applyLightModeTableStyles() {
+        $('.dataTables_scrollHead, .dataTables_scrollHead thead th, .dataTables_scrollHeadInner, table.dataTable thead th').css({
+            'background-color': '',
+            'color': '',
+            'border-color': ''
+        });
 
-        if (isDarkMode) {
-            $('.dataTables_wrapper').css('color', '#f8f9fa');
-            $('.dataTables_filter input').css({
-                'background-color': '#495057',
-                'color': '#f8f9fa',
-                'border-color': '#6c757d'
-            });
-            $('.dataTables_length select').css({
-                'background-color': '#495057',
-                'color': '#f8f9fa',
-                'border-color': '#6c757d'
-            });
-            $('.dataTables_info').css('color', '#f8f9fa');
-        } else {
-            $('.dataTables_wrapper').css('color', '#212529');
-            $('.dataTables_filter input').css({
-                'background-color': '#fff',
-                'color': '#212529',
-                'border-color': '#dee2e6'
-            });
-            $('.dataTables_length select').css({
-                'background-color': '#fff',
-                'color': '#212529',
-                'border-color': '#dee2e6'
-            });
-            $('.dataTables_info').css('color', '#212529');
-        }
-    }
+        $('.dataTables_filter input, .dataTables_length select').css({
+            'background-color': '',
+            'color': '',
+            'border-color': ''
+        });
 
-    // DataTable initialization function
-    function initializeDataTable() {
-        return $('#hospitalTable').DataTable({
-            scrollY: 'calc(100vh - 300px)',
-            scrollCollapse: true,
-            paging: true,
-            responsive: true,
-            fixedHeader: true,
-            dom: '<"top"f>rt<"bottom"lip><"clear">',
-            language: {
-                search: "_INPUT_",
-                searchPlaceholder: "Search hospitals...",
-                lengthMenu: "Show _MENU_ hospitals per page",
-                info: "Showing _START_ to _END_ of _TOTAL_ hospitals",
-                infoEmpty: "No hospitals available",
-                infoFiltered: "(filtered from _MAX_ total hospitals)"
-            },
-            initComplete: function() {
-                updateDataTablesTheme();
-            },
-            drawCallback: function() {
-                updateDataTablesTheme();
-            }
+        $('.dataTables_info, .paginate_button').css('color', '');
+        $('.dataTable, .dataTable tbody tr').css('background-color', '');
+        $('.dataTable tbody td').css({
+            'color': '',
+            'border-color': ''
         });
     }
 
-    // Function to destroy and recreate DataTable
-    function reinitializeDataTable() {
-        if ($.fn.DataTable.isDataTable('#hospitalTable')) {
-            $('#hospitalTable').DataTable().destroy();
-        }
-        initializeDataTable();
-    }
-
-    // Function to load doctor data
-    function loadDoctorData(uniqueId) {
-        const row = $(`button[data-unique-id="${uniqueId}"]`).closest('tr');
-
-        if (row.length) {
-            // Extract data from the row
-            const data = {
-                uniqueId: uniqueId,
-                name: row.find('td:nth-child(3) span').text(),
-                email: row.find('td:nth-child(4)').text(),
-                contact: row.find('td:nth-child(5)').text(),
-                specialist: row.find('td:nth-child(6)').text(),
-                experience: row.find('td:nth-child(7)').text(),
-                otherSpecialization: row.find('td:nth-child(8)').text(),
-                qualification: row.find('td:nth-child(9)').text(),
-                firstLogin: row.find('td:nth-child(10) span').text(),
-                createdAt: row.find('td:nth-child(11)').text(),
-                status: row.find('td:nth-child(12) span').text()
-            };
-
-            // Update modal with the data
-            $('#hospitalName').text(data.name);
-            $('#hospitalUniqueId').text(data.uniqueId);
-            $('#hospitalEmail').text(data.email);
-            $('#hospitalContact').text(data.contact);
-            $('#hospitalAddress').text(data.specialist);
-            $('#hospitalLongitude').text(data.experience);
-            $('#hospitalLatitude').text(data.otherSpecialization);
-            $('#hospitalDescription').text(data.qualification);
-            $('#hospitalCreatedAt').text(data.createdAt);
-
-            // Set the image source
-            $('#hospitalImage').attr('src', `/doctor/image/${data.email}`)
-                .on('error', function() {
-                    $(this).attr('src', '/images/default-doctor.png');
-                });
-
-            // Update the delete button with uniqueId
-            $('#deleteHospitalBtn').attr('href', `/Admin/DeleteDoctor/${data.uniqueId}`);
-
-            // Update the update button with uniqueId
-            $('#updateHospitalBtn').attr('href', `/Admin/EditDoctor/${data.uniqueId}`);
-        }
-    }
-
-    // On page load
+    // Initialize theme on page load
     document.addEventListener('DOMContentLoaded', function() {
         // Check for saved theme preference
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.body.classList.add('dark-theme-variables');
-            const themeToggler = document.querySelector('.theme-toggler');
-            if (themeToggler) {
-                themeToggler.querySelector('span:nth-child(1)').classList.remove('active');
-                themeToggler.querySelector('span:nth-child(2)').classList.add('active');
-            }
+        const darkMode = localStorage.getItem('darkMode') === 'enabled';
+
+        // Set initial theme
+        if (darkMode) {
+            enableDarkMode();
+        } else {
+            disableDarkMode();
         }
 
-        // Initialize DataTable
-        initializeDataTable();
+        // Setup theme toggler
+        const themeToggler = document.querySelector('.theme-toggler');
+        if (themeToggler) {
+            themeToggler.addEventListener('click', () => {
+                if (document.body.classList.contains('dark-theme-variables')) {
+                    disableDarkMode();
+                } else {
+                    enableDarkMode();
+                }
+            });
+        }
 
         // Sidebar toggle functionality for mobile
         const menuBtn = document.getElementById('menu_bar');
@@ -1289,49 +1240,90 @@ aside {
             });
         }
 
+        // Initialize DataTable with custom settings
+        const hospitalTable = $('#hospitalTable').DataTable({
+            scrollY: 'calc(100vh - 300px)',
+            scrollCollapse: true,
+            paging: true,
+            responsive: true,
+            fixedHeader: true,
+            dom: '<"top"f>rt<"bottom"lip><"clear">',
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search Appointments...",
+                lengthMenu: "Show _MENU_ Appointments per page",
+                info: "Showing _START_ to _END_ of _TOTAL_ appointments",
+                infoEmpty: "No hospitals available",
+                infoFiltered: "(filtered from _MAX_ total hospitals)"
+            },
+            initComplete: function() {
+                if (document.body.classList.contains('dark-theme-variables')) {
+                    applyDarkModeTableStyles();
+                }
+            },
+            drawCallback: function() {
+                if (document.body.classList.contains('dark-theme-variables')) {
+                    applyDarkModeTableStyles();
+                }
+            }
+        });
+
+        // Reapply styles when table is redrawn
+        hospitalTable.on('draw', function() {
+            if (document.body.classList.contains('dark-theme-variables')) {
+                applyDarkModeTableStyles();
+            }
+        });
+
         // Handle view button click
         $(document).on('click', '.view-btn', function() {
             const uniqueId = $(this).data('unique-id');
-            loadDoctorData(uniqueId);
+            loadAppointmentData(uniqueId);
         });
 
-        // When modal is shown, reset its content
-        $('#hospitalModal').on('show.bs.modal', function() {
-            $('#hospitalName').text('Loading...');
-            $('#hospitalUniqueId').text('Loading...');
-            $('#hospitalEmail').text('Loading...');
-            $('#hospitalContact').text('Loading...');
-            $('#hospitalAddress').text('Loading...');
-            $('#hospitalLongitude').text('Loading...');
-            $('#hospitalLatitude').text('Loading...');
-            $('#hospitalDescription').text('Loading...');
-            $('#hospitalCreatedAt').text('Loading...');
-            $('#hospitalImage').attr('src', '');
-        });
+        // Function to load appointment data
+        function loadAppointmentData(uniqueId) {
+            const row = $(`button[data-unique-id="${uniqueId}"]`).closest('tr');
 
-        // Handle SOS notifications
-        function checkForSOSNotifications() {
-            // Implement your SOS notification logic here
-            // This is just a placeholder
-            fetch('/Admin/CheckSOSNotifications')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.count > 0) {
-                        $('.notification-badge').text(data.count).show();
-                    } else {
-                        $('.notification-badge').hide();
-                    }
-                });
+            if (row.length) {
+                const data = {
+                    uniqueId: uniqueId,
+                    customerEmail: row.find('td:nth-child(3) span').text(),
+                    appointmentDate: row.find('td:nth-child(4)').text(),
+                    appointmentTime: row.find('td:nth-child(5)').text(),
+                    specialReasons: row.find('td:nth-child(6)').text(),
+                    status: row.find('td:nth-child(7)').text(),
+                    appointmentPrice: row.find('td:nth-child(8)').text(),
+                    createdAt: row.find('td:nth-child(9)').text()
+                };
+
+                // Update modal with the data
+                $('#uniqueId').text(data.uniqueId);
+                $('#customerEmail').text(data.customerEmail);
+                $('#appointmentDate').text(data.appointmentDate);
+                $('#appointmentTime').text(data.appointmentTime);
+                $('#specialReasons').text(data.specialReasons);
+                $('#appointmentStatus').text('Status: ' + data.status);
+                $('#appointmentPrice').text(data.appointmentPrice);
+                $('#createdAt').text(data.createdAt);
+
+                // Update the complete button
+                $('#completeAppointmentBtn').attr('href', `/Doctor/CompleteAppointment/${data.uniqueId}`);
+                $('#completeAppointmentBtn').toggle(data.status === 'Pending');
+            }
         }
 
-        // Check for notifications every 30 seconds
-        setInterval(checkForSOSNotifications, 30000);
-        checkForSOSNotifications();
+        // Reset modal content when shown
+        $('#hospitalModal').on('show.bs.modal', function() {
+            $('#uniqueId, #customerEmail, #appointmentDate, #appointmentTime, #specialReasons, #appointmentPrice, #createdAt')
+                .text('Loading...');
+            $('#appointmentStatus').text('Status: Loading...');
+            $('#completeAppointmentBtn').hide();
+        });
     });
 </script>
-<script src="/Admin/SOSSocket.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script src="/Admin/Dashboard.js"></script>
+
+
+
 </body>
 </html>
