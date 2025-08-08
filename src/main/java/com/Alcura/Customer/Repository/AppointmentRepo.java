@@ -48,7 +48,7 @@ public interface AppointmentRepo extends JpaRepository<Appoinment, Integer> {
 
     @Query("SELECT new com.Alcura.Admin.DTO.ProfitCalculationDTO(" +
             "a.unique_id, a.doctor, a.doctor_name, a.customer_email, a.status, " +
-            "a.appointmentId, a.created_at, d.uniqueId, d.email, " +
+            "a.paymentId, a.created_at, d.uniqueId, d.email, " +
             "dc.hospital_price, dc.newPrice, dc.price, dc.doctor_email) " +
             "FROM Appoinment a, Doctor d, DoctorPrice dc " +
             "WHERE a.status = 'Completed' " +

@@ -8,7 +8,7 @@ public class ProfitCalculationDTO {
     private String doctor_name;
     private String customer_email;
     private String status;
-    private String appointment_id;
+    private String paymentId;
     private LocalDateTime created_at;
     private String uniqueId;
     private String email;
@@ -24,7 +24,7 @@ public class ProfitCalculationDTO {
             String doctor_name,
             String customer_email,
             String status,
-            String appointment_id,
+            String paymentId,
             LocalDateTime created_at,
             String uniqueId,
             String email,
@@ -38,7 +38,7 @@ public class ProfitCalculationDTO {
         this.doctor_name = doctor_name;
         this.customer_email = customer_email;
         this.status = status;
-        this.appointment_id = appointment_id;
+        this.paymentId = paymentId;
         this.created_at = created_at;
         this.uniqueId = uniqueId;
         this.email = email;
@@ -88,12 +88,12 @@ public class ProfitCalculationDTO {
         this.status = status;
     }
 
-    public String getAppointment_id() {
-        return appointment_id;
+    public String getPaymentId() {
+        return paymentId;
     }
 
-    public void setAppointment_id(String appointment_id) {
-        this.appointment_id = appointment_id;
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
     }
 
     public LocalDateTime getCreated_at() {

@@ -1031,13 +1031,13 @@ tfoot td {
                                         <span th:class="${item.status == 'Completed'} ? 'badge bg-success' : 'badge bg-warning'"
                                               th:text="${item.status}"></span>
                                 </td>
-                                <td th:text="${item.appointment_id}"></td>
+                                <td th:text="${item.paymentId != null} ? ${item.paymentId} : 'N/A'"></td>
                                 <td th:text="${#temporals.format(item.created_at, 'yyyy-MM-dd HH:mm')}"></td>
                                 <td th:text="${#numbers.formatDecimal(item.hospital_price, 1, 2) + '%'}"></td>
                                 <td th:text="${'Rs ' + #numbers.formatDecimal(item.newPrice, 1, 2)}"></td>
                                 <td th:text="${'Rs ' + #numbers.formatDecimal(item.price, 1, 2)}"></td>
-                                <td th:text="${'Rs ' + #numbers.formatDecimal(item.price - item.newPrice, 1, 2)}"
-                                    th:class="${(item.price - item.newPrice) >= 0 ? 'text-profit' : 'text-loss'}"></td>
+                                <td th:text="${'Rs ' + #numbers.formatDecimal(item.newPrice - item.Price, 1, 2)}"
+                                    th:class="${(item.newPrice - item.Price) >= 0 ? 'text-profit' : 'text-loss'}"></td>
                                 <td th:text="${item.doctor_email}"></td>
                             </tr>
                             </tbody>

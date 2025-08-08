@@ -94,7 +94,7 @@ public class AppointmentController {
                     paymentMethod
             );
 
-            appointment.setAppointmentId(payment.getUniqueId());
+            appointment.setPaymentId(payment.getUniqueId());
             payment.setAppointment(appointment.getUnique_id());
 
             paymentRepo.save(payment);

@@ -59,15 +59,15 @@ public class Appoinment
     @Column(name = "appointment_price")
     private Float appointmentPrice;
 
-    @Column(name = "appointment_id")
-    private String appointmentId;
+    @Column(name = "payment_id")
+    private String paymentId;
 
-    public String getAppointmentId() {
-        return appointmentId;
+    public String getPaymentId() {
+        return paymentId;
     }
 
-    public void setAppointmentId(String appointmentId) {
-        this.appointmentId = appointmentId;
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
     }
 
     public Float getAppointmentPrice() {
