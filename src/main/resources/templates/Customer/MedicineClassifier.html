@@ -6,141 +6,158 @@
 
     <link rel="stylesheet" href="style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
     <style>
-
         body {
-            background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
-        }
-        .container {
-            max-width: 1200px;
-            margin-top: 20px;
-        }
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-        .card-header {
-            background-color: #007bff;
-            color: white;
-            border-radius: 10px 10px 0 0 !important;
-        }
-        .preview-image {
-            max-width: 100%;
-            max-height: 400px;
-            margin: 0 auto;
-            display: block;
-        }
-        .tab-content {
-            min-height: 200px;
-        }
-        .status-bar {
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-        .result-text {
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-         body.dark {
-        background-color: #121212;
-        color: #ffffff;
-    }
+         background-color: #f8f9fa;
+         font-family: 'Arial', sans-serif;
+     }
+     .container {
+         max-width: 1200px;
+         margin-top: 20px;
+         margin: 0 auto;
+         padding: 20px;
+     }
+     .card {
+         border-radius: 10px;
+         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+         margin-bottom: 20px;
+         padding: 25px;
+         margin: 0 auto;
+         max-width: 100%;
+     }
+       .home {
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     min-height: calc(100vh - 60px); /* Account for navbar height */
+     padding: 20px;
+     box-sizing: border-box;
+ }
+     .card-header {
+         background-color: #007bff;
+         color: white;
+         border-radius: 10px 10px 0 0 !important;
+     }
+     .preview-image {
+         max-width: 100%;
+         max-height: 400px;
+         margin: 0 auto;
+         display: block;
+         border-radius: 8px;
+         border: 1px solid #e0e0e0;
+         padding: 5px;
+         background: white;
+     }
+     .tab-content {
+         min-height: 200px;
+         padding: 20px;
+         margin-top: 15px;
+     }
+     .status-bar {
+         font-size: 0.9rem;
+         color: #6c757d;
+     }
+     .result-text {
+         font-weight: bold;
+         font-size: 1.2rem;
+     }
+     form {
+         display: flex;
+         flex-direction: column;
+         gap: 1.5rem;
+         padding: 15px;
+     }
+     .form-control {
+         padding: 12px;
+         border-radius: 8px;
+         border: 1px solid #ced4da;
+         transition: border-color 0.3s ease;
+     }
+     .form-control:focus {
+         border-color: #86b7fe;
+         box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+     }
+     .btn-primary {
+         padding: 12px;
+         border-radius: 8px;
+         font-weight: 500;
+         letter-spacing: 0.5px;
+         transition: all 0.3s ease;
+     }
 
-    .dark .card {
-        background-color: #1e1e1e;
-        color: #ffffff;
-    }
+     /* Dark Mode Styles */
+     body.dark {
+         background-color: #18191A;
+     }
+     body.dark .container {
+         background-color: #242526;
+     }
+     body.dark .card {
+         background-color: #242526;
+         color: #CCC;
+         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+     }
+     body.dark .card-header {
+         background-color: #3A3B3C;
+         color: #CCC;
+     }
+     body.dark .preview-image {
+         background-color: #3A3B3C;
+         border-color: #444;
+     }
+     body.dark .tab-content {
+         background-color: #3A3B3C;
+         color: #CCC;
+     }
+     body.dark .status-bar {
+         background-color: #3A3B3C;
+         color: #CCC;
+     }
+     body.dark .form-control {
+         background-color: #3A3B3C;
+         border-color: #444;
+         color: #CCC;
+     }
+     body.dark .form-control:focus {
+         border-color: #695CFE;
+         box-shadow: 0 0 0 0.25rem rgba(105, 92, 254, 0.25);
+     }
+     body.dark .btn-primary {
+         background-color: #695CFE;
+         border-color: #695CFE;
+     }
+     body.dark .result-text,
+     body.dark h1,
+     body.dark h5 {
+         color: #CCC;
+     }
+     body.dark .text-muted {
+         color: #b3b3b3 !important;
+     }
+     body.dark .nav-tabs .nav-link.active {
+         background-color: #3A3B3C;
+         color: #CCC;
+     }
+     body.dark .nav-tabs .nav-link:not(.active) {
+         color: #b3b3b3;
+     }
+     body.dark .border {
+         border-color: #3A3B3C !important;
+     }
 
-    .dark .card-header {
-        background-color: #0d6efd;
-    }
+     @media (max-width: 768px) {
+         .card {
+             padding: 15px;
+         }
+         form {
+             gap: 1rem;
+         }
+         .preview-image {
+             max-width: 100%;
+         }
+     }
 
-    .dark .tab-content {
-        background-color: #1e1e1e;
-        color: #ffffff;
-    }
-
-    .dark .status-bar {
-        background-color: #2d2d2d !important;
-        color: #ffffff !important;
-    }
-
-
-    .dark .text-muted {
-        color: #b3b3b3 !important;
-    }
-
-        .dark .search-box .icon {
-    color: #ffffff !important;
-}  body {
-            background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
-        }
-        .container {
-            max-width: 1200px;
-            margin-top: 20px;
-        }
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-        .card-header {
-            background-color: #007bff;
-            color: white;
-            border-radius: 10px 10px 0 0 !important;
-        }
-        .preview-image {
-            max-width: 100%;
-            max-height: 400px;
-            margin: 0 auto;
-            display: block;
-        }
-        .tab-content {
-            min-height: 200px;
-        }
-        .status-bar {
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-        .result-text {
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-         body.dark {
-        background-color: #121212;
-        color: #ffffff;
-    }
-
-    .dark .card {
-        background-color: #1e1e1e;
-        color: #ffffff;
-    }
-
-    .dark .card-header {
-        background-color: #0d6efd;
-    }
-
-    .dark .tab-content {
-        background-color: #1e1e1e;
-        color: #ffffff;
-    }
-
-    .dark .status-bar {
-        background-color: #2d2d2d !important;
-        color: #ffffff !important;
-    }
-
-
-    .dark .text-muted {
-        color: #b3b3b3 !important;
-    }
-
-        .dark .search-box .icon {
-    color: #ffffff !important;
-}
 
     </style>
 </head>
@@ -256,98 +273,98 @@
 </nav>
 
 <section class="home">
-<div class="container">
-    <h1 class="text-center my-4">Medicine Classifier Pro</h1>
+    <div class="container">
+        <h1 class="text-center my-4">Medicine Classifier Pro</h1>
 
-    <div class="row">
-        <!-- Left Panel -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Upload Medicine Image</h5>
+        <div class="row">
+            <!-- Left Panel -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Upload Medicine Image</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/Customer/MedicineClassifier}" method="post" enctype="multipart/form-data">
+                            <div class="mb-3 text-center">
+                                <img th:if="${imagePreview != null}" th:src="${imagePreview}"
+                                     class="preview-image img-thumbnail" alt="Preview">
+                                <img th:unless="${imagePreview != null}" src="placeholder.jpg"
+                                     class="preview-image img-thumbnail" alt="Preview">
+                            </div>
+                            <div class="mb-3">
+                                <input type="file" name="file" class="form-control" accept="image/*" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Classify Medicine</button>
+                        </form>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form th:action="@{/Customer/MedicineClassifier}" method="post" enctype="multipart/form-data">
-                        <div class="mb-3 text-center">
-                            <img th:if="${imagePreview != null}" th:src="${imagePreview}"
-                                 class="preview-image img-thumbnail" alt="Preview">
-                            <img th:unless="${imagePreview != null}" src="placeholder.jpg"
-                                 class="preview-image img-thumbnail" alt="Preview">
+            </div>
+
+            <!-- Right Panel -->
+            <div class="col-md-6">
+                <div class="card">
+
+                    <script th:if="${result != null}">
+                        alert("Classification Results");
+                    </script>
+
+
+                    <div class="card-body">
+                        <div th:if="${result != null}">
+                            <p class="result-text" th:text="'Predicted Medicine: ' + ${result.predictedClass}"></p>
+                            <p class="text-muted" th:text="'Confidence: ' + ${#numbers.formatDecimal(result.confidence, 1, 2)} + '%'"></p>
+
+                            <ul class="nav nav-tabs" id="infoTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#details">Details</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dosage">Dosage</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#usage">Usage</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#effects">Side Effects</button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content p-3 border border-top-0 rounded-bottom">
+                                <div class="tab-pane fade show active" id="details">
+                                    <p th:text="'Name: ' + ${result.drugInfo.className}"></p>
+                                    <p th:text="'Dosage Form: ' + ${result.drugInfo.dosageForm}"></p>
+                                    <p th:text="'Price: ' + ${result.drugInfo.price}"></p>
+                                    <p th:text="'Price: ' + ${result.drugInfo.scientificname}"></p>
+                                </div>
+                                <div class="tab-pane fade" id="dosage">
+                                    <p th:text="'Standard Dosage: ' + ${result.drugInfo.dosage}"></p>
+                                    <p th:text="'Max Daily Dose: ' + ${result.drugInfo.maxDose}"></p>
+                                    <p th:text="'Administration: ' + ${result.drugInfo.administration}"></p>
+                                </div>
+                                <div class="tab-pane fade" id="usage">
+                                    <p th:text="'Primary Use: ' + ${result.drugInfo.use}"></p>
+                                    <p th:text="'Indications: ' + ${result.drugInfo.indications}"></p>
+                                    <p th:text="'Precautions: ' + ${result.drugInfo.precautions}"></p>
+                                </div>
+                                <div class="tab-pane fade" id="effects">
+                                    <p th:text="'Common Side Effects: ' + ${result.drugInfo.sideEffects}"></p>
+                                    <p th:text="'Serious Side Effects: ' + ${result.drugInfo.seriousEffects}"></p>
+                                    <p th:text="'Contraindications: ' + ${result.drugInfo.contraindications}"></p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <input type="file" name="file" class="form-control" accept="image/*" required>
+                        <div th:unless="${result != null}">
+                            <p class="lead">No medicine classified yet</p>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Classify Medicine</button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Right Panel -->
-        <div class="col-md-6">
-            <div class="card">
-
-                <script th:if="${result != null}">
-                    alert("Classification Results");
-                </script>
-
-
-                <div class="card-body">
-                    <div th:if="${result != null}">
-                        <p class="result-text" th:text="'Predicted Medicine: ' + ${result.predictedClass}"></p>
-                        <p class="text-muted" th:text="'Confidence: ' + ${#numbers.formatDecimal(result.confidence, 1, 2)} + '%'"></p>
-
-                        <ul class="nav nav-tabs" id="infoTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#details">Details</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dosage">Dosage</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#usage">Usage</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#effects">Side Effects</button>
-                            </li>
-                        </ul>
-
-                        <div class="tab-content p-3 border border-top-0 rounded-bottom">
-                            <div class="tab-pane fade show active" id="details">
-                                <p th:text="'Name: ' + ${result.drugInfo.className}"></p>
-                                <p th:text="'Dosage Form: ' + ${result.drugInfo.dosageForm}"></p>
-                                <p th:text="'Price: ' + ${result.drugInfo.price}"></p>
-                                <p th:text="'Price: ' + ${result.drugInfo.scientificname}"></p>
-                            </div>
-                            <div class="tab-pane fade" id="dosage">
-                                <p th:text="'Standard Dosage: ' + ${result.drugInfo.dosage}"></p>
-                                <p th:text="'Max Daily Dose: ' + ${result.drugInfo.maxDose}"></p>
-                                <p th:text="'Administration: ' + ${result.drugInfo.administration}"></p>
-                            </div>
-                            <div class="tab-pane fade" id="usage">
-                                <p th:text="'Primary Use: ' + ${result.drugInfo.use}"></p>
-                                <p th:text="'Indications: ' + ${result.drugInfo.indications}"></p>
-                                <p th:text="'Precautions: ' + ${result.drugInfo.precautions}"></p>
-                            </div>
-                            <div class="tab-pane fade" id="effects">
-                                <p th:text="'Common Side Effects: ' + ${result.drugInfo.sideEffects}"></p>
-                                <p th:text="'Serious Side Effects: ' + ${result.drugInfo.seriousEffects}"></p>
-                                <p th:text="'Contraindications: ' + ${result.drugInfo.contraindications}"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div th:unless="${result != null}">
-                        <p class="lead">No medicine classified yet</p>
-                    </div>
-                </div>
-            </div>
+        <div class="status-bar mt-3 p-2 bg-light rounded">
+            <span th:text="${status != null} ? ${status} : 'Ready'"></span>
         </div>
     </div>
-
-    <div class="status-bar mt-3 p-2 bg-light rounded">
-        <span th:text="${status != null} ? ${status} : 'Ready'"></span>
-    </div>
-</div>
 </section>
 <script src="script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
