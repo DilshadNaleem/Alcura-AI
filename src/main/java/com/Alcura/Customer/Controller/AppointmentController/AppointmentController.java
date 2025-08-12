@@ -7,6 +7,7 @@ import com.Alcura.Customer.Repository.AppointmentRepository;
 import com.Alcura.Customer.Repository.PaymentRepo;
 import com.Alcura.Customer.Service.DoctorAvailabilityService;
 import com.Alcura.Customer.Service.Interfaces.AppoinmentService;
+import com.Alcura.Customer.Service.PaymentService;
 import com.Alcura.Customer.Service.PaymentUniqueId;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -28,15 +29,18 @@ public class AppointmentController {
     private AppointmentRepository appointmentRepository;
     @Autowired
     private PaymentRepo paymentRepo;
+    private PaymentService paymentService;
     private final DoctorAvailabilityService doctorAvailabilityService;
     private final PaymentUniqueId paymentUniqueId;
 
     public AppointmentController(AppoinmentService appointmentService,
                                  DoctorAvailabilityService doctorAvailabilityService,
-                                 PaymentUniqueId paymentUniqueId) {
+                                 PaymentUniqueId paymentUniqueId,
+                                 PaymentService paymentService) {
         this.appointmentService = appointmentService;
         this.doctorAvailabilityService = doctorAvailabilityService;
         this.paymentUniqueId = paymentUniqueId;
+        this.paymentService = paymentService;
     }
 
     @PostMapping("/Customer/Appointment")
@@ -77,7 +81,7 @@ public class AppointmentController {
 
             Payment payment = new Payment();
             payment.setPrice(price);
-            payment.setPaymentMethod(paymentMethod);
+            paymentService.processPayment(payment,paymentMethod);
             payment.setCustomer(email);
             payment = paymentUniqueId.createPayment(payment);
 

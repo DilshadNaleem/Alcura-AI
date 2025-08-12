@@ -1,5 +1,6 @@
 package com.Alcura.Customer.Model;
 
+import com.Alcura.Customer.Service.Interfaces.PaymentStrategy;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -33,6 +34,8 @@ public class Payment
     @Column(name="created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Transient
+    private transient PaymentStrategy paymentStrategy;
 
     public int getId() {
         return id;
@@ -88,5 +91,19 @@ public class Payment
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setPaymentStrategy(PaymentStrategy paymentStrategy)
+    {
+        this.paymentStrategy = paymentStrategy;
+        this.paymentMethod = paymentStrategy.getPaymentMethodName();
+    }
+
+    public String processPayment()
+    {
+        if (paymentStrategy == null) {
+            throw new IllegalStateException("Payment strategy not set");
+        }
+        return paymentStrategy.processPayment(this.price);
     }
 }
