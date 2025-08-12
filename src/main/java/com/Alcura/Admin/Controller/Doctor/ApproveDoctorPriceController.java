@@ -3,6 +3,9 @@ package com.Alcura.Admin.Controller.Doctor;
 import com.Alcura.Admin.Model.DoctorPrice;
 import com.Alcura.Admin.Repository.DoctorPriceRepo;
 import com.Alcura.Admin.Service.AdminAppointmentRescheduleEmailService;
+import com.Alcura.Admin.Service.PriceApprovalNotifier;
+import com.Alcura.Doctor.Model.Doctor;
+import com.Alcura.Doctor.Repository.DoctorRepository;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,44 +19,62 @@ import java.io.PrintWriter;
 
 @Controller
 @RequestMapping("/Admin")
-public class ApproveDoctorPriceController
-{
+public class ApproveDoctorPriceController {
     @Autowired
     private DoctorPriceRepo doctorPriceRepo;
     Logger logger = LoggerFactory.getLogger(ApproveDoctorPriceController.class);
-    private final AdminAppointmentRescheduleEmailService emailService;
+    @Autowired
+    private final PriceApprovalNotifier emailService;
+    private final DoctorRepository doctorRepository;
 
-    public ApproveDoctorPriceController(AdminAppointmentRescheduleEmailService emailService)
-    {
+    public ApproveDoctorPriceController(PriceApprovalNotifier emailService,
+                                        DoctorRepository doctorRepository) {
         this.emailService = emailService;
+        this.doctorRepository = doctorRepository;
     }
-
-
 
     @PostMapping("/ApproveDoctorPrice")
     public String approve(@RequestParam("id") int id,
                           @RequestParam("finalPrice") Float newPrice,
+                          @RequestParam("doctorEmail") String doctorEmail,
                           PrintWriter out,
-                          HttpSession session)
-    {
-        try
-        {
+                          HttpSession session) {
+        logger.info("Received request to approve doctor price - ID: {}, New Price: {}, Doctor Email: {}",
+                id, newPrice, doctorEmail);
+
+        try {
             String email = (String) session.getAttribute("email");
-            if (email == null)
-            {
+            if (email == null) {
+                logger.warn("Session email is null - redirecting to signing page");
                 return "redirect:/Admin/Signing";
             }
 
+            logger.debug("Session email found: {}", email);
+
+            Doctor doctor = doctorRepository.findByemail(doctorEmail);
+            if (doctor == null) {
+                logger.error("Doctor not found for email: {}", doctorEmail);
+                throw new RuntimeException("Doctor not found for email: " + doctorEmail);
+            }
+            logger.debug("Doctor found: {}", doctor.toString());
+
             DoctorPrice doctorPrice = doctorPriceRepo.findById(id);
+            if (doctorPrice == null) {
+                logger.error("DoctorPrice not found for ID: {}", id);
+                throw new RuntimeException("DoctorPrice not found for ID: " + id);
+            }
+            logger.debug("Current DoctorPrice status: {}", doctorPrice.getStatus());
+
             doctorPrice.setStatus("Success");
             doctorPrice.setNewPrice(newPrice);
             doctorPriceRepo.save(doctorPrice);
+            logger.info("DoctorPrice updated successfully - ID: {}, New Status: Success, New Price: {}",
+                    id, newPrice);
+
             out.println("<script>");
             out.println("alert('Successfully Updated to Success');");
             out.println("window.location.href = '/Admin/Manage_Doctor/Price';");
             out.println("</script>");
-            logger.info("Saved Data Id:{}", id);
-            logger.info("Status updated to Success");
 
             String subject = "Your Price for per booking has been Approved";
             String body = String.format(
@@ -61,12 +82,23 @@ public class ApproveDoctorPriceController
                             "Your Price Per Appointment has been Approved.\n\n" +
                             "Thank you, \n Alcura Team"
             );
-            emailService.sendAppointmentStatusEmail(email,subject,body);
-        }
-        catch (Exception e)
-        {
+
+            logger.debug("Preparing to send email - Recipient: {}, Subject: {}, Body: {}",
+                    doctorEmail, subject, body);
+
+            emailService.notifyObservers(doctorEmail, subject, body);
+
+            logger.info("Email notification triggered for doctor: {}", doctorEmail);
+            logger.debug("Verifying if any observers are registered...");
+
+            // Additional debug to check if observers are registered
+            if (emailService instanceof PriceApprovalNotifier) {
+                PriceApprovalNotifier notifier = (PriceApprovalNotifier) emailService;
+                logger.debug("Number of registered observers: {}", notifier.getObserverCount());
+            }
+        } catch (Exception e) {
+            logger.error("Error in approveDoctorPrice - ID: {}, Doctor Email: {}", id, doctorEmail, e);
             e.printStackTrace();
-            logger.error("Error: " , e.getMessage() );
         }
 
         return null;

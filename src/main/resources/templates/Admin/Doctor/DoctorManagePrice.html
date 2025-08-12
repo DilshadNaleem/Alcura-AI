@@ -1024,6 +1024,7 @@ aside {
                                     <span th:if="${price.status == 'Pending'}">
                                     <form th:action="@{/Admin/ApproveDoctorPrice}" method="post">
                                         <input type="hidden" th:value="${price.id}" name="id">
+                                        <input type="hidden" th:value="${price.doctor_email}" name="doctorEmail">
                                         <input type="hidden" th:value="${price.price + (price.price * price.hospital_price / 100)}" name="finalPrice">
                                         <button type="submit" class="btn btn-sm btn-primary">ACCEPT</button>
                                     </form>

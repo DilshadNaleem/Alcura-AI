@@ -51,7 +51,7 @@ public class RejectDoctorPrice
 
             out.println("<script>");
             out.println("alert('Successfully Updated');");
-            out.println("window.location.href = '/Doctor/Manage_Doctor/Price';");
+            out.println("window.location.href = '/Admin/Manage_Doctor/Price';");
             out.println("</script>");
 
             logger.info("Saving to Database: {}", newPrice, adminNotes);
