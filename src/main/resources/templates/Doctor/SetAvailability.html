@@ -128,13 +128,14 @@
  }
 
  #saveAvailabilityBtn {
-     background: var(--color-primary);
-     color: white;
+     background: #6d6dff;
+     color: wheat;
      border: none;
+    z-index: 999;
  }
 
  #saveAvailabilityBtn:hover {
-     background: var(--color-primary-dark);
+     background:  #3d8ae6;
  }
 
  #loadDefaults {
@@ -370,193 +371,193 @@ body.dark-theme-variables .day-section h2 {
             <span class="material-symbols-sharp active">light_mode</span>
             <span class="material-symbols-sharp">dark_mode</span>
         </div>
-<h1>Set Your Weekly Availability</h1>
-<div class="week-range" id="weekRange"></div>
+        <h1>Set Your Weekly Availability</h1>
+        <div class="week-range" id="weekRange"></div>
 
-<div class="button-container">
-    <button id="loadDefaults">Load Default Times</button>
-</div>
-
-<form id="availabilityForm" action="/Doctor/SaveAvailability" method="post">
-    <input type="hidden" name="uniqueId" id="doctorUniqueId" value="">
-
-    <!-- Monday -->
-    <div class="day-section">
-        <h2>Monday <span class="date-label" id="mondayDate"></span></h2>
-        <div class="time-inputs">
-            <div class="time-input">
-                <label>Start Time:</label>
-                <select name="mondayStart" class="time-select" data-day="monday" required>
-                    <option value="">Select Time</option>
-                </select>
-                <div class="error" id="mondayStartError"></div>
-            </div>
-            <div class="time-input">
-                <label>End Time:</label>
-                <select name="mondayEnd" class="time-select" data-day="monday" required>
-                    <option value="">Select Time</option>
-                </select>
-                <div class="error" id="mondayEndError"></div>
-            </div>
+        <div class="button-container">
+            <button id="loadDefaults">Load Default Times</button>
         </div>
-        <label class="unavailable-checkbox">
-            <input type="checkbox" name="mondayUnavailable" class="unavailable" data-day="monday"> Unavailable this day
-        </label>
-    </div>
 
-    <!-- Tuesday -->
-    <div class="day-section">
-        <h2>Tuesday <span class="date-label" id="tuesdayDate"></span></h2>
-        <div class="time-inputs">
-            <div class="time-input">
-                <label>Start Time:</label>
-                <select name="tuesdayStart" class="time-select" data-day="tuesday" required>
-                    <option value="">Select Time</option>
-                </select>
-                <div class="error" id="tuesdayStartError"></div>
-            </div>
-            <div class="time-input">
-                <label>End Time:</label>
-                <select name="tuesdayEnd" class="time-select" data-day="tuesday" required>
-                    <option value="">Select Time</option>
-                </select>
-                <div class="error" id="tuesdayEndError"></div>
-            </div>
-        </div>
-        <label class="unavailable-checkbox">
-            <input type="checkbox" name="tuesdayUnavailable" class="unavailable" data-day="tuesday"> Unavailable this day
-        </label>
-    </div>
+        <form id="availabilityForm" action="/Doctor/SaveAvailability" method="post">
+            <input type="hidden" name="uniqueId" id="doctorUniqueId" value="">
 
-    <!-- Wednesday -->
-    <div class="day-section">
-        <h2>Wednesday <span class="date-label" id="wednesdayDate"></span></h2>
-        <div class="time-inputs">
-            <div class="time-input">
-                <label>Start Time:</label>
-                <select name="wednesdayStart" class="time-select" data-day="wednesday" required>
-                    <option value="">Select Time</option>
-                </select>
-                <div class="error" id="wednesdayStartError"></div>
+            <!-- Monday -->
+            <div class="day-section">
+                <h2>Monday <span class="date-label" id="mondayDate"></span></h2>
+                <div class="time-inputs">
+                    <div class="time-input">
+                        <label>Start Time:</label>
+                        <select name="mondayStart" class="time-select" data-day="monday" required>
+                            <option value="">Select Time</option>
+                        </select>
+                        <div class="error" id="mondayStartError"></div>
+                    </div>
+                    <div class="time-input">
+                        <label>End Time:</label>
+                        <select name="mondayEnd" class="time-select" data-day="monday" required>
+                            <option value="">Select Time</option>
+                        </select>
+                        <div class="error" id="mondayEndError"></div>
+                    </div>
+                </div>
+                <label class="unavailable-checkbox">
+                    <input type="checkbox" name="mondayUnavailable" class="unavailable" data-day="monday"> Unavailable this day
+                </label>
             </div>
-            <div class="time-input">
-                <label>End Time:</label>
-                <select name="wednesdayEnd" class="time-select" data-day="wednesday" required>
-                    <option value="">Select Time</option>
-                </select>
-                <div class="error" id="wednesdayEndError"></div>
-            </div>
-        </div>
-        <label class="unavailable-checkbox">
-            <input type="checkbox" name="wednesdayUnavailable" class="unavailable" data-day="wednesday"> Unavailable this day
-        </label>
-    </div>
 
-    <!-- Thursday -->
-    <div class="day-section">
-        <h2>Thursday <span class="date-label" id="thursdayDate"></span></h2>
-        <div class="time-inputs">
-            <div class="time-input">
-                <label>Start Time:</label>
-                <select name="thursdayStart" class="time-select" data-day="thursday" required>
-                    <option value="">Select Time</option>
-                </select>
-                <div class="error" id="thursdayStartError"></div>
+            <!-- Tuesday -->
+            <div class="day-section">
+                <h2>Tuesday <span class="date-label" id="tuesdayDate"></span></h2>
+                <div class="time-inputs">
+                    <div class="time-input">
+                        <label>Start Time:</label>
+                        <select name="tuesdayStart" class="time-select" data-day="tuesday" required>
+                            <option value="">Select Time</option>
+                        </select>
+                        <div class="error" id="tuesdayStartError"></div>
+                    </div>
+                    <div class="time-input">
+                        <label>End Time:</label>
+                        <select name="tuesdayEnd" class="time-select" data-day="tuesday" required>
+                            <option value="">Select Time</option>
+                        </select>
+                        <div class="error" id="tuesdayEndError"></div>
+                    </div>
+                </div>
+                <label class="unavailable-checkbox">
+                    <input type="checkbox" name="tuesdayUnavailable" class="unavailable" data-day="tuesday"> Unavailable this day
+                </label>
             </div>
-            <div class="time-input">
-                <label>End Time:</label>
-                <select name="thursdayEnd" class="time-select" data-day="thursday" required>
-                    <option value="">Select Time</option>
-                </select>
-                <div class="error" id="thursdayEndError"></div>
-            </div>
-        </div>
-        <label class="unavailable-checkbox">
-            <input type="checkbox" name="thursdayUnavailable" class="unavailable" data-day="thursday"> Unavailable this day
-        </label>
-    </div>
 
-    <!-- Friday -->
-    <div class="day-section">
-        <h2>Friday <span class="date-label" id="fridayDate"></span></h2>
-        <div class="time-inputs">
-            <div class="time-input">
-                <label>Start Time:</label>
-                <select name="fridayStart" class="time-select" data-day="friday" required>
-                    <option value="">Select Time</option>
-                </select>
-                <div class="error" id="fridayStartError"></div>
+            <!-- Wednesday -->
+            <div class="day-section">
+                <h2>Wednesday <span class="date-label" id="wednesdayDate"></span></h2>
+                <div class="time-inputs">
+                    <div class="time-input">
+                        <label>Start Time:</label>
+                        <select name="wednesdayStart" class="time-select" data-day="wednesday" required>
+                            <option value="">Select Time</option>
+                        </select>
+                        <div class="error" id="wednesdayStartError"></div>
+                    </div>
+                    <div class="time-input">
+                        <label>End Time:</label>
+                        <select name="wednesdayEnd" class="time-select" data-day="wednesday" required>
+                            <option value="">Select Time</option>
+                        </select>
+                        <div class="error" id="wednesdayEndError"></div>
+                    </div>
+                </div>
+                <label class="unavailable-checkbox">
+                    <input type="checkbox" name="wednesdayUnavailable" class="unavailable" data-day="wednesday"> Unavailable this day
+                </label>
             </div>
-            <div class="time-input">
-                <label>End Time:</label>
-                <select name="fridayEnd" class="time-select" data-day="friday" required>
-                    <option value="">Select Time</option>
-                </select>
-                <div class="error" id="fridayEndError"></div>
-            </div>
-        </div>
-        <label class="unavailable-checkbox">
-            <input type="checkbox" name="fridayUnavailable" class="unavailable" data-day="friday"> Unavailable this day
-        </label>
-    </div>
 
-    <!-- Saturday -->
-    <div class="day-section">
-        <h2>Saturday <span class="date-label" id="saturdayDate"></span></h2>
-        <div class="time-inputs">
-            <div class="time-input">
-                <label>Start Time:</label>
-                <select name="saturdayStart" class="time-select" data-day="saturday" required>
-                    <option value="">Select Time</option>
-                </select>
-                <div class="error" id="saturdayStartError"></div>
+            <!-- Thursday -->
+            <div class="day-section">
+                <h2>Thursday <span class="date-label" id="thursdayDate"></span></h2>
+                <div class="time-inputs">
+                    <div class="time-input">
+                        <label>Start Time:</label>
+                        <select name="thursdayStart" class="time-select" data-day="thursday" required>
+                            <option value="">Select Time</option>
+                        </select>
+                        <div class="error" id="thursdayStartError"></div>
+                    </div>
+                    <div class="time-input">
+                        <label>End Time:</label>
+                        <select name="thursdayEnd" class="time-select" data-day="thursday" required>
+                            <option value="">Select Time</option>
+                        </select>
+                        <div class="error" id="thursdayEndError"></div>
+                    </div>
+                </div>
+                <label class="unavailable-checkbox">
+                    <input type="checkbox" name="thursdayUnavailable" class="unavailable" data-day="thursday"> Unavailable this day
+                </label>
             </div>
-            <div class="time-input">
-                <label>End Time:</label>
-                <select name="saturdayEnd" class="time-select" data-day="saturday" required>
-                    <option value="">Select Time</option>
-                </select>
-                <div class="error" id="saturdayEndError"></div>
-            </div>
-        </div>
-        <label class="unavailable-checkbox">
-            <input type="checkbox" name="saturdayUnavailable" class="unavailable" data-day="saturday"> Unavailable this day
-        </label>
-    </div>
 
-    <!-- Sunday -->
-    <div class="day-section">
-        <h2>Sunday <span class="date-label" id="sundayDate"></span></h2>
-        <div class="time-inputs">
-            <div class="time-input">
-                <label>Start Time:</label>
-                <select name="sundayStart" class="time-select" data-day="sunday" required>
-                    <option value="">Select Time</option>
-                </select>
-                <div class="error" id="sundayStartError"></div>
+            <!-- Friday -->
+            <div class="day-section">
+                <h2>Friday <span class="date-label" id="fridayDate"></span></h2>
+                <div class="time-inputs">
+                    <div class="time-input">
+                        <label>Start Time:</label>
+                        <select name="fridayStart" class="time-select" data-day="friday" required>
+                            <option value="">Select Time</option>
+                        </select>
+                        <div class="error" id="fridayStartError"></div>
+                    </div>
+                    <div class="time-input">
+                        <label>End Time:</label>
+                        <select name="fridayEnd" class="time-select" data-day="friday" required>
+                            <option value="">Select Time</option>
+                        </select>
+                        <div class="error" id="fridayEndError"></div>
+                    </div>
+                </div>
+                <label class="unavailable-checkbox">
+                    <input type="checkbox" name="fridayUnavailable" class="unavailable" data-day="friday"> Unavailable this day
+                </label>
             </div>
-            <div class="time-input">
-                <label>End Time:</label>
-                <select name="sundayEnd" class="time-select" data-day="sunday" required>
-                    <option value="">Select Time</option>
-                </select>
-                <div class="error" id="sundayEndError"></div>
+
+            <!-- Saturday -->
+            <div class="day-section">
+                <h2>Saturday <span class="date-label" id="saturdayDate"></span></h2>
+                <div class="time-inputs">
+                    <div class="time-input">
+                        <label>Start Time:</label>
+                        <select name="saturdayStart" class="time-select" data-day="saturday" required>
+                            <option value="">Select Time</option>
+                        </select>
+                        <div class="error" id="saturdayStartError"></div>
+                    </div>
+                    <div class="time-input">
+                        <label>End Time:</label>
+                        <select name="saturdayEnd" class="time-select" data-day="saturday" required>
+                            <option value="">Select Time</option>
+                        </select>
+                        <div class="error" id="saturdayEndError"></div>
+                    </div>
+                </div>
+                <label class="unavailable-checkbox">
+                    <input type="checkbox" name="saturdayUnavailable" class="unavailable" data-day="saturday"> Unavailable this day
+                </label>
             </div>
-        </div>
-        <label class="unavailable-checkbox">
-            <input type="checkbox" name="sundayUnavailable" class="unavailable" data-day="sunday"> Unavailable this day
-        </label>
-    </div>
 
-    <div class="day-section">
-        <label>
-            <input type="checkbox" name="available" id="globalAvailable" checked> Available for appointments
-        </label>
-    </div>
+            <!-- Sunday -->
+            <div class="day-section">
+                <h2>Sunday <span class="date-label" id="sundayDate"></span></h2>
+                <div class="time-inputs">
+                    <div class="time-input">
+                        <label>Start Time:</label>
+                        <select name="sundayStart" class="time-select" data-day="sunday" required>
+                            <option value="">Select Time</option>
+                        </select>
+                        <div class="error" id="sundayStartError"></div>
+                    </div>
+                    <div class="time-input">
+                        <label>End Time:</label>
+                        <select name="sundayEnd" class="time-select" data-day="sunday" required>
+                            <option value="">Select Time</option>
+                        </select>
+                        <div class="error" id="sundayEndError"></div>
+                    </div>
+                </div>
+                <label class="unavailable-checkbox">
+                    <input type="checkbox" name="sundayUnavailable" class="unavailable" data-day="sunday"> Unavailable this day
+                </label>
+            </div>
 
-    <button type="submit" id="saveAvailabilityBtn">Save Availability</button>
-    <div class="countdown-message" id="countdownMessage"></div>
-</form>
+            <div class="day-section">
+                <label>
+                    <input type="checkbox" name="available" id="globalAvailable" checked> Available for appointments
+                </label>
+            </div>
+
+            <button type="submit" id="saveAvailabilityBtn">Save Availability</button>
+            <div class="countdown-message" id="countdownMessage"></div>
+        </form>
     </div>
 </div>
 

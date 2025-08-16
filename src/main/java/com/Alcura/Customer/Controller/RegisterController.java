@@ -17,6 +17,7 @@ import java.io.IOException;
 @RequestMapping("/")
 public class RegisterController extends BaseRegistrationController
 {
+
    public RegisterController(RegistrationServiceFactory serviceFactory)
    {
        super ( serviceFactory, "customer", "/Customer/verification", "/Customer/Signing");

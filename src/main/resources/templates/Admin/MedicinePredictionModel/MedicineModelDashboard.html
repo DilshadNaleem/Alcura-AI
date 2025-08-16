@@ -434,6 +434,14 @@ color: #b0b0b0;
               <i class="bi bi-clipboard-check me-2"></i>View the Validation
             </a>
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="/Admin/SOSView">
+              <i class="bi bi-exclamation-triangle"></i>Emergency Requests
+              <span class="msg_count notification-badge">0</span>
+            </a>
+          </li>
+
         </ul>
       </div>
     </div>
@@ -538,6 +546,9 @@ color: #b0b0b0;
   </div>
 </div>
 <script src="/Admin/Toggle.js"></script>
+<script src="/Admin/SOSSocket.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
       const menuToggle = document.getElementById('menuToggle');

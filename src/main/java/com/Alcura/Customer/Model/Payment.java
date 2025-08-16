@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 @Table(name = "payments")
 public class Payment
 {
+    @Transient
+    private transient PaymentStrategy paymentStrategy;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -34,8 +37,7 @@ public class Payment
     @Column(name="created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @Transient
-    private transient PaymentStrategy paymentStrategy;
+
 
     public int getId() {
         return id;

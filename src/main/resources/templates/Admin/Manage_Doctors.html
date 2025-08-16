@@ -976,7 +976,7 @@ aside {
 
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">All Hospitals</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">All Doctors</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -1049,7 +1049,7 @@ aside {
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="hospitalModalLabel">Hospital Profile</h5>
+                <h5 class="modal-title" id="hospitalModalLabel">Doctor Profile</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -1079,20 +1079,20 @@ aside {
                                 <td id="hospitalContact">Loading...</td>
                             </tr>
                             <tr>
-                                <th>Address</th>
+                                <th>Specialist</th>
                                 <td id="hospitalAddress">Loading...</td>
                             </tr>
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <h5>Location Information</h5>
+                        <h5>Special Information</h5>
                         <table class="table table-bordered">
                             <tr>
-                                <th>Longitude</th>
+                                <th>Experience</th>
                                 <td id="hospitalLongitude">Loading...</td>
                             </tr>
                             <tr>
-                                <th>Latitude</th>
+                                <th>Other Specialization</th>
                                 <td id="hospitalLatitude">Loading...</td>
                             </tr>
                             <tr>
@@ -1191,11 +1191,11 @@ aside {
             dom: '<"top"f>rt<"bottom"lip><"clear">',
             language: {
                 search: "_INPUT_",
-                searchPlaceholder: "Search hospitals...",
-                lengthMenu: "Show _MENU_ hospitals per page",
-                info: "Showing _START_ to _END_ of _TOTAL_ hospitals",
-                infoEmpty: "No hospitals available",
-                infoFiltered: "(filtered from _MAX_ total hospitals)"
+                searchPlaceholder: "Search Doctors...",
+                lengthMenu: "Show _MENU_ Doctors per page",
+                info: "Showing _START_ to _END_ of _TOTAL_ Doctors",
+                infoEmpty: "No Doctors available",
+                infoFiltered: "(filtered from _MAX_ total Doctors)"
             },
             initComplete: function() {
                 updateDataTablesTheme();

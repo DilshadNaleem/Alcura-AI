@@ -25,11 +25,13 @@ public class ProfitCalculationController {
     public String form(Model model) {
         try {
             List<ProfitCalculationDTO> profit = profitCalculationService.getAppointmentsWithDoctorInfo();
+            System.out.println("Number of records fetched: " + profit.size());
+            System.out.println("First 5 records: " + profit.stream().limit(5).toList());
             model.addAttribute("profit", profit);
             return "/Admin/Profit/ProfitCalculation";
         } catch (Exception e) {
             e.printStackTrace();
-            // Consider using the logger from the service class here as well
+            model.addAttribute("error", "Error loading profit data");
             return "/Admin/Profit/ProfitCalculation";
         }
     }

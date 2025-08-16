@@ -61,6 +61,8 @@ public class DREditProfileController {
                              @RequestParam("Special_Notes") String SpecialNotes,
                              @RequestParam("Qualification") String qualification,
                              @RequestParam("government_Hospitals") String government_Hos,
+                             @RequestParam("experience") String experience,
+                             @RequestParam("other_Specializations") String other_Specializations,
                              @RequestParam(value = "image", required = false) MultipartFile imageFile,
                              HttpSession session,
                              HttpServletResponse response) throws IOException {
@@ -88,6 +90,8 @@ public class DREditProfileController {
             existingDoctor.setSpecialist(specialist);
             existingDoctor.setContactNumber(contact);
             existingDoctor.setSpecial_note(SpecialNotes);
+            existingDoctor.setExperience(experience);
+            existingDoctor.setOther_specialization(other_Specializations);
             existingDoctor.setSpecialist_info(specialist_info);
             existingDoctor.setQualification(qualification);
             existingDoctor.setGovernment_Hospitals(government_Hos);

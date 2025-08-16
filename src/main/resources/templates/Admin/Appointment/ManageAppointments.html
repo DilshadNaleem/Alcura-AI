@@ -1070,7 +1070,7 @@ body.dark-theme-variables .input-group-text .bi.bi-search {
                                 <div th:text="${app.cancel_reason} ?: 'N/A'" class="info-value"></div>
                             </div>
 
-                            <div class="mb-3" th:if="${app.status == 'Rescheduled' or app.status == 'Reschedule Request'}">
+                            <div class="mb-3" th:if="${app.status == 'Rescheduled' or app.status == 'Rescheduled Request'}">
                                 <div class="info-label">Reschedule Reason</div>
                                 <div th:text="${app.reschedule_reason} ?: 'No reason provided'" class="info-value"></div>
                             </div>
@@ -1377,83 +1377,102 @@ body.dark-theme-variables .input-group-text .bi.bi-search {
             checkEmptyState();
         });
 
-        // View button functionality
-        $(document).on('click', '.view-btn', function() {
-            const appointmentCard = $(this).closest('.appointment-card');
+    $(document).on('click', '.view-btn', function() {
+    const appointmentCard = $(this).closest('.appointment-card');
 
-            const doctorName = appointmentCard.find('.card-header span:first').text();
-            const status = appointmentCard.find('.status-badge span').text();
-            const appointmentId = appointmentCard.find('.card-body > div:first .info-value').text();
-            const appointmentDate = appointmentCard.find('.row.mb-3 .col-md-6:first .info-value').text();
-            const appointmentTime = appointmentCard.find('.row.mb-3 .col-md-6:last .info-value').text();
-            const patientEmail = appointmentCard.find('.card-body > div:nth-child(3) .info-value').text();
+    const doctorName = appointmentCard.find('.card-header span:first').text();
+    const status = appointmentCard.find('.status-badge span').text();
+    const appointmentId = appointmentCard.find('.card-body > div:first .info-value').text();
+    const appointmentDate = appointmentCard.find('.row.mb-3 .col-md-6:first .info-value').text();
+    const appointmentTime = appointmentCard.find('.row.mb-3 .col-md-6:last .info-value').text();
+    const patientEmail = appointmentCard.find('.card-body > div:nth-child(3) .info-value').text();
 
-            // Check for optional fields
-            let specialReasons = appointmentCard.find('.card-body > div:nth-child(4) .info-value').text();
-            specialReasons = specialReasons || 'None';
+    // Check for optional fields
+    let specialReasons = appointmentCard.find('.card-body > div:nth-child(4) .info-value').text();
+    specialReasons = specialReasons || 'None';
 
-            let cancelReason = appointmentCard.find('.card-body > div:nth-child(5) .info-value').text();
-            cancelReason = cancelReason || 'No reason provided';
+    // Find cancel reason (if exists)
+    let cancelReason = '';
+    appointmentCard.find('.card-body > div').each(function() {
+        if ($(this).find('.info-label').text() === 'Cancel Reason') {
+            cancelReason = $(this).find('.info-value').text();
+        }
+    });
+    cancelReason = cancelReason || 'No reason provided';
 
-            let rescheduleReason = appointmentCard.find('.card-body > div:nth-child(6) .info-value').text();
-            rescheduleReason = rescheduleReason || 'No reason provided';
+    // Find reschedule reason (if exists)
+    let rescheduleReason = '';
+    appointmentCard.find('.card-body > div').each(function() {
+        if ($(this).find('.info-label').text() === 'Reschedule Reason') {
+            rescheduleReason = $(this).find('.info-value').text();
+        }
+    });
+    rescheduleReason = rescheduleReason || 'No reason provided';
 
-            // Create the modal content
-            const modalContent = `
-                <div class="detail-row">
-                    <div class="detail-label">Doctor:</div>
-                    <div class="detail-value">${doctorName}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Status:</div>
-                    <div class="detail-value"><span class="status-badge status-${status.toLowerCase().replace(' ', '_')}">${status}</span></div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Appointment ID:</div>
-                    <div class="detail-value">${appointmentId}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Date:</div>
-                    <div class="detail-value">${appointmentDate}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Time:</div>
-                    <div class="detail-value">${appointmentTime}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Patient Email:</div>
-                    <div class="detail-value">${patientEmail}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Special Reasons:</div>
-                    <div class="detail-value">${specialReasons}</div>
-                </div>
-                ${status === 'Canceled' ? `
-                <div class="detail-row">
-                    <div class="detail-label">Cancel Reason:</div>
-                    <div class="detail-value">${cancelReason}</div>
-                </div>
-                ` : ''}
-                ${status === 'Rescheduled Request' || status === 'Rescheduled' ? `
-                <div class="detail-row">
-                    <div class="detail-label">Reschedule Reason:</div>
-                    <div class="detail-value">${rescheduleReason}</div>
-                </div>
-                ` : ''}
+    // Find admin notes (if exists)
+    let adminNotes = '';
+    appointmentCard.find('.card-body > div').each(function() {
+        if ($(this).find('.info-label').text() === 'Admin Notes') {
+            adminNotes = $(this).find('.info-value').text();
+        }
+    });
+    adminNotes = adminNotes || 'No reason provided';
 
-                // Inside the view button click handler
-${status === 'Rejected' ? `
-<div class="detail-row">
-    <div class="detail-label">Rejection Reason:</div>
-    <div class="detail-value">${rescheduleReason}</div>
-</div>
-` : ''}
-            `;
+    // Create the modal content
+    const modalContent = `
+        <div class="detail-row">
+            <div class="detail-label">Doctor:</div>
+            <div class="detail-value">${doctorName}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Status:</div>
+            <div class="detail-value"><span class="status-badge status-${status.toLowerCase().replace(' ', '_')}">${status}</span></div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Appointment ID:</div>
+            <div class="detail-value">${appointmentId}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Date:</div>
+            <div class="detail-value">${appointmentDate}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Time:</div>
+            <div class="detail-value">${appointmentTime}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Patient Email:</div>
+            <div class="detail-value">${patientEmail}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Special Reasons:</div>
+            <div class="detail-value">${specialReasons}</div>
+        </div>
+        ${status === 'Canceled' ? `
+        <div class="detail-row">
+            <div class="detail-label">Cancel Reason:</div>
+            <div class="detail-value">${cancelReason}</div>
+        </div>
+        ` : ''}
+        ${(status === 'Rescheduled Request' || status === 'Rescheduled') ? `
+        <div class="detail-row">
+            <div class="detail-label">Reschedule Reason:</div>
+            <div class="detail-value">${rescheduleReason}</div>
+        </div>
+        ` : ''}
+        ${status === 'Rejected' ? `
+        <div class="detail-row">
+            <div class="detail-label">Rejection Reason:</div>
+            <div class="detail-value">${adminNotes}</div>
+        </div>
+        ` : ''}
+    `;
 
-            // Insert content into modal and show it
-            $('#modalBody').html(modalContent);
-            $('#appointmentModal').addClass('active');
-        });
+    // Insert content into modal and show it
+    $('#modalBody').html(modalContent);
+    $('#appointmentModal').addClass('active');
+});
+
 
        $(document).on('click', '.reschedule-btn', function(e) {
     const appointmentCard = $(this).closest('.appointment-card');
