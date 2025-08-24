@@ -32,7 +32,7 @@ public class ResetPasswordController
         PrintWriter out = response.getWriter();
 
         String sessiontoken = (String) session.getAttribute("token");
-        if (sessiontoken == null )
+        if (sessiontoken == null || !sessiontoken.equals(token))
         {
             out.println("<script type = 'text/javascript'>");
             out.println("alert('Invalid or expired token Please try again!');");

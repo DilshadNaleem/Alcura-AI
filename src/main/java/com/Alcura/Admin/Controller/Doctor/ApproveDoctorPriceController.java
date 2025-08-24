@@ -20,17 +20,18 @@ import java.io.PrintWriter;
 @Controller
 @RequestMapping("/Admin")
 public class ApproveDoctorPriceController {
-    @Autowired
+
     private DoctorPriceRepo doctorPriceRepo;
     Logger logger = LoggerFactory.getLogger(ApproveDoctorPriceController.class);
-    @Autowired
     private final PriceApprovalNotifier emailService;
     private final DoctorRepository doctorRepository;
 
     public ApproveDoctorPriceController(PriceApprovalNotifier emailService,
-                                        DoctorRepository doctorRepository) {
+                                        DoctorRepository doctorRepository,
+                                        DoctorPriceRepo doctorPriceRepo) {
         this.emailService = emailService;
         this.doctorRepository = doctorRepository;
+        this.doctorPriceRepo = doctorPriceRepo;
     }
 
     @PostMapping("/ApproveDoctorPrice")

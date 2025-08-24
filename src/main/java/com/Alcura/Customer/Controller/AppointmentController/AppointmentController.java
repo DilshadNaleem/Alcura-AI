@@ -25,22 +25,26 @@ import java.time.LocalDate;
 public class AppointmentController {
     private final Logger logger = LoggerFactory.getLogger(AppointmentController.class);
     private final AppoinmentService appointmentService;
-    @Autowired
-    private AppointmentRepository appointmentRepository;
-    @Autowired
-    private PaymentRepo paymentRepo;
-    private PaymentService paymentService;
+    private final AppointmentRepository appointmentRepository; // Now final
+    private final PaymentRepo paymentRepo; // Now final
+    private final PaymentService paymentService;
     private final DoctorAvailabilityService doctorAvailabilityService;
     private final PaymentUniqueId paymentUniqueId;
 
-    public AppointmentController(AppoinmentService appointmentService,
-                                 DoctorAvailabilityService doctorAvailabilityService,
-                                 PaymentUniqueId paymentUniqueId,
-                                 PaymentService paymentService) {
+    // Use constructor injection for all dependencies
+    public AppointmentController(
+            AppoinmentService appointmentService,
+            AppointmentRepository appointmentRepository,
+            PaymentRepo paymentRepo,
+            PaymentService paymentService,
+            DoctorAvailabilityService doctorAvailabilityService,
+            PaymentUniqueId paymentUniqueId) {
         this.appointmentService = appointmentService;
+        this.appointmentRepository = appointmentRepository;
+        this.paymentRepo = paymentRepo;
+        this.paymentService = paymentService;
         this.doctorAvailabilityService = doctorAvailabilityService;
         this.paymentUniqueId = paymentUniqueId;
-        this.paymentService = paymentService;
     }
 
     @PostMapping("/Customer/Appointment")
@@ -101,6 +105,7 @@ public class AppointmentController {
             appointment.setPaymentId(payment.getUniqueId());
             payment.setAppointment(appointment.getUnique_id());
 
+            appointmentRepository.save(appointment);
             paymentRepo.save(payment);
 
             sendAlert(writer, "Appointment created successfully!", "/Customer/AppointmentBooking");

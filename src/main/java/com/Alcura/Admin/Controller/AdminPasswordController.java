@@ -46,7 +46,7 @@ public class AdminPasswordController {
         {
             out.println("<script type = 'text/javascript'>");
             out.println("alert('Email not found or Account Inactive');");
-            out.println("window.location.href = '/Admin/ResetPassword';");
+            out.println("window.location.href = '/Admin/Signing';");
             out.println("</script>");
             return;
         }

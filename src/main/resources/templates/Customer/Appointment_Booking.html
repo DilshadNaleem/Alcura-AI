@@ -1350,10 +1350,25 @@
 .form-row .form-group {
     flex: 1;
 }
+
+     .no-doctors {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-size: 18px;
+            grid-column: 1 / -1;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark .no-doctors {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
     </style>
 </head>
 <body>
-
 
 
     <nav class="sidebar close">
@@ -1485,6 +1500,12 @@
 
         <h2 class="gallery-title">Available Doctors</h2>
         <div class="doctors-grid" id="doctorsGrid">
+            <div class="no-doctors" th:if="${doctors.empty}">
+                <i class='bx bx-user-x' style="font-size: 48px; margin-bottom: 15px;"></i>
+                <h3>No Doctors Available</h3>
+                <p>We couldn't find any doctors matching your search criteria.</p>
+                <p>Please try a different search term or check back later.</p>
+            </div>
             <div class="doctor-card" th:each="doctor : ${doctors}">
                 <div class="doctor-img-container">
                     <img th:src="@{'/doctor/image/' + ${doctor.email}}"

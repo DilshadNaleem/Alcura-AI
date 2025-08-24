@@ -64,7 +64,7 @@ public class AdminFaceLogin
                 return ResponseEntity.badRequest().body(response);
             }
 
-            Admin admin = adminRepository.findByEmail(email);
+            Admin admin = adminRepository.findByEmailAndStatus(email,1);
             if (admin == null || admin.getFaceData() == null) {
                 response.put("success", false);
                 response.put("message", "No face data registered for this email");

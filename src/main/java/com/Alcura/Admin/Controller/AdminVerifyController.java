@@ -28,7 +28,7 @@ public class AdminVerifyController
                           HttpServletResponse response) throws IOException
     {
         response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
+
 
         try(PrintWriter writer = response.getWriter())
         {
@@ -37,6 +37,9 @@ public class AdminVerifyController
             ResponseEntity<String> verificationResult = adminAuthService.verifyOtp(otp, session);
             String message = "";
             String redirectUtl = "";
+
+            response.setStatus(verificationResult.getStatusCode().value());
+
 
             if(verificationResult.getStatusCode() == HttpStatus.OK)
             {

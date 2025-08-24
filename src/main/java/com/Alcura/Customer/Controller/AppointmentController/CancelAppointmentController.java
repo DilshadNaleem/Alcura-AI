@@ -25,12 +25,15 @@ import java.util.Optional;
 public class CancelAppointmentController {
     private final Logger logger = LoggerFactory.getLogger(CancelAppointmentController.class);
 
-    @Autowired
     private AppointmentRepo appointmentRepo;
 
-    @Autowired
     private AppointmentCancelEmailService appointmentEmailService;
-
+    public CancelAppointmentController(AppointmentRepo appointmentRepo,
+                                       AppointmentCancelEmailService appointmentEmailService)
+    {
+        this.appointmentEmailService = appointmentEmailService;
+        this.appointmentRepo = appointmentRepo;
+    }
     @PostMapping("/CancelAppointment")
     public void Cancel(HttpSession session, Model model, HttpServletResponse response,
                        @RequestParam("appointmentId") String appointmentId,

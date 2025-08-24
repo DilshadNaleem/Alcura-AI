@@ -27,7 +27,7 @@ public class PaymentService
     {
         switch (paymentMethod.toLowerCase())
         {
-            case"credit card":
+            case"credit_card":
                 return new CreditCardPayment();
             case "paypal":
                 return new PayPalPayment();

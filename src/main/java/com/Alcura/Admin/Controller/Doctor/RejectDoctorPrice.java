@@ -47,6 +47,8 @@ public class RejectDoctorPrice
             doctorPrice.setStatus("Rescheduled");
             doctorPrice.setAdminNotes(adminNotes);
             doctorPrice.setNewPrice(newPrice);
+            doctorPrice.setDoctor_email(doctorPrice.getDoctor_email());
+            String doctorEmail = doctorPrice.getDoctor_email();
             doctorPriceRepo.save(doctorPrice);
 
             out.println("<script>");
@@ -71,8 +73,8 @@ public class RejectDoctorPrice
 
             logger.info("Set Price as {}", doctorPrice.getPrice());
 
-            emailService.sendAppointmentStatusEmail(email, subject, body);
-            logger.info("Email send to: {}", email);
+            emailService.sendAppointmentStatusEmail(doctorEmail, subject, body);
+            logger.info("Email send to: {}", doctorEmail);
         }
         catch (Exception e)
         {

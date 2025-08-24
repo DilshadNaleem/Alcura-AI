@@ -9,9 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,11 +20,17 @@ import java.util.Map;
 public class AddImagesController {
 
     private static final Logger logger = LoggerFactory.getLogger(AddImagesController.class);
-    private static final String FLASK_API_UTL = "http://localhost:5000/api/Medicine/images/";
+    private static final String FLASK_API_URL = "http://localhost:5000/api/Medicine/images/";
+
+    private final RestTemplate restTemplate;
+
+    // Inject RestTemplate via constructor
+    public AddImagesController(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @GetMapping("/MedicineAddImages")
-    public String addImageForm(@RequestParam String medicineName, Model model)
-    {
+    public String addImageForm(@RequestParam String medicineName, Model model) {
         model.addAttribute("medicineName", medicineName);
         logger.info("Displaying the image upload form for medicine: {}", medicineName);
         return "/Admin/MedicinePredictionModel/MedicineAddImages";
@@ -32,35 +38,29 @@ public class AddImagesController {
 
     @PostMapping("/MedicineUploadImages")
     @ResponseBody
-    public ResponseEntity<Map<String,Object>> uploadImages(
+    public ResponseEntity<Map<String, Object>> uploadImages(
             @RequestParam String medicineName,
             @RequestParam String imageType,
-            @RequestParam("images")MultipartFile[] files)
-    {
-        Map<String,Object> response = new HashMap<>();
+            @RequestParam("images") MultipartFile[] files) {
 
-        if (files.length == 0)
-        {
+        Map<String, Object> response = new HashMap<>();
+
+        if (files == null || files.length == 0 || (files.length == 1 && files[0].isEmpty())) {
             response.put("success", false);
             response.put("error", "Please select at least one images to upload");
             return ResponseEntity.badRequest().body(response);
         }
 
-        try
-        {
-            RestTemplate restTemplate = new RestTemplate();
+        try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-            MultiValueMap<String,Object> body = new LinkedMultiValueMap<>();
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
             body.add("dataset_type", imageType);
 
-            for (MultipartFile file: files)
-            {
-                if(!file.isEmpty())
-                {
-                    ByteArrayResource resource = new ByteArrayResource(file.getBytes())
-                    {
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    ByteArrayResource resource = new ByteArrayResource(file.getBytes()) {
                         @Override
                         public String getFilename() {
                             return file.getOriginalFilename();
@@ -70,31 +70,29 @@ public class AddImagesController {
                 }
             }
 
-
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
             ResponseEntity<String> responseEntity = restTemplate.exchange(
-                    FLASK_API_UTL + medicineName,
+                    FLASK_API_URL + medicineName,
                     HttpMethod.POST,
                     requestEntity,
                     String.class);
 
-            if (responseEntity.getStatusCode().is2xxSuccessful())
-            {
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
                 response.put("success", true);
                 response.put("message", "Images Upload Successfully");
                 return ResponseEntity.ok(response);
-            }
-            else
-            {
+            } else {
                 response.put("success", false);
                 response.put("error", "Failed to upload images");
                 return ResponseEntity.status(responseEntity.getStatusCode()).body(response);
             }
-        }
-
-        catch (Exception e)
-        {
-            logger.error("Exception occurred while uploading images for disease: {}", medicineName, e);
+        } catch (HttpClientErrorException e) {
+            logger.error("HTTP client error occurred while uploading images for medicine: {}", medicineName, e);
+            response.put("success", false);
+            response.put("error", "Failed to upload images");
+            return ResponseEntity.status(e.getStatusCode()).body(response);
+        } catch (Exception e) {
+            logger.error("Exception occurred while uploading images for medicine: {}", medicineName, e);
             response.put("success", false);
             response.put("error", "Failed to upload images: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);

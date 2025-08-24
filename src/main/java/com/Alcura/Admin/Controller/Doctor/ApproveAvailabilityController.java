@@ -98,13 +98,11 @@ public class ApproveAvailabilityController {
                 return;
             }
 
-            // Update status to "Confirmed" for each availability
             availabilities.forEach(availability -> {
                 availability.setStatus("Confirmed");
                 availability.setAvailable(true);
             });
 
-            // Save all updated availabilities
             availabilityRepository.saveAll(availabilities);
             logger.info("Successfully updated {} availability slots to Confirmed status", availabilities.size());
 

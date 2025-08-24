@@ -63,10 +63,10 @@ function validateSignupForm() {
         isValid = false;
     }
 
-    if (!/^\d{10}$/.test(contactNumber)) {
-        showError("contactNumber", "Contact number must be exactly 10 digits.");
-        isValid = false;
-    }
+    if (!/^[\+]?[1-9][\d]{0,15}$/.test(contactNumber.replace(/\s/g, ''))) {
+           showError("contactNumber", "Please enter a valid phone number (digits only, optionally starting with +).");
+           isValid = false;
+       }
 
     if (password.length < 6) {
         showError("newpassword", "Password must be at least 6 characters long.");

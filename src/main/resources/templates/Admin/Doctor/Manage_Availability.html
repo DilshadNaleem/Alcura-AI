@@ -1020,7 +1020,7 @@ background-color: rgba(67, 97, 238, 0.05);
               <tbody>
               <tr th:if="${doctors != null and !doctors.empty}"
                   th:each="availability, stat : ${doctors}" th:attr="data-doctor-id=${availability.doctor?.uniqueId}">
-                <td th:text="${stat.count} ?: 'N/A'"></td>
+                <td th:text="${availability.id} ?: 'N/A'"></td>
                 <td th:text="${availability.doctor != null} ? ${availability.doctor.firstName + ' ' + availability.doctor.lastName} : 'N/A'"></td>
                 <td th:text="${availability.dayOfWeek} ?: 'N/A'"></td>
                 <td th:text="${availability.startTime != null} ? ${#dates.format(availability.startTime, 'hh:mm a')} : 'UnAvailable'"></td>

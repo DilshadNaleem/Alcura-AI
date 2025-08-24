@@ -37,7 +37,7 @@ public class RegisterTest {
 
     @Test
     void successfulRegistration_shouldWriteSuccessScriptAndRedirect() throws IOException {
-        // Arrange
+
         MockHttpSession session = new MockHttpSession();
         MockHttpServletResponse response = new MockHttpServletResponse();
         RegisterRequest request = createRegisterRequest();
@@ -46,10 +46,8 @@ public class RegisterTest {
         when(registrationService.register(any(RegisterRequest.class), any(HttpSession.class)))
                 .thenReturn(new ResponseEntity<>("Registration successful!", HttpStatus.CREATED));
 
-        // Act
         registerController.registerCustomer(request, session, response);
 
-        // Assert
         String responseContent = response.getContentAsString();
         assertTrue(responseContent.contains("alert('Registration successful! Please verify your email.');"));
         assertTrue(responseContent.contains("window.location.href = '/Customer/verification';"));
@@ -57,7 +55,7 @@ public class RegisterTest {
 
     @Test
     void failedRegistration_shouldWriteFailureScriptAndRedirect() throws IOException {
-        // Arrange
+
         MockHttpSession session = new MockHttpSession();
         MockHttpServletResponse response = new MockHttpServletResponse();
         RegisterRequest request = createRegisterRequest();
@@ -66,16 +64,13 @@ public class RegisterTest {
         when(registrationService.register(any(RegisterRequest.class), any(HttpSession.class)))
                 .thenReturn(new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST));
 
-        // Act
         registerController.registerCustomer(request, session, response);
 
-        // Assert
         String responseContent = response.getContentAsString();
         assertTrue(responseContent.contains("alert('Email already exists');"));
         assertTrue(responseContent.contains("window.location.href = '/Customer/Signing';"));
     }
 
-    // Helper method to create a RegisterRequest object
     private RegisterRequest createRegisterRequest() {
         RegisterRequest request = new RegisterRequest();
         request.setFirstname("Test");

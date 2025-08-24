@@ -24,19 +24,25 @@ import java.util.concurrent.ConcurrentHashMap;
 @RestController
 @RequestMapping("/api/sos")
 public class SOSController {
-    @Autowired
+
     private HospitalRepository hospitalRepo;
 
-    @Autowired
     private EmergencyRequestRepository emergencyRequestRepo;
 
-    @Autowired
+
     private SimpMessagingTemplate messagingTemplate;
     private static final Logger logger = LoggerFactory.getLogger(SOSController.class);
 
-
     private final Map<String, TrackingSession> activeSessions = new ConcurrentHashMap<>();
 
+    public SOSController(HospitalRepository hospitalRepo,
+                         EmergencyRequestRepository emergencyRequestRepository,
+                         SimpMessagingTemplate messagingTemplate)
+    {
+        this.hospitalRepo = hospitalRepo;
+        this.emergencyRequestRepo = emergencyRequestRepository;
+        this.messagingTemplate = messagingTemplate;
+    }
     @PostMapping("/start")
     public ResponseEntity<?> startSOSTracking(@RequestBody SOSRequest request) {
         // Find nearest hospital

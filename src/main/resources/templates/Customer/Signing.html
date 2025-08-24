@@ -6,6 +6,28 @@
     <title>Customer Login Form</title>
     <link rel="stylesheet" href="/Customer/Signing.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+    <style>
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+        .password-container input {
+            width: 100%;
+            padding-right: 40px;
+            box-sizing: border-box;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #aaa;
+        }
+        .toggle-password:hover {
+            color: #333;
+        }
+    </style>
 </head>
 <body>
 
@@ -22,8 +44,17 @@
             <input type="text" id="firstName" name="firstname" placeholder="Enter your First Name" required>
             <input type="text" id="lastName" name="lastname" placeholder="Enter your Last Name" required>
             <input type="email" id="email" name="email" placeholder="Enter your Email" required>
-            <input type="password" id="newpassword" name="password" placeholder="Enter Password" required>
-            <input type="password" id="confirmPassword" name="confirmpassword" placeholder="Enter password " required>
+
+            <div class="password-container">
+                <input type="password" id="newpassword" name="password" placeholder="Enter Password" required>
+                <i class="toggle-password fas fa-eye" id="toggleNewPassword"></i>
+            </div>
+
+            <div class="password-container">
+                <input type="password" id="confirmPassword" name="confirmpassword" placeholder="Confirm Password" required>
+                <i class="toggle-password fas fa-eye" id="toggleConfirmPassword"></i>
+            </div>
+
             <input type="text" name="contact_number" id="contactNumber" placeholder="Contact Number" required>
             <input type="text" id="nic" name="nic" placeholder="Enter NIC" required>
 
@@ -43,7 +74,12 @@
             </div>
             <span>or Use your Registered Account</span>
             <input type="email" id="signinEmail" name="email" placeholder="Eneter your Email" required>
-            <input type="password" name="signinPassword" id = "password" placeholder="Enter your Password" required>
+
+            <div class="password-container">
+                <input type="password" name="signinPassword" id="password" placeholder="Enter your Password" required>
+                <i class="toggle-password fas fa-eye" id="toggleSignInPassword"></i>
+            </div>
+
             <button type="submit">Sign In</button>
             <a href="/Customer/recover_psw.html">Reset Password</a>
             <a href="/Customer/FaceLogin">Login with Face</a>
@@ -80,5 +116,42 @@
     </p>
 </footer>
 <script src="/Customer/Signing.js"></script>
+<script>
+    // Add show/hide password functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle for new password in sign-up form
+        const toggleNewPassword = document.getElementById('toggleNewPassword');
+        const newPassword = document.getElementById('newpassword');
+
+        toggleNewPassword.addEventListener('click', function() {
+            const type = newPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+            newPassword.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // Toggle for confirm password in sign-up form
+        const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+        const confirmPassword = document.getElementById('confirmPassword');
+
+        toggleConfirmPassword.addEventListener('click', function() {
+            const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPassword.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // Toggle for password in sign-in form
+        const toggleSignInPassword = document.getElementById('toggleSignInPassword');
+        const signInPassword = document.getElementById('password');
+
+        toggleSignInPassword.addEventListener('click', function() {
+            const type = signInPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+            signInPassword.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    });
+</script>
 </body>
 </html>

@@ -50,7 +50,7 @@ public class FaceUpdateController {
             String email = (String) session.getAttribute("email");
 
             if (email == null || email.isEmpty()) {
-                response.put("redirect", "/Customer/Signing.html");
+                response.put("redirect", "/Customer/Signing");
                 response.put("message", "Session Expired! Please Login Again.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }

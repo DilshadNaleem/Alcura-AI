@@ -21,7 +21,12 @@ import java.util.Map;
 public class MedicineTrainingController
 {
     private static final String API_URL = "http://localhost:5000/api/Medicinetrain";
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
+
+    public MedicineTrainingController(RestTemplate restTemplate)
+    {
+        this.restTemplate = restTemplate;
+    }
 
     @GetMapping("/Training")
     public String showform()

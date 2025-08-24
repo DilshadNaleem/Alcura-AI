@@ -66,7 +66,7 @@ public class FaceAuthLoginController
                 return ResponseEntity.badRequest().body(response);
             }
 
-            Customer customer = customerRepository.findByEmail(email);
+            Customer customer = customerRepository.findByEmailAndStatus(email,1);
             if(customer == null || customer.getFaceData() == null)
             {
                 response.put("success", false);

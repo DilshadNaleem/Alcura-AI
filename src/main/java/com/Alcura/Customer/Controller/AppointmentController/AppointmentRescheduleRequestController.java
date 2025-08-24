@@ -27,11 +27,14 @@ public class AppointmentRescheduleRequestController
     @Autowired
     private final AppointmentRescheduleEmailService appointmentRescheduleEmailService;
     private final Logger logger = LoggerFactory.getLogger(AppointmentRescheduleRequestController.class);
-    @Autowired
+
+
     private AppointmentRepo appointmentRepo;
 
-    public AppointmentRescheduleRequestController(AppointmentRescheduleEmailService appointmentRescheduleEmailService)
+    public AppointmentRescheduleRequestController(AppointmentRescheduleEmailService appointmentRescheduleEmailService,
+                                                  AppointmentRepo appointmentRepo)
     {
+        this.appointmentRepo = appointmentRepo;
         this.appointmentRescheduleEmailService = appointmentRescheduleEmailService;
     }
 
@@ -40,14 +43,14 @@ public class AppointmentRescheduleRequestController
                            @RequestParam("Id") String appointmentId,
                            @RequestParam("notes") String notes) throws IOException {
         System.out.println("DEBUG");
-        System.out.println("Appoitnment Id = " + appointmentId);
+        System.out.println("Appointment Id = " + appointmentId);
 
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter writer = response.getWriter();
 
         try {
             String email = (String) session.getAttribute("email");
-            logger.info("Recieved Reschedule Email {}", email);
+            logger.info("Received Reschedule Email {}", email);
 
             if (email == null) {
                 writer.println("<script>");

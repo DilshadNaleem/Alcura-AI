@@ -24,11 +24,16 @@ public class ManagePriceControllerForAppointmentController {
     @Autowired
     private DoctorPriceRepo doctorPriceRepo;
 
+    public ManagePriceControllerForAppointmentController(DoctorPriceRepo doctorPriceRepo)
+    {
+        this.doctorPriceRepo = doctorPriceRepo;
+    }
+
     @GetMapping("/Manage_Percentage")
     public String form(Model model) {
-        // Get all prices to display in the form
+
         List<DoctorPrice> prices = doctorPriceRepo.findAll();
-        // Get the latest price for setting default values in form
+
         DoctorPrice latestPrice = doctorPriceRepo.findTopByOrderByIdDesc()
                 .orElse(new DoctorPrice());
         model.addAttribute("prices", prices);

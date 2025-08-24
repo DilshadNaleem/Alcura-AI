@@ -31,7 +31,6 @@ public class VerifyOtpController
             HttpServletResponse response
     ) throws IOException {
         response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
 
         try (PrintWriter out = response.getWriter()) {
             out.println("<html><body><script type='text/javascript'>");
@@ -39,6 +38,9 @@ public class VerifyOtpController
             ResponseEntity<String> verificationResult = customerAuthService.verifyOtp(otp, session);
             String message;
             String redirectUrl;
+
+            // Set response status based on verification result
+            response.setStatus(verificationResult.getStatusCode().value());
 
             if (verificationResult.getStatusCode() == HttpStatus.OK) {
                 message = "Account verified successfully! Please login.";
