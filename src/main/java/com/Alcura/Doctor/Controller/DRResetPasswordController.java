@@ -58,7 +58,7 @@ public class DRResetPasswordController
         PrintWriter out = response.getWriter();
 
 
-        if (!newPassword.equals(newPassword))
+        if (!password.equals(newPassword))
         {
             out.println("<script type = 'text/javascript'>");
             out.println("alert('Password do not match');");

@@ -163,7 +163,7 @@ public class DoctorAvailabilityController {
         }
     }
 
-    private LocalDate[] getNextWeekDates() {
+    public LocalDate[] getNextWeekDates() {
         LocalDate today = LocalDate.now();
         LocalDate nextMonday = today.plusDays(8 - today.getDayOfWeek().getValue());
         LocalDate[] dates = new LocalDate[7];

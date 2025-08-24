@@ -30,7 +30,6 @@ public class DoctorVerifyOtp
                           HttpServletResponse response) throws IOException
     {
         response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
 
         try(PrintWriter out = response.getWriter())
         {
@@ -44,16 +43,19 @@ public class DoctorVerifyOtp
             {
                 message = "Account verified Successfully! Please Login";
                 redirectUrl = "'/Doctor/Signing'";
+                response.setStatus(HttpServletResponse.SC_OK);
             }
             else
             {
                 message = verificationResult.getBody() != null ? verificationResult.getBody() :
                         "Account verification failed.";
                 redirectUrl = "'/Doctor/Signing'";
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
 
+            // Escape single quotes for JavaScript
             message = message.replace("'", "\\'");
-            out.println("alert('" + message + "')");
+            out.println("alert('" + message + "');");
             out.println("window.location.href = " + redirectUrl + ";");
 
             out.println("</script>");
@@ -66,8 +68,9 @@ public class DoctorVerifyOtp
             {
                 out.println("<script type = 'text/javascript'>");
                 out.println("alert('An Error occurred during verification');");
-                out.println("window.location.href = '/Doctor/Verification'");
+                out.println("window.location.href = '/Doctor/Verification';");
                 out.println("</script>");
+
             }
         }
     }
