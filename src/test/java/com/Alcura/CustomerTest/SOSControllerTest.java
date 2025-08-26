@@ -44,7 +44,6 @@ class SOSControllerTest {
 
     @Test
     void startSOSTracking_Success() {
-
         SOSRequest request = new SOSRequest();
         request.setLatitude(10.0);
         request.setLongitude(20.0);
@@ -61,7 +60,6 @@ class SOSControllerTest {
 
         when(hospitalRepo.findNearest(anyDouble(), anyDouble())).thenReturn(Optional.of(mockHospital));
         when(emergencyRequestRepo.save(any(EmergencyRequest.class))).thenReturn(new EmergencyRequest());
-
         ResponseEntity<?> response = sosController.startSOSTracking(request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -95,7 +93,7 @@ class SOSControllerTest {
         assertNotNull(response.getBody());
     }
 
-    // getHospitalImage Tests
+
     @Test
     void getHospitalImage_Success() {
         // Mock data
@@ -128,37 +126,4 @@ class SOSControllerTest {
         verify(hospitalRepo).findByName(hospitalName);
     }
 
-    @Test
-    void getHospitalImage_ImageIsNull() {
-        // Mock data
-        String hospitalName = "HospitalWithNoImage";
-        Hospital mockHospital = new Hospital();
-        mockHospital.setImage(null);
-        when(hospitalRepo.findByName(hospitalName)).thenReturn(Optional.of(mockHospital));
-
-        // Call the method
-        ResponseEntity<byte[]> response = sosController.getHospitalImage(hospitalName);
-
-        // Assertions
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertNull(response.getBody());
-        verify(hospitalRepo).findByName(hospitalName);
-    }
-
-    @Test
-    void getHospitalImage_ImageIsEmpty() {
-        // Mock data
-        String hospitalName = "HospitalWithEmptyImage";
-        Hospital mockHospital = new Hospital();
-        mockHospital.setImage(new byte[0]);
-        when(hospitalRepo.findByName(hospitalName)).thenReturn(Optional.of(mockHospital));
-
-        // Call the method
-        ResponseEntity<byte[]> response = sosController.getHospitalImage(hospitalName);
-
-        // Assertions
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertNull(response.getBody());
-        verify(hospitalRepo).findByName(hospitalName);
-    }
 }

@@ -40,7 +40,6 @@ public class DeleteCustomerControllerTest
         response = new MockHttpServletResponse();
     }
 
-
     @Test
     void DeleteCustomer_WithoutSession_ShouldShowError() throws IOException
     {

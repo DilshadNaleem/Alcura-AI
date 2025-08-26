@@ -39,6 +39,7 @@ public class DoctorOTPValidationTest {
         response = new MockHttpServletResponse();
     }
 
+
     @Test
     void successfulOTPValidation_ShouldRedirectToSigning() throws IOException {
         String otp = "123456";

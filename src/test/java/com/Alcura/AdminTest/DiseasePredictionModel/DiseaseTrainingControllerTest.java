@@ -30,7 +30,7 @@ public class DiseaseTrainingControllerTest {
 
     @Test
     void startTraining_SuccessfulTraining_AddsSuccessAttributesToModel() {
-        // Arrange
+
         int epochs = 10;
         Map<String, Object> mockHistory = new HashMap<>();
         mockHistory.put("accuracy", new double[]{0.8, 0.9});
@@ -42,14 +42,11 @@ public class DiseaseTrainingControllerTest {
         mockResponse.put("message", "Training started successfully");
         mockResponse.put("chart", "chart-data-string");
         mockResponse.put("history", mockHistory);
-
         when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
                 .thenReturn(mockResponse);
 
-        // Act
         String viewName = diseaseTrainingController.startTraining(epochs, model);
 
-        // Assert
         assertEquals("/Admin/DiseasePredictionModel/DiseaseTraining", viewName);
         verify(model).addAttribute("success", true);
         verify(model).addAttribute("message", "Training started successfully");
@@ -64,17 +61,14 @@ public class DiseaseTrainingControllerTest {
 
     @Test
     void startTraining_APIThrowsException_AddsFailureAttributesToModel() {
-        // Arrange
         int epochs = 10;
         String errorMessage = "Connection refused";
 
         when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
                 .thenThrow(new RuntimeException(errorMessage));
 
-        // Act
         String viewName = diseaseTrainingController.startTraining(epochs, model);
 
-        // Assert
         assertEquals("/Admin/DiseasePredictionModel/DiseaseTraining", viewName);
         verify(model).addAttribute("success", false);
         verify(model).addAttribute(eq("message"), contains("Training failed: " + errorMessage));
@@ -83,7 +77,7 @@ public class DiseaseTrainingControllerTest {
 
     @Test
     void startTraining_ResponseContainsError_AddsFailureAttributesToModel() {
-        // Arrange
+
         int epochs = 10;
         Map<String, Object> mockResponse = new HashMap<>();
         mockResponse.put("error", "Training arguments invalid");
@@ -91,10 +85,8 @@ public class DiseaseTrainingControllerTest {
         when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
                 .thenReturn(mockResponse);
 
-        // Act
         String viewName = diseaseTrainingController.startTraining(epochs, model);
 
-        // Assert
         assertEquals("/Admin/DiseasePredictionModel/DiseaseTraining", viewName);
         verify(model).addAttribute("success", false);
         verify(model).addAttribute(eq("message"), contains("Training failed: Training arguments invalid"));

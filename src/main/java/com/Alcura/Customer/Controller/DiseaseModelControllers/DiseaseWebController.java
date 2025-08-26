@@ -2,6 +2,8 @@ package com.Alcura.Customer.Controller.DiseaseModelControllers;
 
 import com.Alcura.Customer.DTO.DiseaseClassificationResult;
 import com.Alcura.Customer.DTO.DiseaseInfo;
+import com.Alcura.Doctor.Model.Doctor;
+import com.Alcura.Doctor.Repository.DoctorRepository;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -21,10 +24,13 @@ import java.util.Map;
 public class DiseaseWebController
 {
     private final DiseaseClassifierAPIController diseaseClassifierAPIController;
+    private final DoctorRepository doctorRepository;
 
-    public DiseaseWebController(DiseaseClassifierAPIController diseaseClassifierAPIController)
+    public DiseaseWebController(DiseaseClassifierAPIController diseaseClassifierAPIController,
+                                DoctorRepository doctorRepository)
     {
         this.diseaseClassifierAPIController = diseaseClassifierAPIController;
+        this.doctorRepository = doctorRepository;
     }
 
     @PostMapping("/DiseaseClassifier")
@@ -50,6 +56,12 @@ public class DiseaseWebController
                 );
                 redirectAttributes.addFlashAttribute("result", result);
                 redirectAttributes.addFlashAttribute("status","");
+
+                // Get just one ACTIVE doctor (status = 1)
+                List<Doctor> activeDoctors = doctorRepository.findByStatus(1);
+                if (activeDoctors != null && !activeDoctors.isEmpty()) {
+                    redirectAttributes.addFlashAttribute("recommendedDoctor", activeDoctors.get(0));
+                }
 
                 if(!file.isEmpty())
                 {

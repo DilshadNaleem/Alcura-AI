@@ -36,7 +36,7 @@ public class MedicineTrainingControllerTest {
 
     @Test
     void testStartTraining_Success() {
-        // Arrange
+
         int epochs = 10;
         Map<String, Object> mockResponse = new HashMap<>();
         mockResponse.put("message", "Training started successfully");
@@ -48,17 +48,13 @@ public class MedicineTrainingControllerTest {
         history.put("val_loss", "0.15");
         mockResponse.put("history", history);
 
-        // Mock the RestTemplate to return a successful response
         when(restTemplate.postForObject(
                 eq(API_URL),
                 any(HttpEntity.class),
                 eq(Map.class)
         )).thenReturn(mockResponse);
-
-        // Act
         String viewName = medicineTrainingController.startTraining(epochs, model);
 
-        // Assert
         assertEquals("/Admin/MedicinePredictionModel/MedicineTraining", viewName);
         verify(model).addAttribute("trainingResult", mockResponse); // Verify that the entire response object is added
         verify(model).addAttribute("success", true);
@@ -73,7 +69,7 @@ public class MedicineTrainingControllerTest {
 
     @Test
     void testStartTraining_Failure() {
-        // Arrange
+
         int epochs = 10;
         String errorMessage = "Failed to connect to API";
 
@@ -83,10 +79,8 @@ public class MedicineTrainingControllerTest {
                 eq(Map.class)
         )).thenThrow(new RuntimeException(errorMessage));
 
-        // Act
         String viewName = medicineTrainingController.startTraining(epochs, model);
 
-        // Assert
         assertEquals("/Admin/MedicinePredictionModel/MedicineTraining", viewName);
         verify(model).addAttribute("success", false);
         verify(model).addAttribute("message", "Training failed: " + errorMessage);

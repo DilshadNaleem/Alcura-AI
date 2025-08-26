@@ -111,16 +111,13 @@ class ViewAllDiseaseValidationTest {
 
     @Test
     void getViewAll_exceptionThrown() {
-        // Mock an exception thrown by the RestTemplate
+
         when(restTemplate.exchange(any(), any(), any(), eq(List.class)))
                 .thenThrow(new RuntimeException("Connection refused"));
 
-        // Call the controller method
         String viewName = controller.getViewAll(null, null, model);
 
-        // Assertions
         assertEquals("Admin/DiseasePredictionModel/ViewAllValidations", viewName);
-        // Verify that an error message is added to the model
-        // In a real test, you'd verify model.addAttribute("error", "Error loading validation results: Connection refused")
+
     }
 }

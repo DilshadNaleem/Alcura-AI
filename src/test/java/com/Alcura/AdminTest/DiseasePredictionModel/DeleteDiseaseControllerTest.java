@@ -47,6 +47,7 @@ public class DeleteDiseaseControllerTest
                 .thenReturn(mockApiResponse);
 
         ResponseEntity<Map<String,String>> response = deleteDiseaseController.deleteDisease(diseaseName);
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("success", response.getBody().get("status"));
         assertEquals("Successfully deleted: Disease Name", response.getBody().get("message"));

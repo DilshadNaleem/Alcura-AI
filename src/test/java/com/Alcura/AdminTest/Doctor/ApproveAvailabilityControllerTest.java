@@ -85,7 +85,7 @@ public class ApproveAvailabilityControllerTest
 
     @Test
     void ApproveAvailability_Success_SuccessMessage() throws IOException, MessagingException {
-        // Setup
+
         Doctor mockDoctor = new Doctor();
         mockDoctor.setUniqueId(doctorId);
         mockDoctor.setFirstName("John");
@@ -104,38 +104,31 @@ public class ApproveAvailabilityControllerTest
                     availability.setAvailable(true);
                     availability.setDayOfWeek(DayOfWeek.MONDAY);
 
-                    // Set times using Date objects
-                    availability.setStartTime(new Date(0, 0, 0, 9, 0)); // 9:00 AM
-                    availability.setEndTime(new Date(0, 0, 0, 17, 0)); // 5:00 PM
+                    availability.setStartTime(new Date(0, 0, 0, 9, 0));
+                    availability.setEndTime(new Date(0, 0, 0, 17, 0));
 
-                    // Set validity dates
                     availability.setValidFrom(LocalDate.now());
                     availability.setValidTo(LocalDate.now().plusMonths(1));
                     return availability;
                 })
                 .toList();
 
-        // Mock the mailSender
         JavaMailSender mailSenderMock = mock(JavaMailSender.class);
         MimeMessage mimeMessageMock = mock(MimeMessage.class);
         when(mailSenderMock.createMimeMessage()).thenReturn(mimeMessageMock);
 
-        // Inject the mock mailSender into the controller
         approveAvailabilityController = new ApproveAvailabilityController(
                 doctorAvailabilityRepository,
                 doctorRepository,
                 mailSenderMock
         );
 
-        // Mock repository responses
         when(doctorRepository.findByuniqueId(doctorId)).thenReturn(mockDoctor);
         when(doctorAvailabilityRepository.findAllById(ids)).thenReturn(mockAvailabilities);
         when(doctorAvailabilityRepository.saveAll(mockAvailabilities)).thenReturn(mockAvailabilities);
 
-        // Execute
         approveAvailabilityController.approveSelectedAvailabilities(selectIds, doctorId, response);
 
-        // Verify
         String content = response.getContentAsString();
         assertTrue("Should show success message",
                 content.contains("alert('Successfully approved " + mockAvailabilities.size() + " availability slots"));

@@ -46,6 +46,7 @@ public class DoctorLoginTest {
         loginRequest = new DRLoginRequest();
     }
 
+
     @Test
     void successfulLogin_WriteSuccessScript() throws Exception {
         loginRequest.setEmail("test@example.com");

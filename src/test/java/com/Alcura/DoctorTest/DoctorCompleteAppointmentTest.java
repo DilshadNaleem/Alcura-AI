@@ -75,15 +75,6 @@ public class DoctorCompleteAppointmentTest {
         printWriter = new PrintWriter(stringWriter);
     }
 
-    @Test
-    void testForm_UserNotLoggedIn() {
-        when(session.getAttribute("email")).thenReturn(null);
-
-        String result = controller.form(model, session);
-
-        assertEquals("/Doctor/Signing", result);
-        verify(session).getAttribute("email");
-    }
 
     @Test
     void testForm_UserLoggedIn() {

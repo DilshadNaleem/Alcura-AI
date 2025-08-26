@@ -46,6 +46,7 @@ public class DeleteDoctorControllerTest
     void DeleteDoctor_WithoutSession_ShouldShowError() throws IOException
     {
         deleteDoctorController.DeleteDoctor(id, response,session);
+
         String content = response.getContentAsString();
         assertNotNull("Response content should not be null", content);
         assertTrue("Response should contain session expired alert", content.contains("alert ('Session Expired'); "));

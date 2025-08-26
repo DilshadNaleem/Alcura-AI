@@ -42,7 +42,7 @@ public class DeleteMedicineControllerTest {
 
     @Test
     void testDeleteMedicine_Success() {
-        // Arrange
+
         Map<String, Object> apiResponseBody = new HashMap<>();
         apiResponseBody.put("message", "Successfully Deleted: " + medicineName);
 
@@ -55,10 +55,8 @@ public class DeleteMedicineControllerTest {
                 any(ParameterizedTypeReference.class)
         )).thenReturn(apiResponse);
 
-        // Act
         ResponseEntity<Map<String, String>> response = medicineDeleteController.deleteMedicine(medicineName);
 
-        // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("success", response.getBody().get("status"));
         assertEquals("Successfully Deleted: " + medicineName, response.getBody().get("message"));
@@ -66,7 +64,7 @@ public class DeleteMedicineControllerTest {
 
     @Test
     void testDeleteMedicine_Failure() {
-        // Arrange
+
         Map<String, Object> apiResponseBody = new HashMap<>();
         apiResponseBody.put("error", "Medicine not found");
 
@@ -79,10 +77,8 @@ public class DeleteMedicineControllerTest {
                 any(ParameterizedTypeReference.class)
         )).thenReturn(apiResponse);
 
-        // Act
         ResponseEntity<Map<String, String>> response = medicineDeleteController.deleteMedicine(medicineName);
 
-        // Assert
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("error", response.getBody().get("status"));
         assertEquals("Medicine not found", response.getBody().get("message"));

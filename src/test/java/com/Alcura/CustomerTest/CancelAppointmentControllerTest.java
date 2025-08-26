@@ -84,9 +84,7 @@ public class CancelAppointmentControllerTest
                 any(String.class),
                 anyString(),
                 anyString());
-
         cancelAppointmentController.Cancel(session,model,response,cancelId,cancelNotes);
-
         String content = response.getContentAsString();
         assertTrue(content.contains("alert('Appointment cancelled successfully!');"));
         assertTrue(content.contains("window.location='/Customer/MyHistory';"));

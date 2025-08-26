@@ -93,7 +93,6 @@ public class AddHospitalControllerTest
          hospital.setContactEmail(contactEmail);
          hospital.setDescription(description);
 
-
          when(hospitalService.registerHospital(hospitalName,latitude,longitude,contactEmail,address,phoneNumber,description,file)).thenReturn(hospital);
          hospitalController.addHospital(hospitalName,latitude,longitude,contactEmail,address,phoneNumber,description,file,response);
          String content = response.getContentAsString();

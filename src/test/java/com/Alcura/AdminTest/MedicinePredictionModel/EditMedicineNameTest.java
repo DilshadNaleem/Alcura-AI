@@ -37,7 +37,7 @@ public class EditMedicineNameTest {
 
     @Test
     void testEditMedicine_Success() {
-        // Arrange
+
         String medicineName = "Aspirin";
         MedicineInfo mockMedicine = new MedicineInfo();
         mockMedicine.setClassName("Aspirin");
@@ -47,10 +47,8 @@ public class EditMedicineNameTest {
         when(restTemplate.getForEntity(anyString(), eq(MedicineInfo.class)))
                 .thenReturn(responseEntity);
 
-        // Act
         String result = controller.editMedicine(medicineName, model);
 
-        // Assert
         assertEquals("/Admin/MedicinePredictionModel/Edit-Medicine", result);
         verify(model).addAttribute(eq("medicine"), eq(mockMedicine));
         verify(model).addAttribute(eq("oldName"), eq(medicineName));
@@ -58,7 +56,7 @@ public class EditMedicineNameTest {
 
     @Test
     void testEditMedicine_NotFound() {
-        // Arrange
+
         String medicineName = "UnknownMedicine";
 
         ResponseEntity<MedicineInfo> responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -66,31 +64,26 @@ public class EditMedicineNameTest {
         when(restTemplate.getForEntity(anyString(), eq(MedicineInfo.class)))
                 .thenReturn(responseEntity);
 
-        // Act
         String result = controller.editMedicine(medicineName, model);
 
-        // Assert
+
         assertEquals("redirect:/Admin/MedicinePredictionModel/ViewAllMedicines?error=Medicine+UnknownMedicine+not+found", result);
     }
 
     @Test
     void testEditMedicine_Exception() {
-        // Arrange
         String medicineName = "Aspirin";
 
         when(restTemplate.getForEntity(anyString(), eq(MedicineInfo.class)))
                 .thenThrow(new RuntimeException("Connection error"));
-
-        // Act
         String result = controller.editMedicine(medicineName, model);
 
-        // Assert
         assertEquals("redirect:/Admin/MedicinePredictionModel/ViewAllMedicines?error=Medicine+Aspirin+not+found", result);
     }
 
     @Test
     void testUpdateMedicine_Success() {
-        // Arrange
+
         MedicineInfo updatedMedicine = new MedicineInfo();
         updatedMedicine.setClassName("NewAspirin");
         updatedMedicine.setAdministration("Oral");
@@ -106,25 +99,21 @@ public class EditMedicineNameTest {
         updatedMedicine.setSideEffects("Upset stomach");
         updatedMedicine.setSourceOfInformation("FDA");
         updatedMedicine.setUse("Analgesic");
-
         String oldName = "Aspirin";
-
         ResponseEntity<String> responseEntity = new ResponseEntity<>("Success", HttpStatus.OK);
-
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
                 .thenReturn(responseEntity);
 
-        // Act
         String result = controller.updateMedicine(updatedMedicine, oldName, redirectAttributes);
 
-        // Assert
+
         assertEquals("redirect:/Admin/medicineDescription", result);
         verify(redirectAttributes).addFlashAttribute(eq("success"), eq("Medicine Updated Successfully!"));
     }
 
     @Test
     void testUpdateMedicine_ErrorResponse() {
-        // Arrange
+
         MedicineInfo updatedMedicine = new MedicineInfo();
         updatedMedicine.setClassName("NewAspirin");
         String oldName = "Aspirin";
@@ -134,10 +123,8 @@ public class EditMedicineNameTest {
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
                 .thenReturn(responseEntity);
 
-        // Act
         String result = controller.updateMedicine(updatedMedicine, oldName, redirectAttributes);
 
-        // Assert
         assertEquals("redirect:/Admin/medicineDescription", result);
         verify(redirectAttributes).addFlashAttribute(eq("error"), contains("Failed to update medicine"));
     }

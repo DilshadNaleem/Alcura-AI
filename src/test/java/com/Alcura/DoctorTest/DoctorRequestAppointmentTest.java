@@ -59,16 +59,13 @@ class DoctorRequestAppointmentTest {
 
     @Test
     void testUpdateForm_Success() throws Exception {
-        // Mock session
+
         when(session.getAttribute("email")).thenReturn(email);
 
-        // Mock latest price
         when(doctorPriceRepo.findTopByOrderByIdDesc()).thenReturn(Optional.of(mockDoctorPrice));
 
-        // Mock unique ID generation
         when(doctorFeeUniqueId.createDoctorPrice(any(DoctorPrice.class))).thenReturn(mockDoctorPrice);
 
-        // Mock response writer
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(printWriter);

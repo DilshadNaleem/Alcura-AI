@@ -57,17 +57,15 @@ public class AddMedicineControllerTest {
 
     @Test
     void addPill_success() throws IOException {
-        // Mock the successful response from the Flask API
+
         when(restTemplate.postForEntity(
                 any(String.class),
                 any(),
                 eq(String.class))
         ).thenReturn(new ResponseEntity<>("{\"message\":\"success\"}", HttpStatus.OK));
 
-        // Call the method under test
         ResponseEntity<Map<String, String>> responseEntity = addMedicineController.addPill(medicineInfo, trainImages, valImages);
 
-        // Assertions
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Map<String, String> responseBody = responseEntity.getBody();
         assertEquals("success", responseBody.get("status"));
@@ -76,17 +74,15 @@ public class AddMedicineControllerTest {
 
     @Test
     void addPill_unsuccessful() throws IOException {
-        // Mock an exception to simulate an unsuccessful API call
+
         when(restTemplate.postForEntity(
                 any(String.class),
                 any(),
                 eq(String.class))
         ).thenThrow(new RuntimeException("API connection failed"));
 
-        // Call the method under test
         ResponseEntity<Map<String, String>> responseEntity = addMedicineController.addPill(medicineInfo, trainImages, valImages);
 
-        // Assertions
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
         Map<String, String> responseBody = responseEntity.getBody();
         assertEquals("error", responseBody.get("status"));

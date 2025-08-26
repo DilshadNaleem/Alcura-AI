@@ -45,6 +45,7 @@ public class AdminRegisterTest
         request.setLastname("User");
         request.setPassword("testPassword");
         request.setConfirmPassword("testPassword");
+
         return request;
     }
 

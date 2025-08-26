@@ -41,7 +41,6 @@ public class DoctorRegisterTest {
         request.setLastName("Test");
         request.setPassword("doctorPassword");
 
-        // Add any doctor-specific fields if they exist
         return request;
     }
 

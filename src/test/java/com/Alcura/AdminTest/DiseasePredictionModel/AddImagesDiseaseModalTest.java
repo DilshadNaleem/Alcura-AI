@@ -2,6 +2,7 @@ package com.Alcura.AdminTest.DiseasePredictionModel;
 
 import com.Alcura.Admin.Controller.DiseasePredictionModel.AddImagesDiseaseModal;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,12 +28,12 @@ public class AddImagesDiseaseModalTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Mock
     private RestTemplate restTemplate;
 
     @Test
     void uploadImages_SuccessfulUpload_ShouldReturnSuccessResponse() throws Exception {
-        // Arrange
+
         MockMultipartFile file1 = new MockMultipartFile("images", "test1.jpg", "image/jpeg", "content1".getBytes());
         MockMultipartFile file2 = new MockMultipartFile("images", "test2.jpg", "image/jpeg", "content2".getBytes());
 
@@ -43,7 +44,6 @@ public class AddImagesDiseaseModalTest {
                 any(Class.class)
         )).thenReturn(ResponseEntity.ok("Success"));
 
-        // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.multipart("/Admin/UploadImages")
                         .file(file1)
                         .file(file2)
@@ -58,7 +58,7 @@ public class AddImagesDiseaseModalTest {
 
     @Test
     void addImageForm_ShouldReturnCorrectViewAndModel() throws Exception {
-        // Act & Assert
+
         mockMvc.perform(MockMvcRequestBuilders.get("/Admin/DiseaseAddImages")
                         .param("diseaseName", "COVID-19")
                 )

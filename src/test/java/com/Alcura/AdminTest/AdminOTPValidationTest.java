@@ -21,8 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-
-
 @ExtendWith(MockitoExtension.class)
 public class AdminOTPValidationTest
 {
@@ -52,10 +50,10 @@ public class AdminOTPValidationTest
         when(adminAuthService.verifyOtp(any(String.class), any(MockHttpSession.class)))
                 .thenReturn(ResponseEntity.ok("Account verified successfully!"));
 
-
         adminVerifyController.verifyOtp(OTP,session,response);
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
+
         String content = response.getContentAsString();
 
         assertTrue(content.contains("alert('Account verified Successfully! Please Login');"));

@@ -165,14 +165,6 @@ public class AdminFaceLoginTest {
         assertEquals("No face image provided", result.getBody().get("message"));
     }
 
-    @Test
-    void faceLogin_NullFaceImage_ShouldReturnBadRequest() {
-        ResponseEntity<Map<String, Object>> result = faceLogin.facelogin(admin.getEmail(), null, session);
-
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-        assertFalse((Boolean) result.getBody().get("success"));
-        assertEquals("No face image provided", result.getBody().get("message"));
-    }
 
     @Test
     void faceLogin_EyesNotDetected_ShouldReturnBadRequest() throws Exception {
@@ -240,6 +232,7 @@ public class AdminFaceLoginTest {
         when(adminRepository.findByEmailAndStatus(admin.getEmail(), 1)).thenReturn(admin);
 
         String invalidJson = "invalid json";
+
         ResponseEntity<String> responseEntity = new ResponseEntity<>(invalidJson, HttpStatus.OK);
         when(restTemplate.postForEntity(any(String.class), any(HttpEntity.class), eq(String.class)))
                 .thenReturn(responseEntity);

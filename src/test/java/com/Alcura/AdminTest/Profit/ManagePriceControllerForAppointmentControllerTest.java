@@ -52,35 +52,25 @@ public class ManagePriceControllerForAppointmentControllerTest {
         DoctorPrice existingPrice1 = new DoctorPrice();
         existingPrice1.setId(1);
         existingPrice1.setHospital_price(50.0);
-
         DoctorPrice existingPrice2 = new DoctorPrice();
         existingPrice2.setId(2);
         existingPrice2.setHospital_price(75.0);
-
         List<DoctorPrice> mockPrices = Arrays.asList(existingPrice1, existingPrice2);
-
 
         when(doctorPriceRepo.findAll()).thenReturn(mockPrices);
         when(doctorPriceRepo.saveAll(anyList())).thenReturn(mockPrices);
-
-
         priceController.percentage(range, session, writer);
         writer.flush();
 
         String content = stringWriter.toString();
-
-        assertTrue(content.contains("alert('Details Saved to Database for all records');"),
-                "Should show success message");
-        assertTrue(content.contains("window.location.href ='/Admin/Manage_Percentage';"),
-                "Should redirect to Manage_Percentage page");
-
+        assertTrue(content.contains("alert('Details Saved to Database for all records');"), "Should show success message");
+        assertTrue(content.contains("window.location.href ='/Admin/Manage_Percentage';"), "Should redirect to Manage_Percentage page");
         verify(doctorPriceRepo).findAll();
         verify(doctorPriceRepo).saveAll(mockPrices);
     }
 
     @Test
     void ManagePrice_WithNoExistingRecords_ShouldCreateNewRecord() throws Exception {
-
 
         when(doctorPriceRepo.findAll()).thenReturn(Arrays.asList());
 
@@ -97,14 +87,12 @@ public class ManagePriceControllerForAppointmentControllerTest {
 
     @Test
     void ManagePrice_WithException_ShouldShowErrorMessage() throws Exception {
-        // Mock repository to throw exception
+
         when(doctorPriceRepo.findAll()).thenThrow(new RuntimeException("Database error"));
 
-        // Call the method
         priceController.percentage(range, session, writer);
         writer.flush();
 
-        // Verify error message is shown
         String content = stringWriter.toString();
         assertTrue(content.contains("alert('Error occurred while saving');"),
                 "Should show error message when exception occurs");

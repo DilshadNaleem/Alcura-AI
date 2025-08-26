@@ -65,8 +65,6 @@ public class RejectDoctorPriceController {
     @Test
     void RejectDoctorPrice_ValidSession_ShouldProcessRequest() throws Exception {
         session.setAttribute("email", adminEmail);
-
-        // Create a properly configured mock DoctorPrice
         DoctorPrice mockDoctorPrice = new DoctorPrice();
         mockDoctorPrice.setId(id);
         mockDoctorPrice.setPrice(originalPrice);
@@ -79,14 +77,11 @@ public class RejectDoctorPriceController {
         when(doctorPriceRepo.save(any(DoctorPrice.class))).thenReturn(mockDoctorPrice);
 
         String result = rejectDoctorPrice.reject(id, newPrice, adminNotes, session, printWriter);
-
         assertEquals(null, result);
 
-        // Verify interactions
         verify(doctorPriceRepo).findById(id);
         verify(doctorPriceRepo).save(any(DoctorPrice.class));
 
-        // Verify email was sent with correct parameters
         String expectedSubject = "Your Price Has been Rejected";
         String expectedBody = String.format(
                 "Dear Doctor,\n\n" +

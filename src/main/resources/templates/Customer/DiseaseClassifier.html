@@ -159,6 +159,50 @@
                 max-width: 100%;
             }
         }
+
+        .appointment-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 15px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Light mode styles */
+.appointment-btn {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+}
+
+.appointment-btn:hover {
+    background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark mode styles */
+body.dark .appointment-btn {
+    background: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);
+    color: white;
+}
+
+body.dark .appointment-btn:hover {
+    background: linear-gradient(135deg, #4a00e0 0%, #8e2de2 100%);
+    box-shadow: 0 6px 12px rgba(142, 45, 226, 0.3);
+}
+
+/* Active state */
+.appointment-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
     </style>
 </head>
 <body>
@@ -339,7 +383,12 @@
                                     <p th:text="'Duration: ' + ${result.diseaseInfo.duration}"></p>
                                     <p th:text="'First Aid Advice: ' + ${result.diseaseInfo.firstAidAdvice}"></p>
                                     <p th:text="'Source of Information: ' + ${result.diseaseInfo.sourceOfInformation}"></p>
-
+                                    <p th:text="'Recommended Doctor: ' +
+                                        (${recommendedDoctor != null && recommendedDoctor.firstName != null && recommendedDoctor.lastName != null} ?
+                                        (${recommendedDoctor.firstName} + ' ' + ${recommendedDoctor.lastName}) :
+                                        'No doctor information available')">
+                                    </p>
+                                    <a href="/Customer/AppointmentBooking" class="appointment-btn">Book Doctor Appointment</a>
                                 </div>
 
                             </div>

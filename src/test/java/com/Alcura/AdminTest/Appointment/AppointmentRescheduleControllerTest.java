@@ -41,7 +41,6 @@ public class AppointmentRescheduleControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Setup test data
         validApproveRequest = new AppointmentRescheduleController.RescheduleRequest();
         validApproveRequest.setAppointmentId("APPT-123");
         validApproveRequest.setAction("approve");
@@ -63,7 +62,6 @@ public class AppointmentRescheduleControllerTest {
         missingDateApproveRequest.setAction("approve");
         missingDateApproveRequest.setAdminNotes("Missing date and time");
 
-        // Setup mock appointment
         mockAppointment = new Appoinment();
         mockAppointment.setUnique_id("APPT-123");
         mockAppointment.setDoctor_name("Dr. Smith");
@@ -75,13 +73,11 @@ public class AppointmentRescheduleControllerTest {
 
     @Test
     void handleReschedule_AppointmentNotFound_ShouldReturnBadRequest() {
-        // Arrange
+
         when(appointmentRepo.findByUniqueIdNative("APPT-123")).thenReturn(Optional.empty());
 
-        // Act
         ResponseEntity<?> response = controller.handleReschedule(validApproveRequest);
 
-        // Assert
         assertEquals(400, response.getStatusCodeValue());
         assertEquals("Appointment not found", response.getBody());
         verify(appointmentRepo).findByUniqueIdNative("APPT-123");
@@ -91,21 +87,16 @@ public class AppointmentRescheduleControllerTest {
 
     @Test
     void handleReschedule_ApproveAction_ShouldRescheduleAppointmentAndSendEmail() {
-        // Arrange
         when(appointmentRepo.findByUniqueIdNative("APPT-123")).thenReturn(Optional.of(mockAppointment));
         when(appointmentRepo.save(any(Appoinment.class))).thenReturn(mockAppointment);
-
-        // Act
         ResponseEntity<?> response = controller.handleReschedule(validApproveRequest);
 
-        // Assert
         assertEquals(200, response.getStatusCodeValue());
         assertTrue(response.getBody() instanceof Map);
         Map<?, ?> responseBody = (Map<?, ?>) response.getBody();
         assertEquals("success", responseBody.get("status"));
         assertEquals("Appointment rescheduled successfully", responseBody.get("message"));
 
-        // Verify appointment was updated
         verify(appointmentRepo).save(mockAppointment);
         assertEquals("Rescheduled", mockAppointment.getStatus());
         assertEquals(LocalDate.of(2024, 1, 15), mockAppointment.getAppointment_date());
@@ -113,7 +104,6 @@ public class AppointmentRescheduleControllerTest {
         assertEquals("Approved with new timing", mockAppointment.getAdminNotes());
         assertEquals("Reschedule approved by admin", mockAppointment.getReschedule_reason());
 
-        // Verify email was sent
         String expectedSubject = "Your Appointment Has Been Rescheduled";
         String expectedBody = String.format(
                 "Dear Patient,\n\n" +
@@ -136,13 +126,11 @@ public class AppointmentRescheduleControllerTest {
 
     @Test
     void handleReschedule_ApproveActionMissingDate_ShouldReturnBadRequest() {
-        // Arrange
+
         when(appointmentRepo.findByUniqueIdNative("APPT-123")).thenReturn(Optional.of(mockAppointment));
 
-        // Act
         ResponseEntity<?> response = controller.handleReschedule(missingDateApproveRequest);
 
-        // Assert
         assertEquals(400, response.getStatusCodeValue());
         assertEquals("New date and time are required for approval", response.getBody());
         verify(appointmentRepo).findByUniqueIdNative("APPT-123");
@@ -152,27 +140,21 @@ public class AppointmentRescheduleControllerTest {
 
     @Test
     void handleReschedule_RejectAction_ShouldRejectAppointmentAndSendEmail() {
-        // Arrange
         when(appointmentRepo.findByUniqueIdNative("APPT-123")).thenReturn(Optional.of(mockAppointment));
         when(appointmentRepo.save(any(Appoinment.class))).thenReturn(mockAppointment);
-
-        // Act
         ResponseEntity<?> response = controller.handleReschedule(validRejectRequest);
 
-        // Assert
         assertEquals(200, response.getStatusCodeValue());
         assertTrue(response.getBody() instanceof Map);
         Map<?, ?> responseBody = (Map<?, ?>) response.getBody();
         assertEquals("success", responseBody.get("status"));
         assertEquals("Reschedule request rejected", responseBody.get("message"));
 
-        // Verify appointment was updated
         verify(appointmentRepo).save(mockAppointment);
         assertEquals("Rejected", mockAppointment.getStatus());
         assertEquals("Cannot accommodate requested time", mockAppointment.getAdminNotes());
         assertEquals("Reschedule request rejected by admin", mockAppointment.getReschedule_reason());
 
-        // Verify email was sent
         String expectedSubject = "Your Reschedule Request Has Been Rejected";
         String expectedBody = String.format(
                 "Dear Patient,\n\n" +
@@ -195,13 +177,12 @@ public class AppointmentRescheduleControllerTest {
 
     @Test
     void handleReschedule_InvalidAction_ShouldReturnBadRequest() {
-        // Arrange
+
         when(appointmentRepo.findByUniqueIdNative("APPT-123")).thenReturn(Optional.of(mockAppointment));
 
-        // Act
+
         ResponseEntity<?> response = controller.handleReschedule(invalidActionRequest);
 
-        // Assert
         assertEquals(400, response.getStatusCodeValue());
         assertEquals("Invalid action specified", response.getBody());
         verify(appointmentRepo).findByUniqueIdNative("APPT-123");
@@ -211,13 +192,11 @@ public class AppointmentRescheduleControllerTest {
 
     @Test
     void handleReschedule_ExceptionDuringProcessing_ShouldReturnInternalServerError() {
-        // Arrange
+
         when(appointmentRepo.findByUniqueIdNative("APPT-123")).thenThrow(new RuntimeException("Database error"));
 
-        // Act
         ResponseEntity<?> response = controller.handleReschedule(validApproveRequest);
 
-        // Assert
         assertEquals(500, response.getStatusCodeValue());
         assertTrue(response.getBody().toString().contains("Error processing request: Database error"));
         verify(appointmentRepo).findByUniqueIdNative("APPT-123");
@@ -227,18 +206,15 @@ public class AppointmentRescheduleControllerTest {
 
     @Test
     void rescheduleRequest_GettersAndSetters_ShouldWorkCorrectly() {
-        // Arrange
         AppointmentRescheduleController.RescheduleRequest request = new AppointmentRescheduleController.RescheduleRequest();
         LocalDate testDate = LocalDate.of(2024, 1, 20);
 
-        // Act
         request.setAppointmentId("TEST-123");
         request.setAction("test");
         request.setNewDate(testDate);
         request.setNewTime("15:00");
         request.setAdminNotes("Test notes");
 
-        // Assert
         assertEquals("TEST-123", request.getAppointmentId());
         assertEquals("test", request.getAction());
         assertEquals(testDate, request.getNewDate());

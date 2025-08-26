@@ -44,22 +44,19 @@ public class OTPValidationTest
 
     @Test
     void SuccessfulOTPValidation_SuccessScript() throws IOException {
-        // Arrange
+
         String OTP = "123456";
-        // Mock the service to return a successful response
+
         when(customerAuthService.verifyOtp(any(String.class), any(MockHttpSession.class)))
                 .thenReturn(ResponseEntity.ok("Account verified successfully!"));
 
-        // Act
         verifyOtpController.verifyOtp(OTP, session, response);
 
-        // Assert
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         String content = response.getContentAsString();
 
-        // Check the exact expected output
         assertTrue(content.contains("alert('Account verified successfully! Please login.');"));
-        assertTrue(content.contains("window.location.href = '/Customer/Signing';"));  // Removed extra quotes
+        assertTrue(content.contains("window.location.href = '/Customer/Signing';"));
         assertEquals("text/html", response.getContentType());
     }
 

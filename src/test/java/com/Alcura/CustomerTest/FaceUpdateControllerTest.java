@@ -48,7 +48,6 @@ public class FaceUpdateControllerTest
     private MultipartFile mockFaceImage;
     private Customer testCustomer;
 
-
     @BeforeEach
     void setUp()
     {
@@ -71,7 +70,6 @@ public class FaceUpdateControllerTest
     void updateFace_Success_ShouldReturnOK() throws IOException
     {
         session.setAttribute("email", testCustomer.getEmail());
-
         String successResponseJson =  "{\"success\": true, \"encoding\": \"new_face_data\"}";
         ResponseEntity<String> mockFaceServiceResponse = new ResponseEntity<>(successResponseJson, HttpStatus.OK);
 

@@ -17,6 +17,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer>
     Doctor findByEmailAndStatus (String email, int status);
     Optional<Doctor> findTopByOrderByIdDesc();
     List<Doctor> findByFaceDataIsNotNull();
+    List<Doctor> findByStatus(int status);
     List<Doctor> findByUniqueId(String uniqueId);
     List<Doctor> findAll();
     @Query("SELECT new com.Alcura.Admin.DTO.ViewAllDoctors(" +
@@ -34,7 +35,9 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer>
             "d.image, d.email, d.uniqueId, d.doctor_availablility, dp.newPrice) " +
             "FROM Doctor d " +
             "JOIN DoctorPrice dp ON d.email = dp.doctor_email " +
-            "WHERE dp.status = 'Success'")
+            "WHERE dp.status = 'Success' AND dp.id IN (" +
+            "SELECT MAX(dp2.id) FROM DoctorPrice dp2 WHERE dp2.status = 'Success' GROUP BY dp2.doctor_email" +
+            ")")
     List<ViewDoctorForm> viewDoctorinCustomerForm();
 
 

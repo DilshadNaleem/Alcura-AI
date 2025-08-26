@@ -41,7 +41,6 @@ public class AddImagesMedicineModelTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
-    //------------------------------------- SUCCESS TESTS -------------------------------------
 
     @Test
     public void testAddImageForm_Success() throws Exception {
@@ -107,7 +106,6 @@ public class AddImagesMedicineModelTest {
                 any(HttpEntity.class),
                 eq(String.class)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND, "Not Found"));
-
         mockMvc.perform(multipart("/Admin/MedicineUploadImages")
                         .file(mockFile)
                         .param("medicineName", "Aspirin")

@@ -82,19 +82,15 @@ public class AdminResetPasswordControllerTest
         String hashedPassword = "password123";
         String newPassword = "password123";
         String confirmPassword = "password123";
-
         session.setAttribute("email", email);
         session.setAttribute("token", token);
 
         Admin admin = new Admin();
         admin.setStatus(1);
         admin.setEmail(email);
-
         when(adminRepository.findByEmailAndStatus(anyString(), eq(1))).thenReturn(admin);
         when(hashPassword.hashPassword(newPassword)).thenReturn(hashedPassword);
-
         adminResetPasswordController.processResetPassowrd(newPassword,confirmPassword,session,response);
-
 
         assertEquals(hashedPassword,admin.getPassword());
         assertNull(session.getAttribute("email"));

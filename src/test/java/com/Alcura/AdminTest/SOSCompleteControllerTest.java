@@ -57,6 +57,7 @@ public class SOSCompleteControllerTest
         emergencyRequestRepository.save(emergencyRequest);
 
         String content = response.getContentAsString();
+
         assertTrue("Success Message", content.contains("alert('SOS Request Completed');"));
         assertTrue("Redirecting", content.contains("window.location.href = '/Admin/Dashboard';"));
     }

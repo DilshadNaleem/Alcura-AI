@@ -54,7 +54,6 @@ public class DoctorResetPasswordTest {
     @Test
     void showResetPasswordForm_WhenTokenInvalid_ShowsAlert() throws IOException {
         String token = "invalid-token";
-        // Don't set session token to simulate invalid token
 
         drResetPasswordController.showResetPasswordForm(token, session, response);
 
@@ -78,7 +77,7 @@ public class DoctorResetPasswordTest {
 
     @Test
     void processResetPassword_WhenSessionExpired_ShowsAlert() throws IOException {
-        // Don't set email in session to simulate expired session
+
         session.setAttribute("token", "valid-token");
         String password = "password123";
         String confirmPassword = "password123";
@@ -117,7 +116,6 @@ public class DoctorResetPasswordTest {
 
         session.setAttribute("email", email);
         session.setAttribute("token", token);
-
         Doctor doctor = new Doctor();
         doctor.setStatus(1);
         doctor.setEmail(email);
@@ -130,7 +128,6 @@ public class DoctorResetPasswordTest {
         assertEquals(hashedPassword, doctor.getPassword());
         assertNull(session.getAttribute("email"));
         assertNull(session.getAttribute("token"));
-
         String content = response.getContentAsString();
         assertTrue(content.contains("alert('Password Updated Successfully!');"));
         assertTrue(content.contains("window.location.href = '/Doctor/Signing'"));

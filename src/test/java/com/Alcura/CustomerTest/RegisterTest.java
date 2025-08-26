@@ -67,6 +67,7 @@ public class RegisterTest {
         registerController.registerCustomer(request, session, response);
 
         String responseContent = response.getContentAsString();
+
         assertTrue(responseContent.contains("alert('Email already exists');"));
         assertTrue(responseContent.contains("window.location.href = '/Customer/Signing';"));
     }

@@ -56,7 +56,6 @@ public class AppointmentControllerTest {
     void setUp() {
         response = new MockHttpServletResponse();
         session = new MockHttpSession();
-        // Reset all mocks before each test
         reset(appointmentService, appointmentRepository, paymentRepo,
                 paymentService, doctorAvailabilityService, paymentUniqueId);
     }
@@ -90,34 +89,27 @@ public class AppointmentControllerTest {
 
     @Test
     void createAppointment_WhenValid_ShouldCreateAppointment() throws Exception {
-        // Setup session
         session.setAttribute("email", "patient@example.com");
-
-        // Mock repository behavior
         when(appointmentRepository.existsByDoctorAndDateAndTime(any(), any(), any())).thenReturn(false);
 
-        // Mock appointment creation
         Appoinment mockAppointment = new Appoinment();
         mockAppointment.setUnique_id("app123");
         when(appointmentService.createAppointment(
                 any(), any(), any(), any(), any(), any(), any(), any()))
                 .thenReturn(mockAppointment);
 
-        // Mock payment creation
         Payment mockPayment = new Payment();
         mockPayment.setUniqueId("pay123");
         when(paymentUniqueId.createPayment(any())).thenReturn(mockPayment);
-       when(paymentService.processPayment(any(Payment.class), anyString())).thenReturn(mockPayment);
+        when(paymentService.processPayment(any(Payment.class), anyString())).thenReturn(mockPayment);
         appointmentController.createAppointment(
                 "doc1", "Dr. Smith", LocalDate.now(), "10:00",
                 "Special reason", 100.0f, "CARD", session, response);
 
-        // Verify response
         String result = response.getContentAsString();
         assertTrue(result.contains("Appointment created successfully!"));
         assertTrue(result.contains("/Customer/AppointmentBooking"));
 
-        // Verify interactions
         verify(paymentService).processPayment(any(Payment.class), eq("CARD"));
         verify(paymentRepo).save(any(Payment.class));
         verify(appointmentRepository).save(any(Appoinment.class));

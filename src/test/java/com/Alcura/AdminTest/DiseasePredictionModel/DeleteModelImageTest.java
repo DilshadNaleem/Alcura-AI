@@ -69,12 +69,10 @@ public class DeleteModelImageTest
         String url2 = API_URL_BASE + "COVID-19/train/image2.jpg";
         String url3 = API_URL_BASE + "COVID-19/train/image3.jpg";
 
-
         doNothing().when(restTemplate).delete(url1);
         doNothing().when(restTemplate).delete(url3);
 
-        doThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND))
-                .when(restTemplate).delete(url2);
+        doThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND)).when(restTemplate).delete(url2);
 
         String viewName = deleteModelImage.deleteSelectedImages(selectedImages, datasetType, model);
 
@@ -86,6 +84,5 @@ public class DeleteModelImageTest
         String expectedError = "Deleted 2 images, but failed to delete 1: image2.jpg (Not found)";
         verify(model).addAttribute(eq("error"), eq(expectedError));
         verify(model).addAttribute(eq("dataname"), eq(List.of(datasetType)));
-
     }
 }

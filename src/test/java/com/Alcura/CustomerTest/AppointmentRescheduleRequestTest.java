@@ -57,14 +57,11 @@ public class AppointmentRescheduleRequestTest {
 
     @Test
     void SendRescheduleRequest_ShouldShowSuccessMessage() throws IOException {
-        // Arrange
         String appointmentId = "app01";
         String notes = "Testing reschedule for success case";
         String customerEmail = "testuser@example.com";
-
         session.setAttribute("email", customerEmail);
         Model model = mock(Model.class);
-
         Appoinment mockAppointment = new Appoinment();
         mockAppointment.setUnique_id(appointmentId);
         mockAppointment.setCustomer_email(customerEmail);
@@ -75,14 +72,10 @@ public class AppointmentRescheduleRequestTest {
 
         when(appointmentRepo.findByUniqueIdNative(appointmentId))
                 .thenReturn(Optional.of(mockAppointment));
-
         when(appointmentRepo.save(any(Appoinment.class))).thenReturn(mockAppointment);
-
         doNothing().when(rescheduleEmailService).sendEmail(anyString(), anyString(), any(), anyString(), anyString(), anyString());
-
         rescheduleRequestController.Reschedule(session, model, response, appointmentId, notes);
 
-        // Assert
         String content = response.getContentAsString();
         assertTrue(content.contains("alert('Appointment Rescheduled Successful!');"));
         assertTrue(content.contains("window.location='/Customer/MyHistory';"));
@@ -107,6 +100,5 @@ public class AppointmentRescheduleRequestTest {
 
         verify(appointmentRepo,never()).save(any());
         verify(rescheduleEmailService,never()).sendEmail(anyString(),anyString(),any(),anyString(),anyString(),anyString());
-
     }
 }

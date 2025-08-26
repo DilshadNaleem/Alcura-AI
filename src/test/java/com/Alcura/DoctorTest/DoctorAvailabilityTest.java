@@ -152,7 +152,6 @@ class DoctorAvailabilityControllerTest {
         assertTrue(dates[0].getDayOfWeek().equals(DayOfWeek.MONDAY));
         assertTrue(dates[6].getDayOfWeek().equals(DayOfWeek.SUNDAY));
 
-        // Verify dates are in correct order
         for (int i = 0; i < 6; i++) {
             assertTrue(dates[i].isBefore(dates[i + 1]));
         }

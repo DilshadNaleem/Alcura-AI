@@ -98,7 +98,6 @@ public class ApproveDoctorPriceControllerTest
     void ApproveDoctorPrice_SuccessUpdate_SuccessMessage() throws IOException
     {
         session.setAttribute("email", email);
-
         Doctor mockdoctor = new Doctor();
         mockdoctor.setEmail(doctorEmail);
 
@@ -108,9 +107,7 @@ public class ApproveDoctorPriceControllerTest
 
         when(doctorRepo.findByemail(doctorEmail)).thenReturn(mockdoctor);
         when(doctorPriceRepo.findById(anyInt())).thenReturn(mockDoctorPrice);
-
         String result = doctorPriceController.approve(1,finalPrice,doctorEmail,printWriter,session);
-
         verify(doctorRepo).findByemail(doctorEmail);
         verify(doctorPriceRepo).findById(1);
         verify(doctorPriceRepo).save(mockDoctorPrice);
@@ -119,7 +116,6 @@ public class ApproveDoctorPriceControllerTest
         String output = stringWriter.toString();
         assertTrue("Show Success Message", output.contains("alert('Successfully Updated to Success');"));
         assertTrue("Redirecting", output.contains("window.location.href = '/Admin/Manage_Doctor/Price';"));
-
         assertNull("The controller should return null when writing to PrintWriter", result);
     }
 

@@ -54,7 +54,6 @@ public class DeleteHospitalControllerTest
         verifyNoInteractions(deleteCustomerService);
     }
 
-
     @Test
     void DeleteHospital_Success_ShouldShowSuccessMessage() throws IOException
     {

@@ -38,7 +38,7 @@ public class ViewAllMedicineValidationTest {
 
     @Test
     void testViewImages_SuccessWithImages() throws Exception {
-        // Arrange
+
         String medicineName = "Aspirin";
         String imageType = "tablet";
 
@@ -53,10 +53,8 @@ public class ViewAllMedicineValidationTest {
 
         when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(mockResponse);
 
-        // Act
         String result = controller.viewImages(medicineName, imageType, model, redirectAttributes);
 
-        // Assert
         assertEquals("/Admin/MedicinePredictionModel/ViewMedicineImages", result);
         verify(model).addAttribute(eq("dataname"), eq(Arrays.asList("variant1", "variant2")));
         verify(model).addAttribute(eq("data"), eq(images));
@@ -77,10 +75,8 @@ public class ViewAllMedicineValidationTest {
 
         when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(mockResponse);
 
-        // Act
         String result = controller.viewImages(medicineName, imageType, model, redirectAttributes);
 
-        // Assert
         assertEquals("/Admin/MedicinePredictionModel/ViewMedicineImages", result);
         verify(model).addAttribute(eq("dataname"), eq(Collections.emptyList()));
         verify(model).addAttribute(eq("data"), eq(Collections.emptyList()));
@@ -88,17 +84,14 @@ public class ViewAllMedicineValidationTest {
 
     @Test
     void testViewImages_NoFolderVariants() throws Exception {
-        // Arrange
         String medicineName = "Ibuprofen";
         String imageType = "syrup";
 
         Map<String, Object> mockResponse = new HashMap<>();
         mockResponse.put("images", Collections.emptyList());
-        // No folder_variants_checked key
 
         when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(mockResponse);
 
-        // Act
         String result = controller.viewImages(medicineName, imageType, model, redirectAttributes);
 
         // Assert
@@ -109,16 +102,14 @@ public class ViewAllMedicineValidationTest {
 
     @Test
     void testViewImages_NullResponse() throws Exception {
-        // Arrange
+
         String medicineName = "UnknownMedicine";
         String imageType = "tablet";
 
         when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(null);
 
-        // Act
         String result = controller.viewImages(medicineName, imageType, model, redirectAttributes);
 
-        // Assert
         assertEquals("/Admin/MedicinePredictionModel/ViewMedicineImages", result);
         verify(model).addAttribute(eq("dataname"), eq(Collections.emptyList()));
         verify(model).addAttribute(eq("data"), eq(Collections.emptyList()));
@@ -126,17 +117,15 @@ public class ViewAllMedicineValidationTest {
 
     @Test
     void testViewImages_Exception() throws Exception {
-        // Arrange
+
         String medicineName = "Aspirin";
         String imageType = "tablet";
 
         when(restTemplate.getForObject(anyString(), eq(Map.class)))
                 .thenThrow(new RuntimeException("Connection failed"));
 
-        // Act
         String result = controller.viewImages(medicineName, imageType, model, redirectAttributes);
 
-        // Assert
         assertEquals("redirect:/Admin/medicineDescription", result);
         verify(redirectAttributes).addFlashAttribute(eq("error"), contains("Failed to fetch images"));
         verify(model).addAttribute(eq("error"), contains("ERROR: Connection failed"));
@@ -144,7 +133,7 @@ public class ViewAllMedicineValidationTest {
 
     @Test
     void testViewImages_EmptyImagesList() throws Exception {
-        // Arrange
+
         String medicineName = "VitaminC";
         String imageType = "tablet";
 
@@ -154,10 +143,8 @@ public class ViewAllMedicineValidationTest {
 
         when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(mockResponse);
 
-        // Act
         String result = controller.viewImages(medicineName, imageType, model, redirectAttributes);
 
-        // Assert
         assertEquals("/Admin/MedicinePredictionModel/ViewMedicineImages", result);
         verify(model).addAttribute(eq("dataname"), eq(Arrays.asList("variant1")));
         verify(model).addAttribute(eq("data"), eq(Collections.emptyList()));
