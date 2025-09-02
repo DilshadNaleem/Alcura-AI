@@ -38,6 +38,7 @@ public class ApproveDoctorPriceController {
     public String approve(@RequestParam("id") int id,
                           @RequestParam("finalPrice") Float newPrice,
                           @RequestParam("doctorEmail") String doctorEmail,
+                          @RequestParam("oldPrice") Float oldPrice,
                           PrintWriter out,
                           HttpSession session) {
         logger.info("Received request to approve doctor price - ID: {}, New Price: {}, Doctor Email: {}",
@@ -79,9 +80,25 @@ public class ApproveDoctorPriceController {
 
             String subject = "Your Price for per booking has been Approved";
             String body = String.format(
-                    "Dear Doctor,\n\n" +
-                            "Your Price Per Appointment has been Approved.\n\n" +
-                            "Thank you, \n Alcura Team"
+                    "<div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>"
+                            + "<div style='max-width: 600px; margin: auto; background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; padding: 20px;'>"
+                            + "<h2 style='color: #28a745;'>Price Approval Confirmation</h2>"
+                            + "<p style='font-size: 16px; color: #333;'>Dear Doctor,</p>"
+                            + "<p style='font-size: 15px;'>We are pleased to inform you that your proposed consultation price has been <strong style='color: #28a745;'>approved</strong>.</p>"
+
+                            + "<table style='width: 100%%; margin: 20px 0; border-collapse: collapse;'>"
+                            + "<tr>"
+                            + "<td style='padding: 10px; background-color: #e8f5e9; font-weight: bold;'>Approved Price:</td>"
+                            + "<td style='padding: 10px;'>Rs. %s</td>"
+                            + "</tr>"
+                            + "</table>"
+
+                            + "<p style='font-size: 15px;'>You may now begin accepting appointments at this rate. Please ensure your availability is updated on the platform to reflect this change.</p>"
+
+                            + "<p style='margin-top: 30px; font-size: 14px; color: #888;'>Thank you,<br><strong>Alcura Team</strong></p>"
+                            + "</div>"
+                            + "</div>",
+                    oldPrice
             );
 
             logger.debug("Preparing to send email - Recipient: {}, Subject: {}, Body: {}",

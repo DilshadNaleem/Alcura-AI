@@ -27,6 +27,39 @@
         .toggle-password:hover {
             color: #333;
         }
+        /* Voice control styling */
+        .voice-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #ff4444;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .voice-control:hover {
+            transform: scale(1.1);
+        }
+        .voice-control.listening {
+            background-color: #4CAF50;
+            animation: pulse 1.5s infinite;
+        }
+        .voice-control i {
+            color: white;
+            font-size: 24px;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -118,40 +151,91 @@
 <script src="/Customer/Signing.js"></script>
 <script>
     // Add show/hide password functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        // Toggle for new password in sign-up form
-        const toggleNewPassword = document.getElementById('toggleNewPassword');
-        const newPassword = document.getElementById('newpassword');
+ document.addEventListener('DOMContentLoaded', function() {
+     // Toggle for new password in sign-up form
+     const toggleNewPassword = document.getElementById('toggleNewPassword');
+     const newPassword = document.getElementById('newpassword');
 
-        toggleNewPassword.addEventListener('click', function() {
-            const type = newPassword.getAttribute('type') === 'password' ? 'text' : 'password';
-            newPassword.setAttribute('type', type);
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
+     toggleNewPassword.addEventListener('click', function() {
+         const type = newPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+         newPassword.setAttribute('type', type);
+         this.classList.toggle('fa-eye');
+         this.classList.toggle('fa-eye-slash');
+     });
 
-        // Toggle for confirm password in sign-up form
-        const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
-        const confirmPassword = document.getElementById('confirmPassword');
+     // Toggle for confirm password in sign-up form
+     const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+     const confirmPassword = document.getElementById('confirmPassword');
 
-        toggleConfirmPassword.addEventListener('click', function() {
-            const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
-            confirmPassword.setAttribute('type', type);
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
+     toggleConfirmPassword.addEventListener('click', function() {
+         const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+         confirmPassword.setAttribute('type', type);
+         this.classList.toggle('fa-eye');
+         this.classList.toggle('fa-eye-slash');
+     });
 
-        // Toggle for password in sign-in form
-        const toggleSignInPassword = document.getElementById('toggleSignInPassword');
-        const signInPassword = document.getElementById('password');
+     // Toggle for password in sign-in form
+     const toggleSignInPassword = document.getElementById('toggleSignInPassword');
+     const signInPassword = document.getElementById('password');
 
-        toggleSignInPassword.addEventListener('click', function() {
-            const type = signInPassword.getAttribute('type') === 'password' ? 'text' : 'password';
-            signInPassword.setAttribute('type', type);
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
-    });
+     toggleSignInPassword.addEventListener('click', function() {
+         const type = signInPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+         signInPassword.setAttribute('type', type);
+         this.classList.toggle('fa-eye');
+         this.classList.toggle('fa-eye-slash');
+     });
+
+     // Voice recognition functionality
+     const voiceControl = document.getElementById('voiceControl');
+     let recognition = null;
+
+     // Check if the browser supports the Web Speech API
+     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+         recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+         recognition.continuous = false;
+         recognition.lang = 'en-US';
+         recognition.interimResults = false;
+         recognition.maxAlternatives = 1;
+
+         recognition.onstart = function() {
+             voiceControl.classList.add('listening');
+             voiceControl.title = "Listening...";
+         };
+
+         recognition.onresult = function(event) {
+             const transcript = event.results[0][0].transcript.toLowerCase().trim();
+             console.log('Voice command:', transcript);
+
+             if (transcript.includes('send sos')) {
+                 // Redirect to SOS page with voice parameter
+                 window.location.href = '/Customer/SOS?voice=true';
+             }
+         };
+
+         recognition.onerror = function(event) {
+             console.error('Speech recognition error', event.error);
+             voiceControl.classList.remove('listening');
+             voiceControl.title = "Click to speak";
+         };
+
+         recognition.onend = function() {
+             voiceControl.classList.remove('listening');
+             voiceControl.title = "Click to speak";
+         };
+
+         voiceControl.addEventListener('click', function() {
+             try {
+                 recognition.start();
+             } catch (error) {
+                 console.error('Speech recognition failed to start:', error);
+             }
+         });
+     } else {
+         // Browser doesn't support speech recognition
+         voiceControl.style.display = 'none';
+         console.warn('Speech recognition not supported in this browser');
+     }
+ });
 </script>
 </body>
 </html>

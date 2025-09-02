@@ -44,10 +44,41 @@
             color: red;
             font-weight: bold;
         }
+        .voice-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #ff4444;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .voice-control:hover {
+            transform: scale(1.1);
+        }
+        .voice-control.listening {
+            background-color: #4CAF50;
+            animation: pulse 1.5s infinite;
+        }
+        .voice-control i {
+            color: white;
+            font-size: 24px;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
-
 
 <section class="home">
     <h1>Health SOS Emergency</h1>
@@ -55,53 +86,74 @@
     <div id="status">Status: Ready to send emergency alert</div>
     <div id="hospitalInfo"></div>
 </section>
+
+<!-- Voice control button -->
+<div class="voice-control" id="voiceControl" title="Click to speak">
+    <i class="fas fa-microphone"></i>
+</div>
+
 <script>
     const sosButton = document.getElementById('sosButton');
     const statusDiv = document.getElementById('status');
     const hospitalInfo = document.getElementById('hospitalInfo');
     let trackingId = null;
 
+    // Function to automatically trigger the SOS button
+    function triggerSOS() {
+        console.log("Automatically triggering SOS...");
+        sosButton.click();
+    }
+
+    // Check if the page was loaded via voice command
+    const urlParams = new URLSearchParams(window.location.search);
+    const voiceTriggered = urlParams.get('voice');
+
+    // If voice triggered or we want to auto-trigger, click the button after a short delay
+    if (voiceTriggered === 'true') {
+        setTimeout(triggerSOS, 1000); // 1 second delay to allow page to fully load
+    }
+
     function getLocation() {
-    return new Promise((resolve, reject) => {
-        statusDiv.textContent = "Status: Accessing your location...";
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                position => {
-                    statusDiv.textContent = "Status: Location acquired!";
-                    resolve(position.coords);
-                },
-                error => {
-                    let errorMessage = "Error getting location: ";
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            errorMessage += "Location permission denied. Please enable location access in your browser settings.";
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            errorMessage += "Location unavailable. Check your network/GPS connection.";
-                            break;
-                        case error.TIMEOUT:
-                            errorMessage += "Location request timed out. Ensure you're in an area with good GPS/network coverage.";
-                            break;
-                        default:
-                            errorMessage += "Unknown error";
+        return new Promise((resolve, reject) => {
+            statusDiv.textContent = "Status: Accessing your location...";
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        statusDiv.textContent = "Status: Location acquired!";
+                        resolve(position.coords);
+                    },
+                    error => {
+                        let errorMessage = "Error getting location: ";
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage += "Location permission denied. Please enable location access in your browser settings.";
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage += "Location unavailable. Check your network/GPS connection.";
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage += "Location request timed out. Ensure you're in an area with good GPS/network coverage.";
+                                break;
+                            default:
+                                errorMessage += "Unknown error";
+                        }
+                        statusDiv.innerHTML = errorMessage +
+                            '<br><button onclick="window.location.reload()">Try Again</button>';
+                        reject(errorMessage);
+                    },
+                    {
+                        timeout: 15000, // Increase timeout to 15 seconds
+                        maximumAge: 0, // Don't use cached position
+                        enableHighAccuracy: true // Request better accuracy
                     }
-                    statusDiv.innerHTML = errorMessage +
-                        '<br><button onclick="window.location.reload()">Try Again</button>';
-                    reject(errorMessage);
-                },
-                {
-                    timeout: 15000, // Increase timeout to 15 seconds
-                    maximumAge: 0, // Don't use cached position
-                    enableHighAccuracy: true // Request better accuracy
-                }
-            );
-        } else {
-            const msg = "Geolocation not supported by your browser";
-            statusDiv.textContent = msg;
-            reject(msg);
-        }
-    });
-}
+                );
+            } else {
+                const msg = "Geolocation not supported by your browser";
+                statusDiv.textContent = msg;
+                reject(msg);
+            }
+        });
+    }
 
     sosButton.addEventListener('click', async () => {
         try {
@@ -139,8 +191,8 @@
                 hospitalLat: data.hospitalLat,
                 hospitalLng: data.hospitalLng,
                 address: data.address,
-                phoneNumber : data.phoneNumber,
-                description : data.description
+                phoneNumber: data.phoneNumber,
+                description: data.description
             }));
 
             // Redirect to dashboard
@@ -158,7 +210,63 @@
             `;
         }
     });
+
+    // Voice recognition functionality for the SOS page
+    document.addEventListener('DOMContentLoaded', function() {
+        const voiceControl = document.getElementById('voiceControl');
+        let recognition = null;
+
+        // Check if the browser supports the Web Speech API
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.continuous = false;
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = function() {
+                voiceControl.classList.add('listening');
+                voiceControl.title = "Listening...";
+            };
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript.toLowerCase().trim();
+                console.log('Voice command:', transcript);
+
+                if (transcript.includes('send sos') || transcript.includes('emergency')) {
+                    // Trigger the SOS button
+                    triggerSOS();
+                }
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error', event.error);
+                voiceControl.classList.remove('listening');
+                voiceControl.title = "Click to speak";
+            };
+
+            recognition.onend = function() {
+                voiceControl.classList.remove('listening');
+                voiceControl.title = "Click to speak";
+            };
+
+            voiceControl.addEventListener('click', function() {
+                try {
+                    recognition.start();
+                } catch (error) {
+                    console.error('Speech recognition failed to start:', error);
+                }
+            });
+        } else {
+            // Browser doesn't support speech recognition
+            voiceControl.style.display = 'none';
+            console.warn('Speech recognition not supported in this browser');
+        }
+    });
 </script>
+
+<!-- Add Font Awesome for the microphone icon -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/js/all.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

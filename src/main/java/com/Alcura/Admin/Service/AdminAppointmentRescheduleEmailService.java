@@ -1,24 +1,41 @@
 package com.Alcura.Admin.Service;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+
+
 @Service
-public class AdminAppointmentRescheduleEmailService
-{
+public class AdminAppointmentRescheduleEmailService {
+
     @Autowired
     private JavaMailSender mailSender;
+    @Value("${spring.mail.username}")
+    private String fromEmail;
 
+    public void sendAppointmentStatusEmail(String toEmail, String subject, String htmlBody, String emailHeading) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-    public void sendAppointmentStatusEmail(String toEmail, String subject, String body) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("hypermarket403@gmail.com");
-        message.setTo(toEmail);
-        message.setSubject(subject);
-        message.setText(body);
+            helper.setFrom(new InternetAddress(fromEmail, emailHeading));
+            helper.setTo(toEmail);
+            helper.setSubject(subject);
+            helper.setText(htmlBody, true); // true = is HTML
 
-        mailSender.send(message);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to send HTML email", e);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

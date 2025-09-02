@@ -59,21 +59,44 @@ public class RejectDoctorPrice
             logger.info("Saving to Database: {}", newPrice, adminNotes);
 
             String subject = "Your Price Has been Rejected";
+            String heading = "Alcura Doctor Price Rejected";
             String body = String.format(
-                    "Dear Doctor,\n\n" +
-                            "Your Price Range Rs. %s has been rejected.\n" +
-                            "Due to Reason: %s \n"+
-                            "We Are adjusted with this range Rs. %s.\n\n" +
-                            "Thank you, \n Alcura Team",
+                    "<div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>"
+                            + "<div style='max-width: 600px; margin: auto; background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; padding: 20px;'>"
+                            + "<h2 style='color: #C0392B;'>Alcura Price Rejection Notice</h2>"
+                            + "<p style='font-size: 16px; color: #333;'>Dear Doctor,</p>"
+                            + "<p style='font-size: 15px;'>We regret to inform you that your requested consultation price has been <strong style='color: red;'>rejected</strong>.</p>"
 
+                            + "<table style='width: 100%%; margin: 20px 0; border-collapse: collapse;'>"
+                            + "<tr>"
+                            + "<td style='padding: 10px; background-color: #fce4e4; font-weight: bold;'>Requested Price:</td>"
+                            + "<td style='padding: 10px;'>Rs. %s</td>"
+                            + "</tr>"
+                            + "<tr>"
+                            + "<td style='padding: 10px; background-color: #fce4e4; font-weight: bold;'>Adjusted Price:</td>"
+                            + "<td style='padding: 10px;'>Rs. %s</td>"
+                            + "</tr>"
+                            + "</table>"
+
+                            + "<div style='margin-top: 20px;'>"
+                            + "<p style='font-weight: bold; color: #555;'>Admin Notes:</p>"
+                            + "<div style='background-color: #fcf8e3; border-left: 4px solid #f0ad4e; padding: 10px; border-radius: 4px;'>"
+                            + "%s"
+                            + "</div>"
+                            + "</div>"
+
+                            + "<p style='margin-top: 30px; font-size: 14px; color: #888;'>Thank you,<br><strong>Alcura Team</strong></p>"
+                            + "</div>"
+                            + "</div>",
                     doctorPrice.getPrice(),
-                    adminNotes,
-                    newPrice
+                    newPrice,
+                    adminNotes
             );
+
 
             logger.info("Set Price as {}", doctorPrice.getPrice());
 
-            emailService.sendAppointmentStatusEmail(doctorEmail, subject, body);
+            emailService.sendAppointmentStatusEmail(doctorEmail, subject, body,heading);
             logger.info("Email send to: {}", doctorEmail);
         }
         catch (Exception e)

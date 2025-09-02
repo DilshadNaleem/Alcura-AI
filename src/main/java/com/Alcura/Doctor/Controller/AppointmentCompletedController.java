@@ -89,14 +89,24 @@ public class AppointmentCompletedController
             }
 
             String subject = "Thanks for the Booking";
+            String emailHeading = "Alcura Booking Completed";
             String body = String.format(
-                    "Dear Patient, \n\n" +
-                            "Thanks for the Appointment with: %s\n" +
-                            "If You have Any Concerns Please Contact us via Alcura official website" +
-                            "Thank You, \n Alcura Team",
+                    "<div style='font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;'>"
+                            + "<div style='max-width: 600px; margin: auto; background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; padding: 20px;'>"
+                            + "<h2 style='color: #28a745;'>Appointment Completed</h2>"
+                            + "<p style='font-size: 16px; color: #333;'>Dear Patient,</p>"
+                            + "<p style='font-size: 15px;'>Thank you for attending your appointment with <strong>Dr. %s</strong>.</p>"
+                            + "<p style='font-size: 15px;'>We hope your experience was excellent. If you have any concerns or feedback, please feel free to contact us via the official <a href='https://alcura.com' style='color: #007bff;'>Alcura website</a>.</p>"
+                            + "<div style='margin-top: 20px; padding: 15px; background-color: #e2f0d9; border-left: 5px solid #28a745;'>"
+                            + "Stay healthy and take care!"
+                            + "</div>"
+                            + "<p style='margin-top: 30px; font-size: 14px; color: #888;'>Thank you,<br><strong>Alcura Team</strong></p>"
+                            + "</div>"
+                            + "</div>",
                     appoinment.getDoctor_name()
             );
-            emailService.sendAppointmentStatusEmail(customerEmail,subject,body);
+
+            emailService.sendAppointmentStatusEmail(customerEmail,subject,body,emailHeading);
             logger.error("Email Sent To:{}", customerEmail);
             appointmentRepo.save(appoinment);
 

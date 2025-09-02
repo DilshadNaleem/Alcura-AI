@@ -106,6 +106,7 @@ public class DoctorCompleteAppointmentTest {
         verify(emailService).sendAppointmentStatusEmail(
                 eq("patient@example.com"),
                 eq("Thanks for the Booking"),
+                anyString(),
                 anyString()
         );
         assertTrue(stringWriter.toString().contains("alert('Successfully Updated!')"));
@@ -121,7 +122,7 @@ public class DoctorCompleteAppointmentTest {
         assertNull(result);
         assertTrue(stringWriter.toString().contains("alert('Id is Null')"));
         verify(appointmentRepo, never()).save(any());
-        verify(emailService, never()).sendAppointmentStatusEmail(any(), any(), any());
+        verify(emailService, never()).sendAppointmentStatusEmail(any(), any(), any(),any());
     }
 
 

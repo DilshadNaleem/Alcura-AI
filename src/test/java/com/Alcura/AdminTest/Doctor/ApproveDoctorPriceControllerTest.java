@@ -63,8 +63,9 @@ public class ApproveDoctorPriceControllerTest
     void ApproveDoctorPrice_AdminEmailEmpty_ShouldShowError() throws IOException
  {
      int id = 1;
+     Float oldPrice = 20.0f;
 
-     String result = doctorPriceController.approve(id,finalPrice,doctorEmail,printWriter,session);
+     String result = doctorPriceController.approve(id,finalPrice,doctorEmail,oldPrice,printWriter,session);
 
      assertNull("Session email should be null", session.getAttribute("email"));
      assertEquals("Show Error Message",result,"redirect:/Admin/Signing");
@@ -82,8 +83,9 @@ public class ApproveDoctorPriceControllerTest
 
         when(doctorRepo.findByemail(doctorEmail)).thenReturn(null);
         int id = 1;
+        Float oldPrice = 20.0f;
 
-        String result = doctorPriceController.approve(id, finalPrice, doctorEmail, printWriter, session);
+        String result = doctorPriceController.approve(id, finalPrice, doctorEmail, oldPrice, printWriter, session);
 
         assertNull("The controller should return null when a doctor is not found.", result);
 
@@ -103,11 +105,12 @@ public class ApproveDoctorPriceControllerTest
 
         DoctorPrice mockDoctorPrice = new DoctorPrice();
         mockDoctorPrice.setId(1);
+        Float oldPrice = 20.0f;
         mockDoctorPrice.setDoctor_email("Pending");
 
         when(doctorRepo.findByemail(doctorEmail)).thenReturn(mockdoctor);
         when(doctorPriceRepo.findById(anyInt())).thenReturn(mockDoctorPrice);
-        String result = doctorPriceController.approve(1,finalPrice,doctorEmail,printWriter,session);
+        String result = doctorPriceController.approve(1,finalPrice,doctorEmail,oldPrice,printWriter,session);
         verify(doctorRepo).findByemail(doctorEmail);
         verify(doctorPriceRepo).findById(1);
         verify(doctorPriceRepo).save(mockDoctorPrice);

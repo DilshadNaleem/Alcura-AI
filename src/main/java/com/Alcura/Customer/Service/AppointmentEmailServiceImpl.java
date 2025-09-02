@@ -1,20 +1,21 @@
 package com.Alcura.Customer.Service;
 
-import com.Alcura.Customer.Model.Appoinment;
 import com.Alcura.Customer.Service.Interfaces.AppointmentEmailService;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.AddressException;
 
 @Service
 public class AppointmentEmailServiceImpl implements AppointmentEmailService {
+
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
 
     private final JavaMailSender javaMailSender;
@@ -29,40 +30,62 @@ public class AppointmentEmailServiceImpl implements AppointmentEmailService {
     @Override
     public void sendAppointmentConfirmaation(String toEmail, LocalDate appointmentDate,
                                              String doctorName, String appointmentId, String time,
-                                             Float AppointmentPrice,String paymentMethod) {
+                                             Float appointmentPrice, String paymentMethod) {
         try {
-            // Validate email
             validateEmail(toEmail);
 
-            // Create and send email
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("Appointment Confirmation Alcura <" + fromEmail + ">");
-            message.setTo(toEmail);
-            message.setSubject("Appointment Confirmation " + appointmentId);
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            // Properly formatted message
+            helper.setFrom(new InternetAddress(fromEmail, "Alcura Appointment Team"));
+            helper.setTo(toEmail);
+            helper.setSubject("Appointment Confirmation - ID: " + appointmentId);
+
             String formattedDate = appointmentDate.format(DATE_FORMATTER);
-            String emailContent = String.format(
-                    "Dear Patient,\n\n" +
-                            "This is to confirm your appointment has been scheduled:\n\n" +
-                            "Doctor: %s\n" +
-                            "Date: %s\n" +
-                            "at: %s\n" +
-                            "Appointment ID: %s\n" +
-                            "Price: Rs. %s\n" +
-                            "Payment Method: %s\n\n" +
-                            "Thank you for choosing our service.\n\n" +
-                            "Best regards,\n" +
-                            "Alcura Team",
-                    doctorName,
-                    formattedDate,
-                    time,
-                    appointmentId,
-                    AppointmentPrice,
-                    paymentMethod
-            );
 
-            message.setText(emailContent);
+            String emailContent = String.format("""
+                <html>
+                <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+                    <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 10px;">
+                        <h2 style="color: #2a7ae2;">Appointment Confirmation</h2>
+                        <p>Dear Patient,</p>
+                        <p>We are pleased to confirm your appointment has been scheduled. Please find the details below:</p>
+
+                        <table style="width: 100%%; border-collapse: collapse; margin-top: 15px;">
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Doctor:</td>
+                                <td style="padding: 8px;">%s</td>
+                            </tr>
+                            <tr style="background-color: #f9f9f9;">
+                                <td style="padding: 8px; font-weight: bold;">Date:</td>
+                                <td style="padding: 8px;">%s</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Time:</td>
+                                <td style="padding: 8px;">%s</td>
+                            </tr>
+                            <tr style="background-color: #f9f9f9;">
+                                <td style="padding: 8px; font-weight: bold;">Appointment ID:</td>
+                                <td style="padding: 8px;">%s</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; font-weight: bold;">Price:</td>
+                                <td style="padding: 8px;">Rs. %.2f</td>
+                            </tr>
+                            <tr style="background-color: #f9f9f9;">
+                                <td style="padding: 8px; font-weight: bold;">Payment Method:</td>
+                                <td style="padding: 8px;">%s</td>
+                            </tr>
+                        </table>
+
+                        <p style="margin-top: 20px;">Thank you for choosing our service.</p>
+                        <p style="color: #888;">Best regards,<br/>Alcura Team</p>
+                    </div>
+                </body>
+                </html>
+                """, doctorName, formattedDate, time, appointmentId, appointmentPrice, paymentMethod);
+
+            helper.setText(emailContent, true); // true = isHtml
             javaMailSender.send(message);
 
         } catch (AddressException e) {

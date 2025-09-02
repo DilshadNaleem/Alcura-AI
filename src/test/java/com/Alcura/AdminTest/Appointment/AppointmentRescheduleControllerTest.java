@@ -73,7 +73,6 @@ public class AppointmentRescheduleControllerTest {
 
     @Test
     void handleReschedule_AppointmentNotFound_ShouldReturnBadRequest() {
-
         when(appointmentRepo.findByUniqueIdNative("APPT-123")).thenReturn(Optional.empty());
 
         ResponseEntity<?> response = controller.handleReschedule(validApproveRequest);
@@ -89,6 +88,7 @@ public class AppointmentRescheduleControllerTest {
     void handleReschedule_ApproveAction_ShouldRescheduleAppointmentAndSendEmail() {
         when(appointmentRepo.findByUniqueIdNative("APPT-123")).thenReturn(Optional.of(mockAppointment));
         when(appointmentRepo.save(any(Appoinment.class))).thenReturn(mockAppointment);
+
         ResponseEntity<?> response = controller.handleReschedule(validApproveRequest);
 
         assertEquals(200, response.getStatusCodeValue());
@@ -105,28 +105,48 @@ public class AppointmentRescheduleControllerTest {
         assertEquals("Reschedule approved by admin", mockAppointment.getReschedule_reason());
 
         String expectedSubject = "Your Appointment Has Been Rescheduled";
+        String expectedHeading = "Alcura Appointment Rescheduled";
         String expectedBody = String.format(
-                "Dear Patient,\n\n" +
-                        "Your appointment with Dr. %s has been rescheduled.\n\n" +
-                        "New Date: %s\n" +
-                        "New Time: %s\n\n" +
-                        "Admin Notes: %s\n\n" +
-                        "Thank you,\nAlcura Team",
+                "<div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>"
+                        + "<div style='max-width: 600px; margin: auto; background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; padding: 20px;'>"
+                        + "<h2 style='color: #2E86C1; border-bottom: 1px solid #ddd; padding-bottom: 10px;'>Appointment Rescheduled</h2>"
+                        + "<p style='font-size: 16px; color: #333;'>Dear Patient,</p>"
+                        + "<p style='font-size: 15px;'>Your appointment with <strong> %s</strong> has been <span style='color: green; font-weight: bold;'>rescheduled</span>.</p>"
+                        + "<table style='width: 100%%; margin-top: 15px; border-collapse: collapse;'>"
+                        + "<tr>"
+                        + "<td style='padding: 10px; background-color: #f0f8ff; font-weight: bold;'>New Date:</td>"
+                        + "<td style='padding: 10px;'>%s</td>"
+                        + "</tr>"
+                        + "<tr>"
+                        + "<td style='padding: 10px; background-color: #f0f8ff; font-weight: bold;'>New Time:</td>"
+                        + "<td style='padding: 10px;'>%s</td>"
+                        + "</tr>"
+                        + "</table>"
+                        + "<div style='margin-top: 20px;'>"
+                        + "<p style='font-weight: bold; color: #555;'>Admin Notes:</p>"
+                        + "<div style='background-color: #fcf8e3; border-left: 4px solid #f0ad4e; padding: 10px; border-radius: 4px;'>"
+                        + "%s"
+                        + "</div>"
+                        + "</div>"
+                        + "<p style='margin-top: 30px; font-size: 14px; color: #888;'>Thank you,<br><strong>Alcura Team</strong></p>"
+                        + "</div>"
+                        + "</div>",
                 "Dr. Smith",
                 LocalDate.of(2024, 1, 15),
                 "14:30",
                 "Approved with new timing"
         );
+
         verify(emailService).sendAppointmentStatusEmail(
                 eq("patient@example.com"),
                 eq(expectedSubject),
-                eq(expectedBody)
+                eq(expectedBody),
+                eq(expectedHeading)
         );
     }
 
     @Test
     void handleReschedule_ApproveActionMissingDate_ShouldReturnBadRequest() {
-
         when(appointmentRepo.findByUniqueIdNative("APPT-123")).thenReturn(Optional.of(mockAppointment));
 
         ResponseEntity<?> response = controller.handleReschedule(missingDateApproveRequest);
@@ -142,6 +162,7 @@ public class AppointmentRescheduleControllerTest {
     void handleReschedule_RejectAction_ShouldRejectAppointmentAndSendEmail() {
         when(appointmentRepo.findByUniqueIdNative("APPT-123")).thenReturn(Optional.of(mockAppointment));
         when(appointmentRepo.save(any(Appoinment.class))).thenReturn(mockAppointment);
+
         ResponseEntity<?> response = controller.handleReschedule(validRejectRequest);
 
         assertEquals(200, response.getStatusCodeValue());
@@ -156,30 +177,49 @@ public class AppointmentRescheduleControllerTest {
         assertEquals("Reschedule request rejected by admin", mockAppointment.getReschedule_reason());
 
         String expectedSubject = "Your Reschedule Request Has Been Rejected";
+        String expectedHeading = "Alcura Appointment Rejected";
         String expectedBody = String.format(
-                "Dear Patient,\n\n" +
-                        "Your reschedule request for appointment with Dr. %s has been rejected.\n\n" +
-                        "Original Date: %s\n" +
-                        "Original Time: %s\n\n" +
-                        "Reason: %s\n\n" +
-                        "Thank you,\nAlcura Team",
+                "<div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>"
+                        + "<div style='max-width: 600px; margin: auto; background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; padding: 20px;'>"
+                        + "<h2 style='color: #C0392B; border-bottom: 1px solid #ddd; padding-bottom: 10px;'>Reschedule Request Rejected</h2>"
+                        + "<p style='font-size: 16px; color: #333;'>Dear Patient,</p>"
+                        + "<p style='font-size: 15px;'>Your request to reschedule the appointment with <strong>%s</strong> has been <span style='color: red; font-weight: bold;'>rejected</span>.</p>"
+                        + "<table style='width: 100%%; margin-top: 15px; border-collapse: collapse;'>"
+                        + "<tr>"
+                        + "<td style='padding: 10px; background-color: #f0f8ff; font-weight: bold;'>Original Date:</td>"
+                        + "<td style='padding: 10px;'>%s</td>"
+                        + "</tr>"
+                        + "<tr>"
+                        + "<td style='padding: 10px; background-color: #f0f8ff; font-weight: bold;'>Original Time:</td>"
+                        + "<td style='padding: 10px;'>%s</td>"
+                        + "</tr>"
+                        + "</table>"
+                        + "<div style='margin-top: 20px;'>"
+                        + "<p style='font-weight: bold; color: #555;'>Reason:</p>"
+                        + "<div style='background-color: #f2dede; border-left: 4px solid #d9534f; padding: 10px; border-radius: 4px;'>"
+                        + "%s"
+                        + "</div>"
+                        + "</div>"
+                        + "<p style='margin-top: 30px; font-size: 14px; color: #888;'>Thank you,<br><strong>Alcura Team</strong></p>"
+                        + "</div>"
+                        + "</div>",
                 "Dr. Smith",
                 LocalDate.of(2024, 1, 10),
                 "10:00",
                 "Cannot accommodate requested time"
         );
+
         verify(emailService).sendAppointmentStatusEmail(
                 eq("patient@example.com"),
                 eq(expectedSubject),
-                eq(expectedBody)
+                eq(expectedBody),
+                eq(expectedHeading)
         );
     }
 
     @Test
     void handleReschedule_InvalidAction_ShouldReturnBadRequest() {
-
         when(appointmentRepo.findByUniqueIdNative("APPT-123")).thenReturn(Optional.of(mockAppointment));
-
 
         ResponseEntity<?> response = controller.handleReschedule(invalidActionRequest);
 
@@ -192,7 +232,6 @@ public class AppointmentRescheduleControllerTest {
 
     @Test
     void handleReschedule_ExceptionDuringProcessing_ShouldReturnInternalServerError() {
-
         when(appointmentRepo.findByUniqueIdNative("APPT-123")).thenThrow(new RuntimeException("Database error"));
 
         ResponseEntity<?> response = controller.handleReschedule(validApproveRequest);
@@ -224,7 +263,6 @@ public class AppointmentRescheduleControllerTest {
 
     @Test
     void rescheduleRequest_ToString_ShouldContainAllFields() {
-        // Arrange
         AppointmentRescheduleController.RescheduleRequest request = new AppointmentRescheduleController.RescheduleRequest();
         request.setAppointmentId("TEST-123");
         request.setAction("approve");
@@ -232,10 +270,8 @@ public class AppointmentRescheduleControllerTest {
         request.setNewTime("15:00");
         request.setAdminNotes("Test notes");
 
-        // Act
         String toStringResult = request.toString();
 
-        // Assert
         assertTrue(toStringResult.contains("TEST-123"));
         assertTrue(toStringResult.contains("approve"));
         assertTrue(toStringResult.contains("2024-01-20"));

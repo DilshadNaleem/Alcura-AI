@@ -71,24 +71,46 @@ public class AppointmentRescheduleController {
         appointmentRepo.save(appointment);
 
         // Send email notification
+        // Styled HTML email body
         String subject = "Your Appointment Has Been Rescheduled";
+        String heading = "Alcura Appointment Rescheduled";
         String body = String.format(
-                "Dear Patient,\n\n" +
-                        "Your appointment with Dr. %s has been rescheduled.\n\n" +
-                        "New Date: %s\n" +
-                        "New Time: %s\n\n" +
-                        "Admin Notes: %s\n\n" +
-                        "Thank you,\nAlcura Team",
+                "<div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>"
+                        + "<div style='max-width: 600px; margin: auto; background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; padding: 20px;'>"
+                        + "<h2 style='color: #2E86C1; border-bottom: 1px solid #ddd; padding-bottom: 10px;'>Appointment Rescheduled</h2>"
+                        + "<p style='font-size: 16px; color: #333;'>Dear Patient,</p>"
+                        + "<p style='font-size: 15px;'>Your appointment with <strong> %s</strong> has been <span style='color: green; font-weight: bold;'>rescheduled</span>.</p>"
+                        + "<table style='width: 100%%; margin-top: 15px; border-collapse: collapse;'>"
+                        + "<tr>"
+                        + "<td style='padding: 10px; background-color: #f0f8ff; font-weight: bold;'>New Date:</td>"
+                        + "<td style='padding: 10px;'>%s</td>"
+                        + "</tr>"
+                        + "<tr>"
+                        + "<td style='padding: 10px; background-color: #f0f8ff; font-weight: bold;'>New Time:</td>"
+                        + "<td style='padding: 10px;'>%s</td>"
+                        + "</tr>"
+                        + "</table>"
+                        + "<div style='margin-top: 20px;'>"
+                        + "<p style='font-weight: bold; color: #555;'>Admin Notes:</p>"
+                        + "<div style='background-color: #fcf8e3; border-left: 4px solid #f0ad4e; padding: 10px; border-radius: 4px;'>"
+                        + "%s"
+                        + "</div>"
+                        + "</div>"
+                        + "<p style='margin-top: 30px; font-size: 14px; color: #888;'>Thank you,<br><strong>Alcura Team</strong></p>"
+                        + "</div>"
+                        + "</div>",
                 appointment.getDoctor_name(),
                 request.getNewDate(),
                 request.getNewTime(),
                 request.getAdminNotes()
         );
+
         logger.info("Email send {}", appointment.getCustomer_email());
         emailService.sendAppointmentStatusEmail(
                 appointment.getCustomer_email(),
                 subject,
-                body
+                body,
+                heading
         );
 
         return ResponseEntity.ok(Map.of(
@@ -105,13 +127,32 @@ public class AppointmentRescheduleController {
 
         // Send email notification
         String subject = "Your Reschedule Request Has Been Rejected";
+        String heading = "Alcura Appointment Rejected";
         String body = String.format(
-                "Dear Patient,\n\n" +
-                        "Your reschedule request for appointment with Dr. %s has been rejected.\n\n" +
-                        "Original Date: %s\n" +
-                        "Original Time: %s\n\n" +
-                        "Reason: %s\n\n" +
-                        "Thank you,\nAlcura Team",
+                "<div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>"
+                        + "<div style='max-width: 600px; margin: auto; background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; padding: 20px;'>"
+                        + "<h2 style='color: #C0392B; border-bottom: 1px solid #ddd; padding-bottom: 10px;'>Reschedule Request Rejected</h2>"
+                        + "<p style='font-size: 16px; color: #333;'>Dear Patient,</p>"
+                        + "<p style='font-size: 15px;'>Your request to reschedule the appointment with <strong>%s</strong> has been <span style='color: red; font-weight: bold;'>rejected</span>.</p>"
+                        + "<table style='width: 100%%; margin-top: 15px; border-collapse: collapse;'>"
+                        + "<tr>"
+                        + "<td style='padding: 10px; background-color: #f0f8ff; font-weight: bold;'>Original Date:</td>"
+                        + "<td style='padding: 10px;'>%s</td>"
+                        + "</tr>"
+                        + "<tr>"
+                        + "<td style='padding: 10px; background-color: #f0f8ff; font-weight: bold;'>Original Time:</td>"
+                        + "<td style='padding: 10px;'>%s</td>"
+                        + "</tr>"
+                        + "</table>"
+                        + "<div style='margin-top: 20px;'>"
+                        + "<p style='font-weight: bold; color: #555;'>Reason:</p>"
+                        + "<div style='background-color: #f2dede; border-left: 4px solid #d9534f; padding: 10px; border-radius: 4px;'>"
+                        + "%s"
+                        + "</div>"
+                        + "</div>"
+                        + "<p style='margin-top: 30px; font-size: 14px; color: #888;'>Thank you,<br><strong>Alcura Team</strong></p>"
+                        + "</div>"
+                        + "</div>",
                 appointment.getDoctor_name(),
                 appointment.getAppointment_date(),
                 appointment.getAppointment_time(),
@@ -119,11 +160,13 @@ public class AppointmentRescheduleController {
         );
 
 
+
         logger.info("Email send {}", appointment.getCustomer_email());
         emailService.sendAppointmentStatusEmail(
                 appointment.getCustomer_email(),
                 subject,
-                body
+                body,
+                heading
         );
 
         return ResponseEntity.ok(Map.of(

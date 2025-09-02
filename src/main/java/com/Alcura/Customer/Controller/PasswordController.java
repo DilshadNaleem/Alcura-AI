@@ -56,7 +56,7 @@ public class PasswordController
 
         out.println("<script type='text/javascript'>");
         out.print("alert('Password reset Link send to the email');");
-        out.println("window.location.href = '/Customer/Signing.html';");
+        out.println("window.location.href = '/Customer/Signing';");
         out.println("</script>");
     }
 }
